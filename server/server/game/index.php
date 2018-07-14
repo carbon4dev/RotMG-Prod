@@ -11,7 +11,7 @@ $client = str_replace("?", "", utf8_decode(file_get_contents('./version.txt')));
     <meta http-equiv="PRAGMA" content="NO-CACHE" />
     <meta http-equiv="Expires" content="-1" />
 
-    <title>Fabiano Swagger of Doom</title>
+    <title>RotMG Prod</title>
     <script language="JavaScript" type="text/javascript">
         var g_cacheBuster = "__rotmg_cb=1403286969";
     </script>
@@ -80,7 +80,7 @@ $client = str_replace("?", "", utf8_decode(file_get_contents('./version.txt')));
 // -----------------------------------------------------------------------------
 // Globals
 // Major version of Flash required
-var requiredMajorVersion = 11;
+var requiredMajorVersion = 30;
 // Minor version of Flash required
 var requiredMinorVersion = 2;
 // Minor version of Flash required
@@ -141,7 +141,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 			"style", "outline:none"
 	);
   } else {  // flash is too old or we can't detect the plugin
-    var alternateContent = 'Playing Fabiano Swagger of Doom requires Flash. <a href=http://www.adobe.com/go/getflash/>Get Flash</a>';
+    var alternateContent = 'To play in your RotMG Prod requires Flash. <a href=http://www.adobe.com/go/getflash/>Get Flash</a>';
     document.write(alternateContent);  // insert non-flash content
   }
 // -->
@@ -167,7 +167,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
                 </object>
             </noscript>
             <p>
-                Thanks for playing Fabiano Swagger of Doom!   Check out our <a href="http://aceticsoft.info/" target="_blank">forums</a> and <a href="http://www.realmeye.com/wiki/realm-of-the-mad-god" target="_blank">wiki</a>.
+                Thanks for use RotMG Prod!   Check out GitHub: <a href="http://aceticsoft.info/" target="_blank">Repositorie</a> and <a href="http://www.realmeye.com/wiki/realm-of-the-mad-god" target="_blank">Page</a>.
             </p>
             <div class="footer">
                 <div class="studio aceticsoft">
