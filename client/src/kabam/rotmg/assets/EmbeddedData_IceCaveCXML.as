@@ -1,16 +1,11 @@
-// Decompiled by AS3 Sorcerer 1.40
-// http://www.as3sorcerer.com/
+package kabam.rotmg.assets {
+import mx.core.*;
 
-//kabam.rotmg.assets.EmbeddedData_IceCaveCXML
-
-package kabam.rotmg.assets{
-    import mx.core.ByteArrayAsset;
-
-[Embed(source="EmbeddedData_IceCaveCXML.xml", mimeType="application/octet-stream")]
-
-    public class EmbeddedData_IceCaveCXML extends ByteArrayAsset {
-
+[Embed(source="EmbeddedData_IceCaveCXML.dat", mimeType="application/octet-stream")]
+public class EmbeddedData_IceCaveCXML extends ByteArrayAsset {
+    public function EmbeddedData_IceCaveCXML() {
+        super();
 
     }
-}//package kabam.rotmg.assets
-
+}
+}

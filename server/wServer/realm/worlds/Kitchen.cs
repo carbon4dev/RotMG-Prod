@@ -5,9 +5,8 @@
         public Kitchen()
         {
             Name = "Kitchen";
-            ClientWorldName = "Kitchen";
+            ClientWorldName = "server.Kitchen";
             Background = 0;
-            Dungeon = true;
         }
 
         protected override void Init()

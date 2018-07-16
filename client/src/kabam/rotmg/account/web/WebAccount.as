@@ -1,5 +1,5 @@
-package kabam.rotmg.account.web {
-import com.company.assembleegameclient.LOEBUILD_166e64f6c3677d0c513901242a3e702d.LOEBUILD_3225a10b07f1580f10dee4abc3779e6c;
+﻿package kabam.rotmg.account.web {
+import com.company.assembleegameclient.parameters.Parameters;
 import com.company.assembleegameclient.util.GUID;
 
 import flash.external.ExternalInterface;
@@ -9,132 +9,130 @@ import kabam.rotmg.account.core.Account;
 
 public class WebAccount implements Account {
 
-      public static const NETWORK_NAME:String = "rotmg";
+    public static const NETWORK_NAME:String = "rotmg";
+    private static const WEB_USER_ID:String = "";
+    private static const WEB_PLAY_PLATFORM_NAME:String = "rotmg";
 
-      private static const WEB_USER_ID:String = "";
+    private var userId:String = "";
+    private var password:String;
+    private var entryTag:String = "";
+    private var isVerifiedEmail:Boolean;
+    private var platformToken:String;
+    private var _userDisplayName:String = "";
+    public var signedRequest:String;
+    public var kabamId:String;
 
-      private static const WEB_PLAY_PLATFORM_NAME:String = "rotmg";
+    public function WebAccount() {
+        try {
+            this.entryTag = ExternalInterface.call("rotmg.UrlLib.getParam", "entrypt");
+        }
+        catch (error:Error) {
+        }
+    }
 
-      private var userId:String = "";
+    public function getUserName():String {
+        return (this.userId);
+    }
 
-      private var password:String;
+    public function getUserId():String {
+        return ((this.userId = ((this.userId) || (GUID.create()))));
+    }
 
-      private var entryTag:String = "";
+    public function getPassword():String {
+        return (((this.password) || ("")));
+    }
 
-      private var isVerifiedEmail:Boolean;
+    public function getCredentials():Object {
+        return ({
+            "guid": this.getUserId(),
+            "password": this.getPassword()
+        });
+    }
 
-      private var platformToken:String;
+    public function isRegistered():Boolean {
+        return (!((this.getPassword() == "")));
+    }
 
-      public var signedRequest:String;
+    public function updateUser(_arg_1:String, _arg_2:String):void {
+        var _local_3:SharedObject;
+        this.userId = _arg_1;
+        this.password = _arg_2;
+        try {
+            _local_3 = SharedObject.getLocal("RotMG", "/");
+            _local_3.data["GUID"] = _arg_1;
+            _local_3.data["Password"] = _arg_2;
+            _local_3.flush();
+        }
+        catch (error:Error) {
+        }
+    }
 
-      public var kabamId:String;
+    public function clear():void {
+        this.updateUser(GUID.create(), null);
+        Parameters.sendLogin_ = true;
+        Parameters.data_.charIdUseMap = {};
+        Parameters.save();
+    }
 
-      public function WebAccount() {
-         super();
-         try {
-            this.entryTag = ExternalInterface.call("rotmg.UrlLib.getParam","entrypt");
-            return;
-         }
-         catch(error:Error) {
-            return;
-         }
-      }
+    public function reportIntStat(_arg_1:String, _arg_2:int):void {
+    }
 
-      public function getUserName() : String {
-         return this.userId;
-      }
+    public function getRequestPrefix():String {
+        return ("/credits");
+    }
 
-      public function getUserId() : String {
-         return this.userId = this.userId || GUID.create();
-      }
+    public function gameNetworkUserId():String {
+        return (WEB_USER_ID);
+    }
 
-      public function getPassword() : String {
-         return this.password || "";
-      }
+    public function gameNetwork():String {
+        return (NETWORK_NAME);
+    }
 
-      public function getCredentials() : Object {
-         return {
-            "guid":this.getUserId(),
-            "password":this.getPassword()
-         };
-      }
+    public function playPlatform():String {
+        return (WEB_PLAY_PLATFORM_NAME);
+    }
 
-      public function isRegistered() : Boolean {
-         return this.getPassword() != "";
-      }
+    public function getEntryTag():String {
+        return (((this.entryTag) || ("")));
+    }
 
-      public function updateUser(param1:String, param2:String) : void {
-         var _local3:SharedObject = null;
-         this.userId = param1;
-         this.password = param2;
-         try {
-            _local3 = SharedObject.getLocal("RotMG","/");
-            _local3.data["GUID"] = param1;
-            _local3.data["Password"] = param2;
-            _local3.flush();
-            return;
-         }
-         catch(error:Error) {
-            return;
-         }
-      }
+    public function getSecret():String {
+        return ("");
+    }
 
-      public function clear() : void {
-         this.updateUser(GUID.create(),null);
-         LOEBUILD_3225a10b07f1580f10dee4abc3779e6c.sendLogin_ = true;
-         LOEBUILD_3225a10b07f1580f10dee4abc3779e6c.data_.charIdUseMap = {};
-         LOEBUILD_3225a10b07f1580f10dee4abc3779e6c.save();
-      }
+    public function verify(_arg_1:Boolean):void {
+        this.isVerifiedEmail = _arg_1;
+    }
 
-      public function reportIntStat(param1:String, param2:int) : void {
-      }
+    public function isVerified():Boolean {
+        return (this.isVerifiedEmail);
+    }
 
-      public function getRequestPrefix() : String {
-         return "/credits";
-      }
+    public function getPlatformToken():String {
+        return (((this.platformToken) || ("")));
+    }
 
-      public function gameNetworkUserId() : String {
-         return WEB_USER_ID;
-      }
+    public function setPlatformToken(_arg_1:String):void {
+        this.platformToken = _arg_1;
+    }
 
-      public function gameNetwork() : String {
-         return NETWORK_NAME;
-      }
+    public function getMoneyAccessToken():String {
+        return (this.signedRequest);
+    }
 
-      public function playPlatform() : String {
-         return WEB_PLAY_PLATFORM_NAME;
-      }
+    public function getMoneyUserId():String {
+        return (this.kabamId);
+    }
 
-      public function getEntryTag() : String {
-         return this.entryTag || "";
-      }
+    public function get userDisplayName():String {
+        return (this._userDisplayName);
+    }
 
-      public function getSecret() : String {
-         return "";
-      }
+    public function set userDisplayName(_arg_1:String):void {
+        this._userDisplayName = _arg_1;
+    }
 
-      public function verify(param1:Boolean) : void {
-         this.isVerifiedEmail = param1;
-      }
 
-      public function isVerified() : Boolean {
-         return this.isVerifiedEmail;
-      }
-
-      public function getPlatformToken() : String {
-         return this.platformToken || "";
-      }
-
-      public function setPlatformToken(param1:String) : void {
-         this.platformToken = param1;
-      }
-
-      public function getMoneyAccessToken() : String {
-         return this.signedRequest;
-      }
-
-      public function getMoneyUserId() : String {
-         return this.kabamId;
-      }
-   }
 }
+}//package kabam.rotmg.account.web

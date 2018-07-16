@@ -120,17 +120,12 @@ namespace wServer.realm.entities.merchant
                                         player.Tokens =
                                             player.Client.Account.FortuneTokens =
                                                 db.UpdateFortuneToken(player.Client.Account, -Price);
-                                    
-                                    player.SendInfo("Purchase successful!");
-                                    player.Client.SendPacket(new BuyResultPacket {
+
+                                    player.Client.SendPacket(new BuyResultPacket
+                                    {
                                         Result = 0,
-                                        Message = ""
+                                        Message = "{\"key\":\"server.buy_success\"}"
                                     });
-                                    //player.Client.SendPacket(new BuyResultPacket
-                                    //{
-                                    //    Result = 0,
-                                    //    Message = "{\"key\":\"server.buy_success\"}"
-                                    //});
                                     MRemaining--;
                                     player.UpdateCount++;
                                     player.SaveToCharacter();
@@ -138,21 +133,16 @@ namespace wServer.realm.entities.merchant
                                     return;
                                 }
                             }
-                            catch// (Exception e)
+                            catch (Exception e)
                             {
-                                //log.Error(e);
+                                log.Error(e);
                             }
                         }
-                        player.SendInfo("You cannot purchase when your inventory is full.");
-                        player.Client.SendPacket(new BuyResultPacket {
+                        player.Client.SendPacket(new BuyResultPacket
+                        {
                             Result = 0,
-                            Message = ""
+                            Message = "{\"key\":\"server.inventory_full\"}"
                         });
-                        //player.Client.SendPacket(new BuyResultPacket
-                        //{
-                        //    Result = 0,
-                        //    Message = "{\"key\":\"server.inventory_full\"}"
-                        //});
                     }
                     else
                     {
@@ -168,40 +158,25 @@ namespace wServer.realm.entities.merchant
                         switch (Currency)
                         {
                             case CurrencyType.Gold:
-                                player.SendInfo("Not enough gold for purchase. Consider donate to help us supporting your server and getting special features! Check at www.loerealm.com/theserver/donate.");
-                                player.Client.SendPacket(new BuyResultPacket {
+                                player.Client.SendPacket(new BuyResultPacket
+                                {
                                     Result = BUY_NO_GOLD,
-                                    Message = ""
+                                    Message = "{\"key\":\"server.not_enough_gold\"}"
                                 });
-                                //player.Client.SendPacket(new BuyResultPacket
-                                //{
-                                //    Result = BUY_NO_GOLD,
-                                //    Message = "{\"key\":\"server.not_enough_gold\"}"
-                                //});
                                 break;
                             case CurrencyType.Fame:
-                                player.SendInfo("Not enough fame for purchase.");
-                                player.Client.SendPacket(new BuyResultPacket {
+                                player.Client.SendPacket(new BuyResultPacket
+                                {
                                     Result = BUY_NO_FAME,
-                                    Message = ""
+                                    Message = "{\"key\":\"server.not_enough_fame\"}"
                                 });
-                                //player.Client.SendPacket(new BuyResultPacket
-                                //{
-                                //    Result = BUY_NO_FAME,
-                                //    Message = "{\"key\":\"server.not_enough_fame\"}"
-                                //});
                                 break;
                             case CurrencyType.FortuneTokens:
-                                player.SendInfo("Not enough fortune tokens for purchase.");
-                                player.Client.SendPacket(new BuyResultPacket {
+                                player.Client.SendPacket(new BuyResultPacket
+                                {
                                     Result = BUY_NO_FORTUNETOKENS,
-                                    Message = ""
+                                    Message = "{\"key\":\"server.not_enough_fortunetokens\"}"
                                 });
-                                //player.Client.SendPacket(new BuyResultPacket
-                                //{
-                                //    Result = BUY_NO_FORTUNETOKENS,
-                                //    Message = "{\"key\":\"server.not_enough_fortunetokens\"}"
-                                //});
                                 break;
                         }
                     }
@@ -354,10 +329,9 @@ namespace wServer.realm.entities.merchant
                     UpdateCount++;
                 }));
 
-                var s = Random.Next(0, 3000);
-                if(s < 1)
-                    Discount = 75;
-                else if(s < 2)
+                var s = Random.Next(0, 100);
+
+                if(s < 2)
                     Discount = 50;
                 else if(s < 5)
                     Discount = 25;

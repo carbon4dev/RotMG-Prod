@@ -1,4 +1,4 @@
-package kabam.rotmg.util.components {
+﻿package kabam.rotmg.util.components {
 import com.company.util.AssetLibrary;
 
 import flash.display.Bitmap;
@@ -7,28 +7,27 @@ import flash.display.Sprite;
 
 public class UIAssetsHelper {
 
-      public static const LEFT_NEVIGATOR:String = "left";
+    public static const LEFT_NEVIGATOR:String = "left";
+    public static const RIGHT_NEVIGATOR:String = "right";
 
-      public static const RIGHT_NEVIGATOR:String = "right";
 
-      public function UIAssetsHelper() {
-         super();
-      }
+    public static function createLeftNevigatorIcon(_arg_1:String = "left", _arg_2:int = 4, _arg_3:Number = 0):Sprite {
+        var _local_4:BitmapData;
+        if (_arg_1 == LEFT_NEVIGATOR) {
+            _local_4 = AssetLibrary.getImageFromSet("lofiInterface", 55);
+        }
+        else {
+            _local_4 = AssetLibrary.getImageFromSet("lofiInterface", 54);
+        }
+        var _local_5:Bitmap = new Bitmap(_local_4);
+        _local_5.scaleX = _arg_2;
+        _local_5.scaleY = _arg_2;
+        _local_5.rotation = _arg_3;
+        var _local_6:Sprite = new Sprite();
+        _local_6.addChild(_local_5);
+        return (_local_6);
+    }
 
-      public static function createLeftNevigatorIcon(param1:String = "left", param2:int = 4, param3:Number = 0) : Sprite {
-         var _local4:BitmapData = null;
-         if(param1 == LEFT_NEVIGATOR) {
-            _local4 = AssetLibrary.getImageFromSet("lofiInterface",55);
-         } else {
-            _local4 = AssetLibrary.getImageFromSet("lofiInterface",54);
-         }
-         var _local5:Bitmap = new Bitmap(_local4);
-         _local5.scaleX = param2;
-         _local5.scaleY = param2;
-         _local5.rotation = param3;
-         var _local6:Sprite = new Sprite();
-         _local6.addChild(_local5);
-         return _local6;
-      }
-   }
+
 }
+}//package kabam.rotmg.util.components

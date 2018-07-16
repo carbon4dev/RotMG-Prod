@@ -1,4 +1,4 @@
-package kabam.rotmg.core.service {
+﻿package kabam.rotmg.core.service {
 import com.company.assembleegameclient.ui.dialogs.ErrorDialog;
 
 import kabam.lib.tasks.BaseTask;
@@ -7,21 +7,20 @@ import kabam.rotmg.ui.view.NotEnoughGoldDialog;
 
 public class PurchaseCharacterErrorTask extends BaseTask {
 
-      [Inject]
-      public var openDialog:OpenDialogSignal;
+    [Inject]
+    public var openDialog:OpenDialogSignal;
+    public var parentTask:PurchaseCharacterClassTask;
 
-      public var parentTask:PurchaseCharacterClassTask;
 
-      public function PurchaseCharacterErrorTask() {
-         super();
-      }
-
-      override protected function startTask() : void {
-         if(this.parentTask.error == "Not enough Gold.") {
+    override protected function startTask():void {
+        if (this.parentTask.error == "Not enough Gold.") {
             this.openDialog.dispatch(new NotEnoughGoldDialog());
-         } else {
+        }
+        else {
             this.openDialog.dispatch(new ErrorDialog(this.parentTask.error));
-         }
-      }
-   }
+        }
+    }
+
+
 }
+}//package kabam.rotmg.core.service

@@ -62,177 +62,22 @@ namespace wServer.logic
                         )
                     ),
                 //LootTemplates.DefaultEggLoot(EggRarity.Legendary),
-                new MostDamagers(5,
-                    new ItemLoot("Potion of Vitality", 1)
-                ),
                 new MostDamagers(3,
-                    new OnlyOne(
-                        new ItemLoot("Ancient Sword of Illumination", blackbag),
-                        new ItemLoot("The Rusher Skin", blackbag),
-                        new ItemLoot("Arch-demon Blade", blackbag)
-                        ),
-                    new ItemLoot("Sword of Illumination", whitebag),
-                    new ItemLoot("Potion of Defense", 1),
-                    new ItemLoot("Demon Blade", whitebag),
-                    new ItemLoot("Demon Frog Egg", eggbag + mediumloot),
-                    new ItemLoot("Wine Cellar Incantation", winecellar),
-                    new ItemLoot("Golden Ribcage", awesomeloot),
-                    new ItemLoot("Golden Femur", awesomeloot),
-                    new ItemLoot("Golden Skull", awesomeloot),
-                    new TierLoot(10, ItemType.Armor, normalloot),
-                    new TierLoot(10, ItemType.Weapon, goodloot),
-                    new TierLoot(4, ItemType.Ring, normalloot),
-                    new TierLoot(4, ItemType.Ability, normalloot),
-                    new TierLoot(3, ItemType.Ring, mediumloot),
-                    new TierLoot(3, ItemType.Ability, mediumloot),
-                    new TierLoot(9, ItemType.Armor, mediumloot),
-                    new TierLoot(9, ItemType.Weapon, normalloot),
-                    new TierLoot(7, ItemType.Armor, poorloot),
-                    new TierLoot(7, ItemType.Weapon, mediumloot),
-                    new TierLoot(6, ItemType.Armor, poorloot)
-                )
-            /*
-            Archdemon Malphas (Prod Loot):
-            -- init white bag loot
-            - demon blade
-            - sword of illumination
-            -- end white bag loot
-
-            -- init pot loot
-            - vit
-            - def
-            -- end pot loot
-
-            -- init pet bag
-            - demon frog egg
-            -- end pet bag
-
-            -- init treasure loot
-            - wine cellar incantation
-            - golden ribcage
-            - golden femur
-            - golden skull
-            -- end treasure loot
-
-            -- init normal loot
-            - t10 armor
-            - t10 weapon
-            - t9 armor
-            - t9 weapon
-            - t4 ring
-            - t3 ring
-            - t4 ability
-            - t3 ability
-            - t7 armor
-            - t7 weapon
-            - t6 weapon
-            -- end normal loot
-            */
-            )
-        
-            .Init("Abyss Idol",
-                new State(
-                    //new OnDeathBehavior(new ApplySetpiece("AbyssDeath")),
-                    new State("default",
-                        new PlayerWithinTransition(8, "basic")
-                        ),
-                    new State("basic",
-                        new Reproduce("Brute of the Abyss", densityMax: 1, spawnRadius: 1, coolDown: 500),
-                        new Shoot(10, predictive: 1, coolDown: 400),
-                        new TimedTransition(10000, "shrink")
-                        ),
-                    new State("shrink",
-                        new ConditionalEffect(ConditionEffectIndex.Invulnerable),
-                        new TimedTransition(1000, "smallAttack")
-                        ),
-                    new State("smallAttack",
-                        new Shoot(10, predictive: 1, coolDown: 325),
-                        new Shoot(10, 6, projectileIndex: 1, predictive: 1, coolDown: 500),
-                        new TimedTransition(10000, "grow")
-                        ),
-                    new State("grow",
-                        new ConditionalEffect(ConditionEffectIndex.Invulnerable),
-                        new TimedTransition(1050, "bigAttack")
-                        ),
-                    new State("bigAttack",
-                        new Shoot(10, projectileIndex: 2, predictive: 1, coolDown: 1000),
-                        new Shoot(10, projectileIndex: 2, predictive: 1, coolDownOffset: 300, coolDown: 1000),
-                        new Shoot(10, 3, projectileIndex: 3, predictive: 1, coolDownOffset: 100, coolDown: 1000),
-                        new Shoot(10, 3, projectileIndex: 3, predictive: 1, coolDownOffset: 400, coolDown: 1000),
-                        new TimedTransition(10000, "normalize")
-                        ),
-                    new State("normalize",
-                        new ConditionalEffect(ConditionEffectIndex.Invulnerable),
-                        new TimedTransition(1000, "basic")
-                        )
-                    ),
-                //LootTemplates.DefaultEggLoot(EggRarity.Legendary),
-                new MostDamagers(5,
-                    new ItemLoot("Potion of Vitality", 1)
+                    new ItemLoot("Potion of Vitality", 1.0)
                 ),
-                new MostDamagers(3,
-                    new OnlyOne(
-                        new ItemLoot("Ancient Sword of Illumination", blackbag),
-                        new ItemLoot("The Rusher Skin", blackbag),
-                        new ItemLoot("Arch-demon Blade", blackbag)
-                        ),
-                    new ItemLoot("Sword of Illumination", whitebag),
-                    new ItemLoot("Potion of Defense", 1),
-                    new ItemLoot("Demon Blade", whitebag),
-                    new ItemLoot("Demon Frog Egg", eggbag + mediumloot),
-                    new ItemLoot("Wine Cellar Incantation", winecellar),
-                    new ItemLoot("Golden Ribcage", awesomeloot),
-                    new ItemLoot("Golden Femur", awesomeloot),
-                    new ItemLoot("Golden Skull", awesomeloot),
-                    new TierLoot(10, ItemType.Armor, normalloot),
-                    new TierLoot(10, ItemType.Weapon, goodloot),
-                    new TierLoot(4, ItemType.Ring, normalloot),
-                    new TierLoot(4, ItemType.Ability, normalloot),
-                    new TierLoot(3, ItemType.Ring, mediumloot),
-                    new TierLoot(3, ItemType.Ability, mediumloot),
-                    new TierLoot(9, ItemType.Armor, mediumloot),
-                    new TierLoot(9, ItemType.Weapon, normalloot),
-                    new TierLoot(7, ItemType.Armor, poorloot),
-                    new TierLoot(7, ItemType.Weapon, mediumloot),
-                    new TierLoot(6, ItemType.Armor, poorloot)
+                new MostDamagers(1,
+                    new ItemLoot("Potion of Defense", 1.0)
+                ),
+                new Threshold(0.025,
+                    new TierLoot(9, ItemType.Weapon, 0.1),
+                    new TierLoot(4, ItemType.Ability, 0.1),
+                    new TierLoot(9, ItemType.Armor, 0.1),
+                    new TierLoot(3, ItemType.Ring, 0.05),
+                    new TierLoot(10, ItemType.Armor, 0.05),
+                    new TierLoot(10, ItemType.Weapon, 0.05),
+                    new TierLoot(4, ItemType.Ring, 0.025),
+                    new ItemLoot("Demon Blade", 0.01)
                 )
-            /*
-            Archdemon Malphas (Prod Loot):
-            -- init white bag loot
-            - demon blade
-            - sword of illumination
-            -- end white bag loot
-
-            -- init pot loot
-            - vit
-            - def
-            -- end pot loot
-
-            -- init pet bag
-            - demon frog egg
-            -- end pet bag
-
-            -- init treasure loot
-            - wine cellar incantation
-            - golden ribcage
-            - golden femur
-            - golden skull
-            -- end treasure loot
-
-            -- init normal loot
-            - t10 armor
-            - t10 weapon
-            - t9 armor
-            - t9 weapon
-            - t4 ring
-            - t3 ring
-            - t4 ability
-            - t3 ability
-            - t7 armor
-            - t7 weapon
-            - t6 weapon
-            -- end normal loot
-            */
             )
             .Init("Malphas Missile",
                 new State(

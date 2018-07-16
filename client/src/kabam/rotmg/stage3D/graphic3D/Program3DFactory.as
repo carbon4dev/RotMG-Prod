@@ -1,4 +1,4 @@
-package kabam.rotmg.stage3D.graphic3D {
+﻿package kabam.rotmg.stage3D.graphic3D {
 import kabam.rotmg.stage3D.proxies.Context3DProxy;
 import kabam.rotmg.stage3D.proxies.Program3DProxy;
 import kabam.rotmg.stage3D.shaders.FragmentShader;
@@ -7,65 +7,64 @@ import kabam.rotmg.stage3D.shaders.VertextShader;
 
 public class Program3DFactory {
 
-      private static var instance:Program3DFactory;
+    private static var instance:Program3DFactory;
+    public static const TYPE_REPEAT_ON:Boolean = true;
+    public static const TYPE_REPEAT_OFF:Boolean = false;
 
-      public static const TYPE_REPEAT_ON:Boolean = true;
+    private var repeatProgram:Program3DProxy;
+    private var noRepeatProgram:Program3DProxy;
 
-      public static const TYPE_REPEAT_OFF:Boolean = false;
+    public function Program3DFactory(_arg_1:String = "") {
+        if (_arg_1 != "yoThisIsInternal") {
+            throw (new Error("Program3DFactory is a singleton. Use Program3DFactory.getInstance()"));
+        }
+    }
 
-      private var repeatProgram:Program3DProxy;
-
-      private var noRepeatProgram:Program3DProxy;
-
-      public function Program3DFactory(param1:String = "") {
-         super();
-         if(param1 != "yoThisIsInternal") {
-            throw new Error("Program3DFactory is a singleton. Use Program3DFactory.getInstance()");
-         }
-      }
-
-      public static function getInstance() : Program3DFactory {
-         if(instance == null) {
+    public static function getInstance():Program3DFactory {
+        if (instance == null) {
             instance = new Program3DFactory("yoThisIsInternal");
-         }
-         return instance;
-      }
+        }
+        return (instance);
+    }
 
-      public function dispose() : void {
-         if(this.repeatProgram != null) {
+
+    public function dispose():void {
+        if (this.repeatProgram != null) {
             this.repeatProgram.getProgram3D().dispose();
-         }
-         if(this.noRepeatProgram != null) {
+        }
+        if (this.noRepeatProgram != null) {
             this.noRepeatProgram.getProgram3D().dispose();
-         }
-         instance = null;
-      }
+        }
+        instance = null;
+    }
 
-      public function getProgram(param1:Context3DProxy, param2:Boolean) : Program3DProxy {
-         var _local3:Program3DProxy = null;
-         switch(param2) {
+    public function getProgram(_arg_1:Context3DProxy, _arg_2:Boolean):Program3DProxy {
+        var _local_3:Program3DProxy;
+        switch (_arg_2) {
             case TYPE_REPEAT_ON:
-               if(this.repeatProgram == null) {
-                  this.repeatProgram = param1.createProgram();
-                  this.repeatProgram.upload(new VertextShader().getVertexProgram(),new FragmentShaderRepeat().getVertexProgram());
-               }
-               _local3 = this.repeatProgram;
-               break;
+                if (this.repeatProgram == null) {
+                    this.repeatProgram = _arg_1.createProgram();
+                    this.repeatProgram.upload(new VertextShader().getVertexProgram(), new FragmentShaderRepeat().getVertexProgram());
+                }
+                _local_3 = this.repeatProgram;
+                break;
             case TYPE_REPEAT_OFF:
-               if(this.noRepeatProgram == null) {
-                  this.noRepeatProgram = param1.createProgram();
-                  this.noRepeatProgram.upload(new VertextShader().getVertexProgram(),new FragmentShader().getVertexProgram());
-               }
-               _local3 = this.noRepeatProgram;
-               break;
+                if (this.noRepeatProgram == null) {
+                    this.noRepeatProgram = _arg_1.createProgram();
+                    this.noRepeatProgram.upload(new VertextShader().getVertexProgram(), new FragmentShader().getVertexProgram());
+                }
+                _local_3 = this.noRepeatProgram;
+                break;
             default:
-               if(this.repeatProgram == null) {
-                  this.repeatProgram = param1.createProgram();
-                  this.repeatProgram.upload(new VertextShader().getVertexProgram(),new FragmentShaderRepeat().getVertexProgram());
-               }
-               _local3 = this.repeatProgram;
-         }
-         return _local3;
-      }
-   }
+                if (this.repeatProgram == null) {
+                    this.repeatProgram = _arg_1.createProgram();
+                    this.repeatProgram.upload(new VertextShader().getVertexProgram(), new FragmentShaderRepeat().getVertexProgram());
+                }
+                _local_3 = this.repeatProgram;
+        }
+        return (_local_3);
+    }
+
+
 }
+}//package kabam.rotmg.stage3D.graphic3D

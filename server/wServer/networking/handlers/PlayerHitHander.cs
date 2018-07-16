@@ -43,10 +43,14 @@ namespace wServer.networking.handlers
                         }
                         client.Player.Damage(proj.Damage, proj.ProjectileOwner.Self);
                     }
-
+                    else
+                        log.Error("Can't register playerhit." + packet.ObjectId + " - " + packet.BulletId);
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("Error in PlayerHit: {0}", ex);
+            }
         }
     }
 }

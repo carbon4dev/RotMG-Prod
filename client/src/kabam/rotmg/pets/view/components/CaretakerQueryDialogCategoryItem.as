@@ -1,4 +1,4 @@
-package kabam.rotmg.pets.view.components {
+﻿package kabam.rotmg.pets.view.components {
 import flash.display.Shape;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
@@ -14,67 +14,60 @@ import org.osflash.signals.Signal;
 
 public class CaretakerQueryDialogCategoryItem extends Sprite {
 
-      private static const WIDTH:int = CaretakerQueryDialog.WIDTH - 40;
+    private static const WIDTH:int = (CaretakerQueryDialog.WIDTH - 40);//234
+    private static const HEIGHT:int = 40;
+    private static const BEVEL:int = 2;
+    private static const OUT:uint = 0x5C5C5C;
+    private static const OVER:uint = 0x7F7F7F;
 
-      private static const HEIGHT:int = 40;
+    private const helper:GraphicsHelper = new GraphicsHelper();
+    private const rect:BevelRect = new BevelRect(WIDTH, HEIGHT, BEVEL);
+    private const background:Shape = makeBackground();
+    private const textfield:TextFieldDisplayConcrete = makeTextfield();
+    public const textChanged:Signal = textfield.textChanged;
 
-      private static const BEVEL:int = 2;
+    public var info:String;
 
-      private static const OUT:uint = 6052956;
+    public function CaretakerQueryDialogCategoryItem(_arg_1:String, _arg_2:String) {
+        this.info = _arg_2;
+        this.textfield.setStringBuilder(new LineBuilder().setParams(_arg_1));
+        this.makeInteractive();
+    }
 
-      private static const OVER:uint = 8355711;
+    private function makeBackground():Shape {
+        var _local_1:Shape = new Shape();
+        this.drawBackground(_local_1, OUT);
+        addChild(_local_1);
+        return (_local_1);
+    }
 
-      public var info:String;
+    private function drawBackground(_arg_1:Shape, _arg_2:uint):void {
+        _arg_1.graphics.clear();
+        _arg_1.graphics.beginFill(_arg_2);
+        this.helper.drawBevelRect(0, 0, this.rect, _arg_1.graphics);
+        _arg_1.graphics.endFill();
+    }
 
-      private const helper:GraphicsHelper = new GraphicsHelper();
+    private function makeTextfield():TextFieldDisplayConcrete {
+        var _local_1:TextFieldDisplayConcrete = new TextFieldDisplayConcrete().setSize(16).setColor(0xFFFFFF).setBold(true).setAutoSize(TextFieldAutoSize.CENTER).setVerticalAlign(TextFieldDisplayConcrete.MIDDLE).setPosition((WIDTH / 2), (HEIGHT / 2));
+        _local_1.mouseEnabled = false;
+        addChild(_local_1);
+        return (_local_1);
+    }
 
-      private const rect:BevelRect = new BevelRect(WIDTH,HEIGHT,BEVEL);
+    private function makeInteractive():void {
+        addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
+        addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
+    }
 
-      private const background:Shape = makeBackground();
+    private function onMouseOver(_arg_1:MouseEvent):void {
+        this.drawBackground(this.background, OVER);
+    }
 
-      private const textfield:TextFieldDisplayConcrete = makeTextfield();
+    private function onMouseOut(_arg_1:MouseEvent):void {
+        this.drawBackground(this.background, OUT);
+    }
 
-      public const textChanged:Signal = textfield.textChanged;
 
-      public function CaretakerQueryDialogCategoryItem(param1:String, param2:String) {
-         super();
-         this.info = param2;
-         this.textfield.setStringBuilder(new LineBuilder().setParams(param1));
-         this.makeInteractive();
-      }
-
-      private function makeBackground() : Shape {
-         var _local1:Shape = new Shape();
-         this.drawBackground(_local1,OUT);
-         addChild(_local1);
-         return _local1;
-      }
-
-      private function drawBackground(param1:Shape, param2:uint) : void {
-         param1.graphics.clear();
-         param1.graphics.beginFill(param2);
-         this.helper.drawBevelRect(0,0,this.rect,param1.graphics);
-         param1.graphics.endFill();
-      }
-
-      private function makeTextfield() : TextFieldDisplayConcrete {
-         var _local1:TextFieldDisplayConcrete = new TextFieldDisplayConcrete().setSize(16).setColor(16777215).setBold(true).setAutoSize(TextFieldAutoSize.CENTER).setVerticalAlign(TextFieldDisplayConcrete.MIDDLE).setPosition(WIDTH / 2,HEIGHT / 2);
-         _local1.mouseEnabled = false;
-         addChild(_local1);
-         return _local1;
-      }
-
-      private function makeInteractive() : void {
-         addEventListener(MouseEvent.MOUSE_OVER,this.onMouseOver);
-         addEventListener(MouseEvent.MOUSE_OUT,this.onMouseOut);
-      }
-
-      private function onMouseOver(param1:MouseEvent) : void {
-         this.drawBackground(this.background,OVER);
-      }
-
-      private function onMouseOut(param1:MouseEvent) : void {
-         this.drawBackground(this.background,OUT);
-      }
-   }
 }
+}//package kabam.rotmg.pets.view.components

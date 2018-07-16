@@ -1,15 +1,16 @@
-package kabam.rotmg.tooltips {
+﻿package kabam.rotmg.tooltips {
 import kabam.rotmg.core.signals.HideTooltipsSignal;
 import kabam.rotmg.core.signals.ShowTooltipSignal;
 
 public interface TooltipAble {
 
-      function setShowToolTipSignal(param1:ShowTooltipSignal) : void;
+    function setShowToolTipSignal(_arg_1:ShowTooltipSignal):void;
 
-      function getShowToolTip() : ShowTooltipSignal;
+    function getShowToolTip():ShowTooltipSignal;
 
-      function setHideToolTipsSignal(param1:HideTooltipsSignal) : void;
+    function setHideToolTipsSignal(_arg_1:HideTooltipsSignal):void;
 
-      function getHideToolTips() : HideTooltipsSignal;
-   }
+    function getHideToolTips():HideTooltipsSignal;
+
 }
+}//package kabam.rotmg.tooltips

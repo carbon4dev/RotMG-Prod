@@ -10,23 +10,20 @@ namespace wServer.networking.handlers
 {
     internal class BuyHandler : PacketHandlerBase<BuyPacket>
     {
-        //public override PacketID ID
-        //{
-        //    get { return PacketID.BUY; }
-        //}
-
-        public override PacketID ID => PacketID.BUY;
+        public override PacketID ID
+        {
+            get { return PacketID.BUY; }
+        }
 
         protected override void HandlePacket(Client client, BuyPacket packet)
         {
-            //client.Manager.Logic.AddPendingAction(t =>{
+            client.Manager.Logic.AddPendingAction(t =>
+            {
                 if (client.Player.Owner == null) return;
                 SellableObject obj = client.Player.Owner.GetEntity(packet.ObjectId) as SellableObject;
                 if (obj != null)
-                    for (int i = 0; i < packet.Quantity; i++)
- 						obj.Buy(client.Player);
-                    //obj.Buy(client.Player);
-            //}, PendingPriority.Networking);
+                    obj.Buy(client.Player);
+            }, PendingPriority.Networking);
         }
     }
 }

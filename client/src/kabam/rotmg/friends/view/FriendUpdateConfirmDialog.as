@@ -1,4 +1,4 @@
-package kabam.rotmg.friends.view {
+﻿package kabam.rotmg.friends.view {
 import com.company.assembleegameclient.ui.dialogs.CloseDialogComponent;
 import com.company.assembleegameclient.ui.dialogs.Dialog;
 import com.company.assembleegameclient.ui.dialogs.DialogCloser;
@@ -14,27 +14,29 @@ import org.swiftsuspenders.Injector;
 
 public class FriendUpdateConfirmDialog extends Dialog implements DialogCloser {
 
-      private const closeDialogComponent:CloseDialogComponent = new CloseDialogComponent();
+    private const closeDialogComponent:CloseDialogComponent = new CloseDialogComponent();
 
-      private var _friendRequestVO:FriendRequestVO;
+    private var _friendRequestVO:FriendRequestVO;
 
-      public function FriendUpdateConfirmDialog(param1:String, param2:String, param3:String, param4:String, param5:FriendRequestVO, param6:Object = null) {
-         super(param1,param2,param3,param4,null,param6);
-         this._friendRequestVO = param5;
-         this.closeDialogComponent.add(this,Dialog.RIGHT_BUTTON);
-         this.closeDialogComponent.add(this,Dialog.LEFT_BUTTON);
-         addEventListener(Dialog.RIGHT_BUTTON,this.onRightButton);
-      }
+    public function FriendUpdateConfirmDialog(_arg_1:String, _arg_2:String, _arg_3:String, _arg_4:String, _arg_5:FriendRequestVO, _arg_6:Object = null) {
+        super(_arg_1, _arg_2, _arg_3, _arg_4, _arg_6);
+        this._friendRequestVO = _arg_5;
+        this.closeDialogComponent.add(this, Dialog.RIGHT_BUTTON);
+        this.closeDialogComponent.add(this, Dialog.LEFT_BUTTON);
+        addEventListener(Dialog.RIGHT_BUTTON, this.onRightButton);
+    }
 
-      private function onRightButton(param1:Event) : void {
-         removeEventListener(Dialog.RIGHT_BUTTON,this.onRightButton);
-         var _local2:Injector = StaticInjectorContext.getInjector();
-         var _local3:FriendActionSignal = _local2.getInstance(FriendActionSignal);
-         _local3.dispatch(this._friendRequestVO);
-      }
+    private function onRightButton(_arg_1:Event):void {
+        removeEventListener(Dialog.RIGHT_BUTTON, this.onRightButton);
+        var _local_2:Injector = StaticInjectorContext.getInjector();
+        var _local_3:FriendActionSignal = _local_2.getInstance(FriendActionSignal);
+        _local_3.dispatch(this._friendRequestVO);
+    }
 
-      public function getCloseSignal() : Signal {
-         return this.closeDialogComponent.getCloseSignal();
-      }
-   }
+    public function getCloseSignal():Signal {
+        return (this.closeDialogComponent.getCloseSignal());
+    }
+
+
 }
+}//package kabam.rotmg.friends.view

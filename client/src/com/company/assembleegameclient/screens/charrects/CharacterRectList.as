@@ -1,6 +1,7 @@
-package com.company.assembleegameclient.screens.charrects {
-import com.company.assembleegameclient.LOEBUILD_1f4c42c309fe6bc45253d598cfdf9b99.LOEBUILD_9ef2cbbbd6e1617e4401a08c93ad0f9c;
-import com.company.assembleegameclient.LOEBUILD_1f4c42c309fe6bc45253d598cfdf9b99.LOEBUILD_7ebef6bdf3535c86294f666e62e89578;
+﻿package com.company.assembleegameclient.screens.charrects {
+import com.company.assembleegameclient.appengine.CharacterStats;
+import com.company.assembleegameclient.appengine.SavedCharacter;
+import com.company.assembleegameclient.parameters.Parameters;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
@@ -21,73 +22,76 @@ import org.swiftsuspenders.Injector;
 
 public class CharacterRectList extends Sprite {
 
-      private var classes:ClassesModel;
+    private var classes:ClassesModel;
+    private var model:PlayerModel;
+    private var assetFactory:CharacterFactory;
+    public var newCharacter:Signal;
+    public var buyCharacterSlot:Signal;
 
-      private var model:PlayerModel;
-
-      private var assetFactory:CharacterFactory;
-
-      public var newCharacter:Signal;
-
-      public var buyCharacterSlot:Signal;
-
-      public function CharacterRectList() {
-         var _local5:LOEBUILD_7ebef6bdf3535c86294f666e62e89578 = null;
-         var _local6:BuyCharacterRect = null;
-         var _local7:CharacterClass = null;
-         var _local8:LOEBUILD_9ef2cbbbd6e1617e4401a08c93ad0f9c = null;
-         var _local9:CurrentCharacterRect = null;
-         var _local10:int = 0;
-         var _local11:CreateNewCharacterRect = null;
-         super();
-         var _local1:Injector = StaticInjectorContext.getInjector();
-         this.classes = _local1.getInstance(ClassesModel);
-         this.model = _local1.getInstance(PlayerModel);
-         this.assetFactory = _local1.getInstance(CharacterFactory);
-         this.newCharacter = new Signal();
-         this.buyCharacterSlot = new Signal();
-         var _local2:String = this.model.getName();
-         var _local3:int = 4;
-         var _local4:Vector.<LOEBUILD_7ebef6bdf3535c86294f666e62e89578> = this.model.getSavedCharacters();
-         for each(_local5 in _local4) {
-            _local7 = this.classes.getCharacterClass(_local5.objectType());
-            _local8 = this.model.getCharStats()[_local5.objectType()];
-            _local9 = new CurrentCharacterRect(_local2,_local7,_local5,_local8);
-            _local9.setIcon(this.getIcon(_local5));
-            _local9.y = _local3;
-            addChild(_local9);
-            _local3 = _local3 + (CharacterRect.HEIGHT + 4);
-         }
-         if(this.model.hasAvailableCharSlot()) {
-            _local10 = 0;
-            while(_local10 < this.model.getAvailableCharSlots()) {
-               _local11 = new CreateNewCharacterRect(this.model);
-               _local11.addEventListener(MouseEvent.MOUSE_DOWN,this.onNewChar);
-               _local11.y = _local3;
-               addChild(_local11);
-               _local3 = _local3 + (CharacterRect.HEIGHT + 4);
-               _local10++;
+    public function CharacterRectList() {
+        var _local_5:SavedCharacter;
+        var _local_6:BuyCharacterRect;
+        var _local_7:CharacterClass;
+        var _local_8:CharacterStats;
+        var _local_9:CurrentCharacterRect;
+        var _local_10:int;
+        var _local_11:CreateNewCharacterRect;
+        super();
+        var _local_1:Injector = StaticInjectorContext.getInjector();
+        this.classes = _local_1.getInstance(ClassesModel);
+        this.model = _local_1.getInstance(PlayerModel);
+        this.assetFactory = _local_1.getInstance(CharacterFactory);
+        this.newCharacter = new Signal();
+        this.buyCharacterSlot = new Signal();
+        var _local_2:String = this.model.getName();
+        var _local_3:int = 4;
+        var _local_4:Vector.<SavedCharacter> = this.model.getSavedCharacters();
+        for each (_local_5 in _local_4) {
+            _local_7 = this.classes.getCharacterClass(_local_5.objectType());
+            _local_8 = this.model.getCharStats()[_local_5.objectType()];
+            _local_9 = new CurrentCharacterRect(_local_2, _local_7, _local_5, _local_8);
+            if (Parameters.skinTypes16.indexOf(_local_5.skinType()) != -1) {
+                _local_9.setIcon(this.getIcon(_local_5, 50));
             }
-         }
-         _local6 = new BuyCharacterRect(this.model);
-         _local6.addEventListener(MouseEvent.MOUSE_DOWN,this.onBuyCharSlot);
-         _local6.y = _local3;
-         addChild(_local6);
-      }
+            else {
+                _local_9.setIcon(this.getIcon(_local_5, 100));
+            }
+            _local_9.y = _local_3;
+            addChild(_local_9);
+            _local_3 = (_local_3 + (CharacterRect.HEIGHT + 4));
+        }
+        if (this.model.hasAvailableCharSlot()) {
+            _local_10 = 0;
+            while (_local_10 < this.model.getAvailableCharSlots()) {
+                _local_11 = new CreateNewCharacterRect(this.model);
+                _local_11.addEventListener(MouseEvent.MOUSE_DOWN, this.onNewChar);
+                _local_11.y = _local_3;
+                addChild(_local_11);
+                _local_3 = (_local_3 + (CharacterRect.HEIGHT + 4));
+                _local_10++;
+            }
+        }
+        _local_6 = new BuyCharacterRect(this.model);
+        _local_6.addEventListener(MouseEvent.MOUSE_DOWN, this.onBuyCharSlot);
+        _local_6.y = _local_3;
+        addChild(_local_6);
+    }
 
-      private function getIcon(param1:LOEBUILD_7ebef6bdf3535c86294f666e62e89578) : DisplayObject {
-         var _local2:CharacterClass = this.classes.getCharacterClass(param1.objectType());
-         var _local3:CharacterSkin = _local2.skins.getSkin(param1.skinType()) || _local2.skins.getDefaultSkin();
-         var _local4:BitmapData = this.assetFactory.makeIcon(_local3.template,100,param1.tex1(),param1.tex2());
-         return new Bitmap(_local4);
-      }
+    private function getIcon(_arg_1:SavedCharacter, _arg_2:int = 100):DisplayObject {
+        var _local_3:CharacterClass = this.classes.getCharacterClass(_arg_1.objectType());
+        var _local_4:CharacterSkin = ((_local_3.skins.getSkin(_arg_1.skinType())) || (_local_3.skins.getDefaultSkin()));
+        var _local_5:BitmapData = this.assetFactory.makeIcon(_local_4.template, _arg_2, _arg_1.tex1(), _arg_1.tex2());
+        return (new Bitmap(_local_5));
+    }
 
-      private function onNewChar(param1:Event) : void {
-         this.newCharacter.dispatch();
-      }
+    private function onNewChar(_arg_1:Event):void {
+        this.newCharacter.dispatch();
+    }
 
-      private function onBuyCharSlot(param1:Event) : void {
-         this.buyCharacterSlot.dispatch(this.model.getNextCharSlotPrice());
-      }
-   }
+    private function onBuyCharSlot(_arg_1:Event):void {
+        this.buyCharacterSlot.dispatch(this.model.getNextCharSlotPrice());
+    }
+
+
 }
+}//package com.company.assembleegameclient.screens.charrects

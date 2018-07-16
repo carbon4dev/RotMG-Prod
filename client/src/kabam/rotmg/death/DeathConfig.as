@@ -1,5 +1,5 @@
-package kabam.rotmg.death {
-import com.company.assembleegameclient.LOEBUILD_c8d46d341bea4fd5bff866a65ff8aea9.GameSprite;
+﻿package kabam.rotmg.death {
+import com.company.assembleegameclient.game.GameSprite;
 
 import kabam.rotmg.death.control.HandleDeathCommand;
 import kabam.rotmg.death.control.HandleDeathSignal;
@@ -22,27 +22,24 @@ import robotlegs.bender.framework.api.IConfig;
 
 public class DeathConfig implements IConfig {
 
-      [Inject]
-      public var injector:Injector;
+    [Inject]
+    public var injector:Injector;
+    [Inject]
+    public var commandMap:ISignalCommandMap;
+    [Inject]
+    public var mediatorMap:IMediatorMap;
 
-      [Inject]
-      public var commandMap:ISignalCommandMap;
 
-      [Inject]
-      public var mediatorMap:IMediatorMap;
+    public function configure():void {
+        this.injector.map(DeathModel).asSingleton();
+        this.commandMap.map(HandleDeathSignal).toCommand(HandleDeathCommand);
+        this.commandMap.map(HandleNormalDeathSignal).toCommand(HandleNormalDeathCommand);
+        this.commandMap.map(ZombifySignal).toCommand(ZombifyCommand);
+        this.commandMap.map(ResurrectPlayerSignal).toCommand(ResurrectPlayerCommand);
+        this.mediatorMap.map(GameSprite).toMediator(ZombifyGameMediator);
+        this.mediatorMap.map(ZombifyDialog).toMediator(ZombifyDialogMediator);
+    }
 
-      public function DeathConfig() {
-         super();
-      }
 
-      public function configure() : void {
-         this.injector.map(DeathModel).asSingleton();
-         this.commandMap.map(HandleDeathSignal).toCommand(HandleDeathCommand);
-         this.commandMap.map(HandleNormalDeathSignal).toCommand(HandleNormalDeathCommand);
-         this.commandMap.map(ZombifySignal).toCommand(ZombifyCommand);
-         this.commandMap.map(ResurrectPlayerSignal).toCommand(ResurrectPlayerCommand);
-         this.mediatorMap.map(GameSprite).toMediator(ZombifyGameMediator);
-         this.mediatorMap.map(ZombifyDialog).toMediator(ZombifyDialogMediator);
-      }
-   }
 }
+}//package kabam.rotmg.death

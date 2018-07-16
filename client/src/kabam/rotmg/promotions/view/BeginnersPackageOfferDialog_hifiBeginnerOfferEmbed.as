@@ -1,3 +1,4 @@
+﻿//Created by Action Script Viewer - http://www.buraks.com/asv
 package kabam.rotmg.promotions.view {
 import mx.core.BitmapAsset;
 
@@ -5,8 +6,5 @@ import mx.core.BitmapAsset;
 public class BeginnersPackageOfferDialog_hifiBeginnerOfferEmbed extends BitmapAsset {
 
 
-      public function BeginnersPackageOfferDialog_hifiBeginnerOfferEmbed() {
-         super();
-      }
-   }
 }
+}//package kabam.rotmg.promotions.view

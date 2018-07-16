@@ -1,44 +1,45 @@
-package kabam.rotmg.account.core {
-   public interface Account {
+﻿package kabam.rotmg.account.core {
+public interface Account {
 
-      function getPlatformToken() : String;
+    function getPlatformToken():String;
 
-      function setPlatformToken(param1:String) : void;
+    function setPlatformToken(_arg_1:String):void;
 
-      function updateUser(param1:String, param2:String) : void;
+    function updateUser(_arg_1:String, _arg_2:String):void;
 
-      function getUserName() : String;
+    function getUserName():String;
 
-      function getUserId() : String;
+    function getUserId():String;
 
-      function getPassword() : String;
+    function getPassword():String;
 
-      function getSecret() : String;
+    function getSecret():String;
 
-      function getCredentials() : Object;
+    function getCredentials():Object;
 
-      function isRegistered() : Boolean;
+    function isRegistered():Boolean;
 
-      function clear() : void;
+    function clear():void;
 
-      function reportIntStat(param1:String, param2:int) : void;
+    function reportIntStat(_arg_1:String, _arg_2:int):void;
 
-      function getRequestPrefix() : String;
+    function getRequestPrefix():String;
 
-      function gameNetworkUserId() : String;
+    function gameNetworkUserId():String;
 
-      function gameNetwork() : String;
+    function gameNetwork():String;
 
-      function playPlatform() : String;
+    function playPlatform():String;
 
-      function getEntryTag() : String;
+    function getEntryTag():String;
 
-      function verify(param1:Boolean) : void;
+    function verify(_arg_1:Boolean):void;
 
-      function isVerified() : Boolean;
+    function isVerified():Boolean;
 
-      function getMoneyUserId() : String;
+    function getMoneyUserId():String;
 
-      function getMoneyAccessToken() : String;
-   }
+    function getMoneyAccessToken():String;
+
 }
+}//package kabam.rotmg.account.core

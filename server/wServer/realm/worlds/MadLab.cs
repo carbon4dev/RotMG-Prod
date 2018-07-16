@@ -5,12 +5,10 @@
         public MadLab()
         {
             Name = "Mad Lab";
-            ClientWorldName = "Mad Lab";
+            ClientWorldName = "dungeons.Mad_Lab";
             Background = 0;
-            Dungeon = true;
             Difficulty = 5;
             AllowTeleport = true;
-            SetMusic("madlab");
         }
 
         protected override void Init()

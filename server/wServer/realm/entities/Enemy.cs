@@ -71,7 +71,7 @@ namespace wServer.realm.entities
             this.counter = counter;
             this.counter.UpdateEnemy(enemy);
         }
-        #region old damage packet
+
         public int Damage(Player from, RealmTime time, int dmg, bool noDef, params ConditionEffect[] effs)
         {
             if (stat) return 0;
@@ -117,56 +117,6 @@ namespace wServer.realm.entities
                     }, null);
                 }
 
-                if (HP <= 0 && Owner != null)
-                {
-                    Owner.LeaveWorld(this);
-                    Death(time);
-                }
-
-                UpdateCount++;
-                return effDmg;
-            }
-            return 0;
-        }
-        #endregion
-        
-        /*public int Damage(Player from, RealmTime time, int dmg, bool noDef, params ConditionEffect[] effs)
-        {
-            if (stat) return 0;
-            if (HasConditionEffect(ConditionEffects.Invincible))
-                return 0;
-            if (!HasConditionEffect(ConditionEffects.Paused) &&
-                !HasConditionEffect(ConditionEffects.Stasis))
-            {
-                var def = ObjectDesc.Defense;
-                if (noDef)
-                    def = 0;
-                dmg = (int) StatsManager.GetDefenseDamage(this, dmg, def);
-                var effDmg = dmg;
-                if (effDmg > HP)
-                    effDmg = HP;
-                if (!HasConditionEffect(ConditionEffects.Invulnerable)) {
-                    Owner.BroadcastPacket(new NotificationPacket
-                    {
-                        ObjectId = Id,
-                        Text = "-" + dmg + " [" + HP + "]",
-                        Color = new ARGB(0xffff0000)
-                    }, null);
-                    HP -= dmg;
-                    ApplyConditionEffect(effs);
-                }
-                else if(HasConditionEffect(ConditionEffects.ArmorBroken))
-                {
-                    Owner.BroadcastPacket(new NotificationPacket
-                        {
-                            ObjectId = Id,
-                            Text = "-" + dmg + " [" + HP + "]",
-                            Color = new ARGB(0x9900FF)
-                        }, null);
-                        HP -= dmg;
-                    ApplyConditionEffect(effs);
-                }
-
                 if (HP < 0 && Owner != null)
                 {
                     Death(time);
@@ -176,9 +126,8 @@ namespace wServer.realm.entities
                 return effDmg;
             }
             return 0;
-        }*/
+        }
 
-        #region old hitbyprojectile source
         public override bool HitByProjectile(Projectile projectile, RealmTime time)
         {
             if (stat) return false;
@@ -216,51 +165,6 @@ namespace wServer.realm.entities
             }
             return false;
         }
-        #endregion
-        
-        /*public override bool HitByProjectile(Projectile projectile, RealmTime time)
-        {
-            if (stat) return false;
-            if (HasConditionEffect(ConditionEffects.Invincible))
-                return false;
-            if (projectile.ProjectileOwner is Player &&
-                !HasConditionEffect(ConditionEffectIndex.Paused) &&
-                !HasConditionEffect(ConditionEffectIndex.Stasis))
-            {
-                var def = ObjectDesc.Defense;
-                if (projectile.Descriptor.ArmorPiercing)
-                    def = 0;
-                var dmg = (int) StatsManager.GetDefenseDamage(this, projectile.Damage, def);
-                if (!HasConditionEffect(ConditionEffects.Invulnerable)) {
-                    if(!HasConditionEffect(ConditionEffects.ArmorBroken))
-                    {
-                        Owner.BroadcastPacket(new NotificationPacket
-                            {
-                                ObjectId = Id,
-                                Text = "-" + dmg + " [" + HP + "]",
-                                Color = new ARGB(0x9900FF)
-                            }, null);
-                            HP -= dmg;
-                        ApplyConditionEffect(projectile.Descriptor.Effects);
-                    }
-                    Owner.BroadcastPacket(new NotificationPacket
-                    {
-                        ObjectId = Id,
-                        Text = "-" + dmg + " [" + HP + "]",
-                        Color = new ARGB(0xffff0000)
-                    }, null);
-                    HP -= dmg;
-                    ApplyConditionEffect(projectile.Descriptor.Effects);
-                }
-                if (HP <= 0 && Owner != null)
-                {
-                    Death(time);
-                }
-                UpdateCount++;
-                return true;                
-            }
-            return false;
-        }*/
 
         public override void Tick(RealmTime time)
         {

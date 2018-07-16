@@ -17,9 +17,10 @@ namespace wServer.networking.handlers
 
         protected override void HandlePacket(Client client, MovePacket packet)
         {
-            if (client.Player?.Owner == null) return;
-            
-            try {
+            client.Manager.Logic.AddPendingAction(t =>
+            {
+                if (client.Player?.Owner == null) return;
+
                 client.Player.Flush();
 
                 if (client.Player.HasConditionEffect(ConditionEffectIndex.Paralyzed)) return;
@@ -38,17 +39,13 @@ namespace wServer.networking.handlers
                     newY = packet.Position.Y;
                     client.Player.UpdateCount++;
                 }
+
                 CheckLabConditions(client.Player, packet);
+
                 client.Player.Move((float)newX, (float)newY);
 
-                client.Player.UpdateCount++;
-            }
-
-            catch
-            {
-                client.Player.Flush();
-                client.Player.UpdateCount++;
-            }
+                client.Player.ClientTick(t, packet);
+            }, PendingPriority.Networking);
         }
 
         private static void CheckLabConditions(Entity player, MovePacket packet)

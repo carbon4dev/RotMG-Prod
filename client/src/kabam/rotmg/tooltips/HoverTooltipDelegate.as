@@ -1,4 +1,4 @@
-package kabam.rotmg.tooltips {
+﻿package kabam.rotmg.tooltips {
 import flash.display.DisplayObject;
 import flash.display.Sprite;
 import flash.events.Event;
@@ -9,69 +9,65 @@ import kabam.rotmg.core.signals.ShowTooltipSignal;
 
 public class HoverTooltipDelegate implements TooltipAble {
 
-      public var tooltip:Sprite;
+    public var tooltip:Sprite;
+    private var hideToolTips:HideTooltipsSignal;
+    private var showToolTip:ShowTooltipSignal;
+    private var displayObject:DisplayObject;
 
-      private var hideToolTips:HideTooltipsSignal;
 
-      private var showToolTip:ShowTooltipSignal;
+    public function setDisplayObject(_arg_1:DisplayObject):void {
+        this.displayObject = _arg_1;
+        this.displayObject.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
+        this.displayObject.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
+        this.displayObject.addEventListener(Event.REMOVED_FROM_STAGE, this.onRemovedFromStage);
+    }
 
-      private var displayObject:DisplayObject;
-
-      public function HoverTooltipDelegate() {
-         super();
-      }
-
-      public function setDisplayObject(param1:DisplayObject) : void {
-         this.displayObject = param1;
-         this.displayObject.addEventListener(MouseEvent.MOUSE_OUT,this.onMouseOut);
-         this.displayObject.addEventListener(MouseEvent.MOUSE_OVER,this.onMouseOver);
-         this.displayObject.addEventListener(Event.REMOVED_FROM_STAGE,this.onRemovedFromStage);
-      }
-
-      public function removeDisplayObject() : void {
-         if(this.displayObject != null) {
-            this.displayObject.removeEventListener(MouseEvent.MOUSE_OUT,this.onMouseOut);
-            this.displayObject.removeEventListener(MouseEvent.MOUSE_OVER,this.onMouseOver);
-            this.displayObject.removeEventListener(Event.REMOVED_FROM_STAGE,this.onRemovedFromStage);
+    public function removeDisplayObject():void {
+        if (this.displayObject != null) {
+            this.displayObject.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
+            this.displayObject.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
+            this.displayObject.removeEventListener(Event.REMOVED_FROM_STAGE, this.onRemovedFromStage);
             this.displayObject = null;
-         }
-      }
+        }
+    }
 
-      public function getDisplayObject() : DisplayObject {
-         return this.displayObject;
-      }
+    public function getDisplayObject():DisplayObject {
+        return (this.displayObject);
+    }
 
-      public function setShowToolTipSignal(param1:ShowTooltipSignal) : void {
-         this.showToolTip = param1;
-      }
+    public function setShowToolTipSignal(_arg_1:ShowTooltipSignal):void {
+        this.showToolTip = _arg_1;
+    }
 
-      public function getShowToolTip() : ShowTooltipSignal {
-         return this.showToolTip;
-      }
+    public function getShowToolTip():ShowTooltipSignal {
+        return (this.showToolTip);
+    }
 
-      public function setHideToolTipsSignal(param1:HideTooltipsSignal) : void {
-         this.hideToolTips = param1;
-      }
+    public function setHideToolTipsSignal(_arg_1:HideTooltipsSignal):void {
+        this.hideToolTips = _arg_1;
+    }
 
-      public function getHideToolTips() : HideTooltipsSignal {
-         return this.hideToolTips;
-      }
+    public function getHideToolTips():HideTooltipsSignal {
+        return (this.hideToolTips);
+    }
 
-      private function onRemovedFromStage(param1:Event) : void {
-         if(this.tooltip != null && this.tooltip.parent != null) {
+    private function onRemovedFromStage(_arg_1:Event):void {
+        if (((!((this.tooltip == null))) && (!((this.tooltip.parent == null))))) {
             this.hideToolTips.dispatch();
-         }
-         this.displayObject.removeEventListener(MouseEvent.MOUSE_OVER,this.onMouseOver);
-         this.displayObject.removeEventListener(MouseEvent.MOUSE_OUT,this.onMouseOut);
-         this.displayObject.removeEventListener(Event.REMOVED_FROM_STAGE,this.onRemovedFromStage);
-      }
+        }
+        this.displayObject.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
+        this.displayObject.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
+        this.displayObject.removeEventListener(Event.REMOVED_FROM_STAGE, this.onRemovedFromStage);
+    }
 
-      private function onMouseOut(param1:MouseEvent) : void {
-         this.hideToolTips.dispatch();
-      }
+    private function onMouseOut(_arg_1:MouseEvent):void {
+        this.hideToolTips.dispatch();
+    }
 
-      private function onMouseOver(param1:MouseEvent) : void {
-         this.showToolTip.dispatch(this.tooltip);
-      }
-   }
+    private function onMouseOver(_arg_1:MouseEvent):void {
+        this.showToolTip.dispatch(this.tooltip);
+    }
+
+
 }
+}//package kabam.rotmg.tooltips

@@ -1,16 +1,11 @@
-// Decompiled by AS3 Sorcerer 1.40
-// http://www.as3sorcerer.com/
-
-//kabam.rotmg.assets.EmbeddedAssets_twoHighWall_
-
-package kabam.rotmg.assets{
-    import mx.core.ByteArrayAsset;
+package kabam.rotmg.assets {
+import mx.core.*;
 
 [Embed(source="EmbeddedAssets_twoHighWall_.dat", mimeType="application/octet-stream")]
-
-    public class EmbeddedAssets_twoHighWall_ extends ByteArrayAsset {
-
+public class EmbeddedAssets_twoHighWall_ extends ByteArrayAsset {
+    public function EmbeddedAssets_twoHighWall_() {
+        super();
 
     }
-}//package kabam.rotmg.assets
-
+}
+}

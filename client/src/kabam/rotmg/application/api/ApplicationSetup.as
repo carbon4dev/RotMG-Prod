@@ -1,22 +1,21 @@
-package kabam.rotmg.application.api {
-   public interface ApplicationSetup extends DebugSetup {
+﻿package kabam.rotmg.application.api {
+public interface ApplicationSetup extends DebugSetup {
 
-      function getBuildLabel() : String;
+    function getBuildLabel():String;
 
-      function getAppEngineUrl(param1:Boolean = false) : String;
+    function getAppEngineUrl(_arg_1:Boolean = false):String;
 
-      function getAnalyticsCode() : String;
+    function useLocalTextures():Boolean;
 
-      function useLocalTextures() : Boolean;
+    function isToolingEnabled():Boolean;
 
-      function isToolingEnabled() : Boolean;
+    function areDeveloperHotkeysEnabled():Boolean;
 
-      function areDeveloperHotkeysEnabled() : Boolean;
+    function isGameLoopMonitored():Boolean;
 
-      function isGameLoopMonitored() : Boolean;
+    function useProductionDialogs():Boolean;
 
-      function useProductionDialogs() : Boolean;
+    function areErrorsReported():Boolean;
 
-      function areErrorsReported() : Boolean;
-   }
 }
+}//package kabam.rotmg.application.api

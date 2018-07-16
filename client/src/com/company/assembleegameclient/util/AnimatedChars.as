@@ -1,32 +1,31 @@
-package com.company.assembleegameclient.util {
+﻿package com.company.assembleegameclient.util {
 import flash.display.BitmapData;
 import flash.utils.Dictionary;
 
 public class AnimatedChars {
 
-      private static var nameMap_:Dictionary = new Dictionary();
+    private static var nameMap_:Dictionary = new Dictionary();
 
-      public function AnimatedChars() {
-         super();
-      }
 
-      public static function getAnimatedChar(param1:String, param2:int) : AnimatedChar {
-         var _local3:Vector.<AnimatedChar> = nameMap_[param1];
-         if(_local3 == null || param2 >= _local3.length) {
-            return null;
-         }
-         return _local3[param2];
-      }
+    public static function getAnimatedChar(_arg_1:String, _arg_2:int):AnimatedChar {
+        var _local_3:Vector.<AnimatedChar> = nameMap_[_arg_1];
+        if ((((_local_3 == null)) || ((_arg_2 >= _local_3.length)))) {
+            return (null);
+        }
+        return (_local_3[_arg_2]);
+    }
 
-      public static function add(param1:String, param2:BitmapData, param3:BitmapData, param4:int, param5:int, param6:int, param7:int, param8:int) : void {
-         var _local11:MaskedImage = null;
-         var _local9:Vector.<AnimatedChar> = new Vector.<AnimatedChar>();
-         var _local10:MaskedImageSet = new MaskedImageSet();
-         _local10.addFromBitmapData(param2,param3,param6,param7);
-         for each(_local11 in _local10.images_) {
-            _local9.push(new AnimatedChar(_local11,param4,param5,param8));
-         }
-         nameMap_[param1] = _local9;
-      }
-   }
+    public static function add(_arg_1:String, _arg_2:BitmapData, _arg_3:BitmapData, _arg_4:int, _arg_5:int, _arg_6:int, _arg_7:int, _arg_8:int):void {
+        var _local_11:MaskedImage;
+        var _local_9:Vector.<AnimatedChar> = new Vector.<AnimatedChar>();
+        var _local_10:MaskedImageSet = new MaskedImageSet();
+        _local_10.addFromBitmapData(_arg_2, _arg_3, _arg_6, _arg_7);
+        for each (_local_11 in _local_10.images_) {
+            _local_9.push(new AnimatedChar(_local_11, _arg_4, _arg_5, _arg_8));
+        }
+        nameMap_[_arg_1] = _local_9;
+    }
+
+
 }
+}//package com.company.assembleegameclient.util

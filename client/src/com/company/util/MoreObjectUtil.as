@@ -1,15 +1,14 @@
-package com.company.util {
-   public class MoreObjectUtil {
+﻿package com.company.util {
+public class MoreObjectUtil {
 
-      public function MoreObjectUtil() {
-         super();
-      }
 
-      public static function addToObject(param1:Object, param2:Object) : void {
-         var _local3:* = null;
-         for(_local3 in param2) {
-            param1[_local3] = param2[_local3];
-         }
-      }
-   }
+    public static function addToObject(_arg_1:Object, _arg_2:Object):void {
+        var _local_3:String;
+        for (_local_3 in _arg_2) {
+            _arg_1[_local_3] = _arg_2[_local_3];
+        }
+    }
+
+
 }
+}//package com.company.util

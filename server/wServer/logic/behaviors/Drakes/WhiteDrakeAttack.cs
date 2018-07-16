@@ -57,7 +57,7 @@ namespace wServer.logic.behaviors.Drakes
                                 entity.Owner.BroadcastPacket(new NotificationPacket
                                 {
                                     ObjectId = entity.Id,
-                                    Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"+ " + n + " [" + hp + "]\"}}",
+                                    Text = "+" + n,
                                     Color = new ARGB(0xff00ff00)
                                 }, null);
                             }

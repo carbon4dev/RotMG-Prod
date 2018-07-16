@@ -5,12 +5,11 @@
         public Beachzone()
         {
             Name = "Beachzone";
-            ClientWorldName = "Beachzone";
+            ClientWorldName = "{dungeons.Beachzone}";
             Background = 0;
             Difficulty = 0;
             ShowDisplays = true;
             AllowTeleport = false;
-            SetMusic("beachzone");
         }
 
         protected override void Init()

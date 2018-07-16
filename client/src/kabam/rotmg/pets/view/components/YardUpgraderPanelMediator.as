@@ -1,4 +1,4 @@
-package kabam.rotmg.pets.view.components {
+﻿package kabam.rotmg.pets.view.components {
 import flash.events.MouseEvent;
 
 import kabam.rotmg.account.core.Account;
@@ -12,55 +12,52 @@ import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class YardUpgraderPanelMediator extends Mediator {
 
-      [Inject]
-      public var view:YardUpgraderPanel;
+    [Inject]
+    public var view:YardUpgraderPanel;
+    [Inject]
+    public var openDialog:OpenDialogSignal;
+    [Inject]
+    public var petModel:PetsModel;
+    [Inject]
+    public var account:Account;
 
-      [Inject]
-      public var openDialog:OpenDialogSignal;
 
-      [Inject]
-      public var petModel:PetsModel;
+    override public function initialize():void {
+        this.view.init(this.doShowUpgradeButton());
+        this.setEventListeners();
+    }
 
-      [Inject]
-      public var account:Account;
+    private function setEventListeners():void {
+        if (this.view.upgradeYardButton) {
+            this.view.upgradeYardButton.addEventListener(MouseEvent.CLICK, this.onButtonLeftClick);
+            this.view.infoButton.addEventListener(MouseEvent.CLICK, this.onButtonRightClick);
+        }
+        else {
+            this.view.infoButton.addEventListener(MouseEvent.CLICK, this.onButtonRightClick);
+        }
+    }
 
-      public function YardUpgraderPanelMediator() {
-         super();
-      }
+    private function doShowUpgradeButton():Boolean {
+        var _local_1:int;
+        if (!this.account.isRegistered()) {
+            return (false);
+        }
+        _local_1 = this.petModel.getPetYardType();
+        return ((_local_1 < PetYardEnum.MAX_ORDINAL));
+    }
 
-      override public function initialize() : void {
-         this.view.init(this.doShowUpgradeButton());
-         this.setEventListeners();
-      }
+    override public function destroy():void {
+        super.destroy();
+    }
 
-      private function setEventListeners() : void {
-         if(this.view.upgradeYardButton) {
-            this.view.upgradeYardButton.addEventListener(MouseEvent.CLICK,this.onButtonLeftClick);
-            this.view.infoButton.addEventListener(MouseEvent.CLICK,this.onButtonRightClick);
-         } else {
-            this.view.infoButton.addEventListener(MouseEvent.CLICK,this.onButtonRightClick);
-         }
-      }
+    protected function onButtonRightClick(_arg_1:MouseEvent):void {
+        this.openDialog.dispatch(new CaretakerQueryDialog());
+    }
 
-      private function doShowUpgradeButton() : Boolean {
-         var _local1:int = 0;
-         if(!this.account.isRegistered()) {
-            return false;
-         }
-         _local1 = this.petModel.getPetYardType();
-         return _local1 < PetYardEnum.MAX_ORDINAL;
-      }
+    protected function onButtonLeftClick(_arg_1:MouseEvent):void {
+        this.openDialog.dispatch(new YardUpgraderView());
+    }
 
-      override public function destroy() : void {
-         super.destroy();
-      }
 
-      protected function onButtonRightClick(param1:MouseEvent) : void {
-         this.openDialog.dispatch(new CaretakerQueryDialog());
-      }
-
-      protected function onButtonLeftClick(param1:MouseEvent) : void {
-         this.openDialog.dispatch(new YardUpgraderView());
-      }
-   }
 }
+}//package kabam.rotmg.pets.view.components

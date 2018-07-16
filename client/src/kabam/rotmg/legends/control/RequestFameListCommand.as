@@ -1,4 +1,4 @@
-package kabam.rotmg.legends.control {
+﻿package kabam.rotmg.legends.control {
 import kabam.lib.tasks.BranchingTask;
 import kabam.lib.tasks.DispatchSignalTask;
 import kabam.lib.tasks.Task;
@@ -11,51 +11,44 @@ import kabam.rotmg.legends.service.GetLegendsListTask;
 
 public class RequestFameListCommand {
 
-      [Inject]
-      public var task:GetLegendsListTask;
+    [Inject]
+    public var task:GetLegendsListTask;
+    [Inject]
+    public var update:FameListUpdateSignal;
+    [Inject]
+    public var error:TaskErrorSignal;
+    [Inject]
+    public var monitor:TaskMonitor;
+    [Inject]
+    public var player:PlayerModel;
+    [Inject]
+    public var death:DeathModel;
+    [Inject]
+    public var model:FameModel;
 
-      [Inject]
-      public var update:FameListUpdateSignal;
 
-      [Inject]
-      public var error:TaskErrorSignal;
+    public function execute():void {
+        this.task.charId = this.getCharId();
+        var _local_1:BranchingTask = new BranchingTask(this.task, this.makeSuccess(), this.makeFailure());
+        this.monitor.add(_local_1);
+        _local_1.start();
+    }
 
-      [Inject]
-      public var monitor:TaskMonitor;
+    private function getCharId():int {
+        if (((this.player.hasAccount()) && (this.death.getIsDeathViewPending()))) {
+            return (this.death.getLastDeath().charId_);
+        }
+        return (-1);
+    }
 
-      [Inject]
-      public var player:PlayerModel;
+    private function makeSuccess():Task {
+        return (new DispatchSignalTask(this.update));
+    }
 
-      [Inject]
-      public var death:DeathModel;
+    private function makeFailure():Task {
+        return (new DispatchSignalTask(this.error, this.task));
+    }
 
-      [Inject]
-      public var model:FameModel;
 
-      public function RequestFameListCommand() {
-         super();
-      }
-
-      public function execute() : void {
-         this.task.charId = this.getCharId();
-         var _local1:BranchingTask = new BranchingTask(this.task,this.makeSuccess(),this.makeFailure());
-         this.monitor.add(_local1);
-         _local1.start();
-      }
-
-      private function getCharId() : int {
-         if(Boolean(this.player.hasAccount()) && Boolean(this.death.getIsDeathViewPending())) {
-            return this.death.getLastDeath().charId_;
-         }
-         return -1;
-      }
-
-      private function makeSuccess() : Task {
-         return new DispatchSignalTask(this.update);
-      }
-
-      private function makeFailure() : Task {
-         return new DispatchSignalTask(this.error,this.task);
-      }
-   }
 }
+}//package kabam.rotmg.legends.control

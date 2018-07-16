@@ -1,10 +1,8 @@
-package kabam.rotmg.maploading.signals {
+﻿package kabam.rotmg.maploading.signals {
 import org.osflash.signals.Signal;
 
 public class HideMapLoadingSignal extends Signal {
 
-      public function HideMapLoadingSignal() {
-         super();
-      }
-   }
+
 }
+}//package kabam.rotmg.maploading.signals

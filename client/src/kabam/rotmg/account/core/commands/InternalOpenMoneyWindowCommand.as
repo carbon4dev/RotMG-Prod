@@ -1,18 +1,17 @@
-package kabam.rotmg.account.core.commands {
+﻿package kabam.rotmg.account.core.commands {
 import kabam.rotmg.account.core.view.MoneyFrame;
 import kabam.rotmg.dialogs.control.OpenDialogSignal;
 
 public class InternalOpenMoneyWindowCommand {
 
-      [Inject]
-      public var openDialog:OpenDialogSignal;
+    [Inject]
+    public var openDialog:OpenDialogSignal;
 
-      public function InternalOpenMoneyWindowCommand() {
-         super();
-      }
 
-      public function execute() : void {
-         this.openDialog.dispatch(new MoneyFrame());
-      }
-   }
+    public function execute():void {
+        this.openDialog.dispatch(new MoneyFrame());
+    }
+
+
 }
+}//package kabam.rotmg.account.core.commands

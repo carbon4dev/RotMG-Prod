@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 public static class Utils
 {
-    public const string BAD_WORDS = "(fggt|bitch|faggot|arse|arsehole|asshat|assjabber|asspirate|assbag|assbandit|assbanger|assbite|assclown|asscock|asscracker|assface|assfuck|assfucker|assgoblin|asshat|asshead|asshole|asshopper|assjacker|asslick|asslicker|assmonkey|assmunch|assmuncher|assnigger|asspirate|assshit|assshole)";
+    public const string BAD_WORDS = "(anus|ass|arse|arsehole|ass|asshat|assjabber|asspirate|assbag|assbandit|assbanger|assbite|assclown|asscock|asscracker|asses|assface|assfuck|assfucker|assgoblin|asshat|asshead|asshole|asshopper|assjacker|asslick|asslicker|assmonkey|assmunch|assmuncher|assnigger|asspirate|assshit|assshole)";
 
     public static class ConsoleCloseEventHandler
     {
@@ -207,7 +207,7 @@ public static class Utils
     public static string ToSafeText(this string str)
     {
         Regex wordFilter = new Regex(BAD_WORDS);
-        return wordFilter.Replace(str, "???");
+        return wordFilter.Replace(str, "<3");
     }
 
     public static short[] PackFromEquips(this Char chr)

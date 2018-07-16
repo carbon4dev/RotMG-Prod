@@ -39,14 +39,6 @@ namespace wServer.realm.entities.player
         private float mpRegenCounter;
         private bool resurrecting;
 
-        public int checkForDex = 0;
-        public int lastShootTime = -1;
-        public int shootCounter = 0;
-
-        public int lastMoveTime = -1;
-        public int outOfBoundsCount = 0;
-        public int goodCount = 0;
-
         private byte[,] tiles;
         private int pingSerial;
         private SetTypeSkin setTypeSkin;
@@ -65,24 +57,11 @@ namespace wServer.realm.entities.player
                 Tokens = psr.Account.FortuneTokens;
                 HpPotionPrice = 5;
                 MpPotionPrice = 5;
-                if(psr.Account.Rank >= 3)
-                {
-                    Size = 100;//450;
-                    Stars = 70;
-                }
-                else if(psr.Account.Rank == 2)
-                {
-                    Size = 100;//250;
-                    Stars = 70;
-                }
-                else
-                {
-                    Stars = GetStars();
-                    Size = 100;//100;
-                }
+
                 Level = psr.Character.Level == 0 ? 1 : psr.Character.Level;
                 Experience = psr.Character.Exp;
                 ExperienceGoal = GetExpGoal(Level);
+                Stars = GetStars();
                 Texture1 = psr.Character.Tex1;
                 Texture2 = psr.Character.Tex2;
                 Credits = psr.Account.Credits;
@@ -301,7 +280,7 @@ namespace wServer.realm.entities.player
         public GuildManager Guild { get; set; }
 
         public int[] SlotTypes { get; set; }
-        
+
         public void Damage(int dmg, Entity chr)
         {
             try
@@ -324,14 +303,14 @@ namespace wServer.realm.entities.player
                     BulletId = 0,
                     ObjectId = chr.Id
                 }, this);
-                //SaveToCharacter();
+                SaveToCharacter();
 
                 if (HP <= 0)
                     Death(chr.ObjectDesc.DisplayId, chr.ObjectDesc);
             }
-            catch// (Exception e)
+            catch (Exception e)
             {
-                //log.Error("Error while processing playerDamage: ", e);
+                log.Error("Error while processing playerDamage: ", e);
             }
         }
 
@@ -342,7 +321,7 @@ namespace wServer.realm.entities.player
             stats[StatsType.Name] = Name;
 
             stats[StatsType.Experience] = Experience - GetLevelExp(Level);
-            stats[StatsType.ExperienceGoal] = ExperienceGoal - GetLevelExp(Level);
+            stats[StatsType.ExperienceGoal] = ExperienceGoal;
             stats[StatsType.Level] = Level;
 
             stats[StatsType.CurrentFame] = CurrentFame;
@@ -480,11 +459,6 @@ namespace wServer.realm.entities.player
                         Effect = ConditionEffectIndex.Invulnerable,
                         DurationMS = -1
                     });
-                    ApplyConditionEffect(new ConditionEffect
-                    {
-                        Effect = ConditionEffectIndex.Paused,
-                        DurationMS = -1
-                    });
                     return;
                 }
             }
@@ -538,8 +512,7 @@ namespace wServer.realm.entities.player
                         obf0 = -1,
                         obf1 = -1,
                     });
-                    Client.Disconnect();
-                    //Owner.Timers.Add(new WorldTimer(1000, (w, t) => Client.Disconnect()));
+                    Owner.Timers.Add(new WorldTimer(1000, (w, t) => Client.Disconnect()));
                     Owner.LeaveWorld(this);
                 }
                 else
@@ -603,7 +576,7 @@ namespace wServer.realm.entities.player
             SendAccountList(Ignored, AccountListPacket.IGNORED_LIST_ID);
 
             WorldTimer[] accTimer = {null};
-            owner.Timers.Add(accTimer[0] = new WorldTimer(50, (w, t) =>
+            owner.Timers.Add(accTimer[0] = new WorldTimer(5000, (w, t) =>
             {
                 Manager.Database.DoActionAsync(db =>
                 {
@@ -617,13 +590,13 @@ namespace wServer.realm.entities.player
                 });
             }));
 
-            /*WorldTimer[] pingTimer = {null};
+            WorldTimer[] pingTimer = {null};
             owner.Timers.Add(pingTimer[0] = new WorldTimer(PING_PERIOD, (w, t) =>
             {
                 Client.SendPacket(new PingPacket { Serial = pingSerial++ });
                 pingTimer[0].Reset();
-                Manager.Logic.AddPendingAction(_ => w.Timers.Add(pingTimer[0]), PendingPriority.Emergent); //was Creation
-            }));*/
+                Manager.Logic.AddPendingAction(_ => w.Timers.Add(pingTimer[0]), PendingPriority.Creation);
+            }));
             Manager.Database.DoActionAsync(db =>
             {
                 db.UpdateLastSeen(Client.Account.AccountId, Client.Character.CharacterId, owner.Name);
@@ -632,7 +605,7 @@ namespace wServer.realm.entities.player
 
             if (Client.Account.IsGuestAccount)
             {
-                owner.Timers.Add(new WorldTimer(5000, (w, t) => Client.Disconnect()));
+                owner.Timers.Add(new WorldTimer(1000, (w, t) => Client.Disconnect()));
                 Client.SendPacket(new networking.svrPackets.FailurePacket
                 {
                     ErrorId = 8,
@@ -648,7 +621,7 @@ namespace wServer.realm.entities.player
             if (!Client.Account.VerifiedEmail && Program.Verify)
             {
                 Client.SendPacket(new VerifyEmailDialogPacket());
-                owner.Timers.Add(new WorldTimer(5000, (w, t) => Client.Disconnect()));
+                owner.Timers.Add(new WorldTimer(1000, (w, t) => Client.Disconnect()));
                 return;
             }
             CheckSetTypeSkin();
@@ -719,11 +692,11 @@ namespace wServer.realm.entities.player
                     return;
                 }
                 var player = obj as Player;
-                /*if (player != null && (!player.NameChosen || player.NameChosen))
+                if (player != null && !player.NameChosen)
                 {
                     SendError("server.teleport_needs_name");
                     return;
-                }*/
+                }
                 if (obj.Id == Id)
                 {
                     SendError("server.teleport_to_self");
@@ -742,10 +715,10 @@ namespace wServer.realm.entities.player
                 SetNewbiePeriod();
                 UpdateCount++;
             }
-            catch// (Exception ex)
+            catch (Exception ex)
             {
-                //log.Error(ex);
-                //SendError("player.cannotTeleportTo");
+                log.Error(ex);
+                SendError("player.cannotTeleportTo");
                 return;
             }
             Owner.BroadcastPacket(new GotoPacket

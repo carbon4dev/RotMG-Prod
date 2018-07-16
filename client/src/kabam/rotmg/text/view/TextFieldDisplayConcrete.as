@@ -1,4 +1,4 @@
-package kabam.rotmg.text.view {
+﻿package kabam.rotmg.text.view {
 import flash.display.Sprite;
 import flash.text.TextField;
 import flash.text.TextFormat;
@@ -12,330 +12,313 @@ import org.osflash.signals.Signal;
 
 public class TextFieldDisplayConcrete extends Sprite implements TextFieldDisplay {
 
-      public static const MIDDLE:String = "middle";
+    public static const MIDDLE:String = "middle";
+    public static const BOTTOM:String = "bottom";
+    private static const GUTTER:int = 2;
 
-      public static const BOTTOM:String = "bottom";
+    public const textChanged:Signal = new Signal();
 
-      private static const GUTTER:int = 2;
+    public var textField:TextField;
+    private var stringMap:StringMap;
+    private var stringBuilder:StringBuilder;
+    private var size:int = 12;
+    private var color:uint;
+    private var font:FontInfo;
+    private var bold:Boolean;
+    private var autoSize:String = "left";
+    private var horizontalAlign:String = "left";
+    private var verticalAlign:String;
+    private var multiline:Boolean;
+    private var wordWrap:Boolean;
+    private var textWidth:Number = 0;
+    private var textHeight:Number = 0;
+    private var html:Boolean;
+    private var displayAsPassword:Boolean;
+    private var debugName:String;
+    private var leftMargin:int = 0;
+    private var indent:int = 0;
+    private var leading:int = 0;
 
-      public const textChanged:Signal = new Signal();
 
-      public var textField:TextField;
+    private static function getOnlyTextHeight(_arg_1:TextLineMetrics):Number {
+        return ((_arg_1.height - _arg_1.leading));
+    }
 
-      private var stringMap:StringMap;
 
-      private var stringBuilder:StringBuilder;
+    public function setIndent(_arg_1:int):TextFieldDisplayConcrete {
+        this.indent = _arg_1;
+        this.setPropertiesIfHasTextField();
+        return (this);
+    }
 
-      private var size:int = 12;
+    public function setLeading(_arg_1:int):TextFieldDisplayConcrete {
+        this.leading = _arg_1;
+        this.setPropertiesIfHasTextField();
+        return (this);
+    }
 
-      private var color:uint;
+    public function setLeftMargin(_arg_1:int):TextFieldDisplayConcrete {
+        this.leftMargin = _arg_1;
+        this.setPropertiesIfHasTextField();
+        return (this);
+    }
 
-      private var font:FontInfo;
+    public function setDisplayAsPassword(_arg_1:Boolean):TextFieldDisplayConcrete {
+        this.displayAsPassword = _arg_1;
+        this.setPropertiesIfHasTextField();
+        return (this);
+    }
 
-      private var bold:Boolean;
+    public function setDebugName(_arg_1:String):TextFieldDisplayConcrete {
+        this.debugName = _arg_1;
+        ((this.textField) && ((this.textField.name = this.debugName)));
+        return (this);
+    }
 
-      private var autoSize:String = "left";
+    public function setSize(_arg_1:int):TextFieldDisplayConcrete {
+        this.size = _arg_1;
+        this.setPropertiesIfHasTextField();
+        return (this);
+    }
 
-      private var horizontalAlign:String = "left";
+    public function setColor(_arg_1:uint):TextFieldDisplayConcrete {
+        this.color = _arg_1;
+        this.setPropertiesIfHasTextField();
+        return (this);
+    }
 
-      private var verticalAlign:String;
+    public function setBold(_arg_1:Boolean):TextFieldDisplayConcrete {
+        this.bold = _arg_1;
+        this.setPropertiesIfHasTextField();
+        return (this);
+    }
 
-      private var multiline:Boolean;
+    public function setHorizontalAlign(_arg_1:String):TextFieldDisplayConcrete {
+        this.horizontalAlign = _arg_1;
+        this.setPropertiesIfHasTextField();
+        return (this);
+    }
 
-      private var wordWrap:Boolean;
+    public function setAutoSize(_arg_1:String):TextFieldDisplayConcrete {
+        this.autoSize = _arg_1;
+        this.setPropertiesIfHasTextField();
+        return (this);
+    }
 
-      private var textWidth:Number = 0;
+    public function setMultiLine(_arg_1:Boolean):TextFieldDisplayConcrete {
+        this.multiline = _arg_1;
+        this.setPropertiesIfHasTextField();
+        return (this);
+    }
 
-      private var textHeight:Number = 0;
+    public function setWordWrap(_arg_1:Boolean):TextFieldDisplayConcrete {
+        this.wordWrap = _arg_1;
+        this.setPropertiesIfHasTextField();
+        return (this);
+    }
 
-      private var html:Boolean;
+    public function setTextWidth(_arg_1:Number):TextFieldDisplayConcrete {
+        this.textWidth = _arg_1;
+        this.setPropertiesIfHasTextField();
+        return (this);
+    }
 
-      private var displayAsPassword:Boolean;
+    public function setTextHeight(_arg_1:Number):TextFieldDisplayConcrete {
+        this.textHeight = _arg_1;
+        this.setPropertiesIfHasTextField();
+        return (this);
+    }
 
-      private var debugName:String;
+    public function setHTML(_arg_1:Boolean):TextFieldDisplayConcrete {
+        this.html = _arg_1;
+        return (this);
+    }
 
-      private var leftMargin:int = 0;
+    public function setStringBuilder(_arg_1:StringBuilder):TextFieldDisplayConcrete {
+        this.stringBuilder = _arg_1;
+        this.setTextIfAble();
+        return (this);
+    }
 
-      private var indent:int = 0;
+    public function getStringBuilder():StringBuilder {
+        return (this.stringBuilder);
+    }
 
-      private var leading:int = 0;
+    public function setPosition(_arg_1:Number, _arg_2:Number):TextFieldDisplayConcrete {
+        this.x = _arg_1;
+        this.y = _arg_2;
+        return (this);
+    }
 
-      public function TextFieldDisplayConcrete() {
-         super();
-      }
+    public function setVerticalAlign(_arg_1:String):TextFieldDisplayConcrete {
+        this.verticalAlign = _arg_1;
+        return (this);
+    }
 
-      private static function getOnlyTextHeight(param1:TextLineMetrics) : Number {
-         return param1.height - param1.leading;
-      }
+    public function update():void {
+        this.setTextIfAble();
+    }
 
-      public function setIndent(param1:int) : TextFieldDisplayConcrete {
-         this.indent = param1;
-         this.setPropertiesIfHasTextField();
-         return this;
-      }
+    public function setFont(_arg_1:FontInfo):void {
+        this.font = _arg_1;
+    }
 
-      public function setLeading(param1:int) : TextFieldDisplayConcrete {
-         this.leading = param1;
-         this.setPropertiesIfHasTextField();
-         return this;
-      }
+    public function setStringMap(_arg_1:StringMap):void {
+        this.stringMap = _arg_1;
+        this.setTextIfAble();
+    }
 
-      public function setLeftMargin(param1:int) : TextFieldDisplayConcrete {
-         this.leftMargin = param1;
-         this.setPropertiesIfHasTextField();
-         return this;
-      }
+    public function setTextField(_arg_1:TextField):void {
+        _arg_1.width = this.textWidth;
+        _arg_1.height = this.textHeight;
+        ((this.debugName) && ((_arg_1.name = this.debugName)));
+        this.updateTextOfInjectedTextField(_arg_1);
+        this.textField = _arg_1;
+        this.setProperties();
+        addChild(this.textField);
+    }
 
-      public function setDisplayAsPassword(param1:Boolean) : TextFieldDisplayConcrete {
-         this.displayAsPassword = param1;
-         this.setPropertiesIfHasTextField();
-         return this;
-      }
-
-      public function setDebugName(param1:String) : TextFieldDisplayConcrete {
-         this.debugName = param1;
-         this.textField && (this.textField.name = this.debugName);
-         return this;
-      }
-
-      public function setSize(param1:int) : TextFieldDisplayConcrete {
-         this.size = param1;
-         this.setPropertiesIfHasTextField();
-         return this;
-      }
-
-      public function setColor(param1:uint) : TextFieldDisplayConcrete {
-         this.color = param1;
-         this.setPropertiesIfHasTextField();
-         return this;
-      }
-
-      public function setBold(param1:Boolean) : TextFieldDisplayConcrete {
-         this.bold = param1;
-         this.setPropertiesIfHasTextField();
-         return this;
-      }
-
-      public function setHorizontalAlign(param1:String) : TextFieldDisplayConcrete {
-         this.horizontalAlign = param1;
-         this.setPropertiesIfHasTextField();
-         return this;
-      }
-
-      public function setAutoSize(param1:String) : TextFieldDisplayConcrete {
-         this.autoSize = param1;
-         this.setPropertiesIfHasTextField();
-         return this;
-      }
-
-      public function setMultiLine(param1:Boolean) : TextFieldDisplayConcrete {
-         this.multiline = param1;
-         this.setPropertiesIfHasTextField();
-         return this;
-      }
-
-      public function setWordWrap(param1:Boolean) : TextFieldDisplayConcrete {
-         this.wordWrap = param1;
-         this.setPropertiesIfHasTextField();
-         return this;
-      }
-
-      public function setTextWidth(param1:Number) : TextFieldDisplayConcrete {
-         this.textWidth = param1;
-         this.setPropertiesIfHasTextField();
-         return this;
-      }
-
-      public function setTextHeight(param1:Number) : TextFieldDisplayConcrete {
-         this.textHeight = param1;
-         this.setPropertiesIfHasTextField();
-         return this;
-      }
-
-      public function setHTML(param1:Boolean) : TextFieldDisplayConcrete {
-         this.html = param1;
-         return this;
-      }
-
-      public function setStringBuilder(param1:StringBuilder) : TextFieldDisplayConcrete {
-         this.stringBuilder = param1;
-         this.setTextIfAble();
-         return this;
-      }
-
-      public function getStringBuilder() : StringBuilder {
-         return this.stringBuilder;
-      }
-
-      public function setPosition(param1:Number, param2:Number) : TextFieldDisplayConcrete {
-         this.x = param1;
-         this.y = param2;
-         return this;
-      }
-
-      public function setVerticalAlign(param1:String) : TextFieldDisplayConcrete {
-         this.verticalAlign = param1;
-         return this;
-      }
-
-      public function update() : void {
-         this.setTextIfAble();
-      }
-
-      public function setFont(param1:FontInfo) : void {
-         this.font = param1;
-      }
-
-      public function setStringMap(param1:StringMap) : void {
-         this.stringMap = param1;
-         this.setTextIfAble();
-      }
-
-      public function setTextField(param1:TextField) : void {
-         param1.width = this.textWidth;
-         param1.height = this.textHeight;
-         this.debugName && (param1.name = this.debugName);
-         this.updateTextOfInjectedTextField(param1);
-         this.textField = param1;
-         this.setProperties();
-         addChild(this.textField);
-      }
-
-      private function setPropertiesIfHasTextField() : void {
-         if(this.textField) {
+    private function setPropertiesIfHasTextField():void {
+        if (this.textField) {
             this.setProperties();
-         }
-      }
+        }
+    }
 
-      private function setProperties() : void {
-         this.setFormatProperties();
-         this.setTextFieldProperties();
-      }
+    private function setProperties():void {
+        this.setFormatProperties();
+        this.setTextFieldProperties();
+    }
 
-      private function setTextFieldProperties() : void {
-         if(this.textWidth != 0) {
+    private function setTextFieldProperties():void {
+        if (this.textWidth != 0) {
             this.textField.width = this.textWidth;
-         }
-         if(this.textHeight != 0) {
+        }
+        if (this.textHeight != 0) {
             this.textField.height = this.textHeight;
-         }
-         this.textField.selectable = false;
-         this.textField.textColor = this.color;
-         this.textField.autoSize = this.autoSize;
-         this.textField.multiline = this.multiline;
-         this.textField.wordWrap = this.wordWrap;
-         this.textField.displayAsPassword = this.displayAsPassword;
-         this.textField.embedFonts = true;
-      }
+        }
+        this.textField.selectable = false;
+        this.textField.textColor = this.color;
+        this.textField.autoSize = this.autoSize;
+        this.textField.multiline = this.multiline;
+        this.textField.wordWrap = this.wordWrap;
+        this.textField.displayAsPassword = this.displayAsPassword;
+        this.textField.embedFonts = true;
+    }
 
-      private function setFormatProperties() : void {
-         var _local1:TextFormat = new TextFormat();
-         _local1.size = this.size;
-         _local1.font = this.font.getName();
-         _local1.bold = this.bold;
-         _local1.align = this.horizontalAlign;
-         _local1.leftMargin = this.leftMargin;
-         _local1.indent = this.indent;
-         _local1.leading = this.leading;
-         this.setTextFormat(_local1);
-      }
+    private function setFormatProperties():void {
+        var _local_1:TextFormat = new TextFormat();
+        _local_1.size = this.size;
+        _local_1.font = this.font.getName();
+        _local_1.bold = this.bold;
+        _local_1.align = this.horizontalAlign;
+        _local_1.leftMargin = this.leftMargin;
+        _local_1.indent = this.indent;
+        _local_1.leading = this.leading;
+        this.setTextFormat(_local_1);
+    }
 
-      private function updateTextOfInjectedTextField(param1:TextField) : void {
-         if(this.textField) {
-            param1.text = this.textField.text;
+    private function updateTextOfInjectedTextField(_arg_1:TextField):void {
+        if (this.textField) {
+            _arg_1.text = this.textField.text;
             removeChild(this.textField);
-         }
-      }
+        }
+    }
 
-      private function setTextIfAble() : void {
-         var _local1:String = null;
-         if(this.isAble()) {
+    private function setTextIfAble():void {
+        var _local_1:String;
+        if (this.isAble()) {
             this.stringBuilder.setStringMap(this.stringMap);
-            _local1 = this.stringBuilder.getString();
-            this.setText(_local1);
+            _local_1 = this.stringBuilder.getString();
+            this.setText(_local_1);
             this.alignVertically();
             this.invalidateTextField();
             this.textChanged.dispatch();
-         }
-      }
+        }
+    }
 
-      private function invalidateTextField() : void {
-         this.textField.height;
-      }
+    private function invalidateTextField():void {
+        this.textField.height;
+    }
 
-      public function setText(param1:String) : void {
-         if(this.html) {
-            this.textField.htmlText = param1;
-         } else {
-            this.textField.text = param1;
-         }
-      }
+    public function setText(_arg_1:String):void {
+        if (this.html) {
+            this.textField.htmlText = _arg_1;
+        }
+        else {
+            this.textField.text = _arg_1;
+        }
+    }
 
-      private function alignVertically() : void {
-         var _local1:TextLineMetrics = null;
-         if(this.verticalAlign == MIDDLE) {
+    private function alignVertically():void {
+        var _local_1:TextLineMetrics;
+        if (this.verticalAlign == MIDDLE) {
             this.setYToMiddle();
-         } else if(this.verticalAlign == BOTTOM) {
-            _local1 = this.textField.getLineMetrics(0);
-            this.textField.y = -getOnlyTextHeight(_local1);
-         }
-      }
+        }
+        else {
+            if (this.verticalAlign == BOTTOM) {
+                _local_1 = this.textField.getLineMetrics(0);
+                this.textField.y = -(getOnlyTextHeight(_local_1));
+            }
+        }
+    }
 
-      private function setYToMiddle() : void {
-         this.textField.height;
-         var _local1:TextFormat = this.textField.getTextFormat();
-         var _local2:Number = this.getSpecificXHeight(_local1);
-         var _local3:Number = this.getSpecificVerticalSpace(_local1);
-         this.textField.y = -(this.textField.height - (_local2 / 2 + _local3 + GUTTER));
-      }
+    private function setYToMiddle():void {
+        this.textField.height;
+        var _local_1:TextFormat = this.textField.getTextFormat();
+        var _local_2:Number = this.getSpecificXHeight(_local_1);
+        var _local_3:Number = this.getSpecificVerticalSpace(_local_1);
+        this.textField.y = -((this.textField.height - (((_local_2 / 2) + _local_3) + GUTTER)));
+    }
 
-      private function getSpecificXHeight(param1:TextFormat) : Number {
-         return this.font.getXHeight(Number(param1.size));
-      }
+    private function getSpecificXHeight(_arg_1:TextFormat):Number {
+        return (this.font.getXHeight(Number(_arg_1.size)));
+    }
 
-      private function getSpecificVerticalSpace(param1:TextFormat) : Number {
-         return this.font.getVerticalSpace(Number(param1.size));
-      }
+    private function getSpecificVerticalSpace(_arg_1:TextFormat):Number {
+        return (this.font.getVerticalSpace(Number(_arg_1.size)));
+    }
 
-      public function setTextFormat(param1:TextFormat, param2:int = -1, param3:int = -1) : void {
-         this.textField.defaultTextFormat = param1;
-         this.textField.setTextFormat(param1,param2,param3);
-      }
+    public function setTextFormat(_arg_1:TextFormat, _arg_2:int = -1, _arg_3:int = -1):void {
+        this.textField.defaultTextFormat = _arg_1;
+        this.textField.setTextFormat(_arg_1, _arg_2, _arg_3);
+    }
 
-      private function isAble() : Boolean {
-         return Boolean(this.stringMap) && Boolean(this.stringBuilder) && Boolean(this.textField);
-      }
+    private function isAble():Boolean {
+        return (((((this.stringMap) && (this.stringBuilder))) && (this.textField)));
+    }
 
-      public function getVerticalSpace() : Number {
-         return this.font.getVerticalSpace(Number(this.textField.getTextFormat().size));
-      }
+    public function getVerticalSpace():Number {
+        return (this.font.getVerticalSpace(Number(this.textField.getTextFormat().size)));
+    }
 
-      public function getText() : String {
-         return !!this.textField?this.textField.text:"null";
-      }
+    public function getText():String {
+        return (((this.textField) ? this.textField.text : "null"));
+    }
 
-      public function getColor() : uint {
-         return this.color;
-      }
+    public function getColor():uint {
+        return (this.color);
+    }
 
-      public function getSize() : int {
-         return this.size;
-      }
+    public function getSize():int {
+        return (this.size);
+    }
 
-      public function hasTextField() : Boolean {
-         return this.textField != null;
-      }
+    public function hasTextField():Boolean {
+        return (!((this.textField == null)));
+    }
 
-      public function hasStringMap() : Boolean {
-         return this.stringMap != null;
-      }
+    public function hasStringMap():Boolean {
+        return (!((this.stringMap == null)));
+    }
 
-      public function hasFont() : Boolean {
-         return this.font != null;
-      }
+    public function hasFont():Boolean {
+        return (!((this.font == null)));
+    }
 
-      public function getTextFormat(param1:int = -1, param2:int = -1) : TextFormat {
-         return this.textField.getTextFormat(param1,param2);
-      }
-   }
+    public function getTextFormat(_arg_1:int = -1, _arg_2:int = -1):TextFormat {
+        return (this.textField.getTextFormat(_arg_1, _arg_2));
+    }
+
+
 }
+}//package kabam.rotmg.text.view

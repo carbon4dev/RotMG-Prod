@@ -47,7 +47,7 @@ namespace wServer.realm.entities
         protected virtual bool TryDeduct(Player player)
         {
             Account acc = player.Client.Account;
-            //if (!player.NameChosen) return false;
+            if (!player.NameChosen) return false;
             if (player.Stars < RankReq) return false;
 
             if (Currency == CurrencyType.Fame)
@@ -70,31 +70,28 @@ namespace wServer.realm.entities
                         VaultChest chest = db.CreateChest(player.Client.Account);
                         db.UpdateCredit(player.Client.Account, -Price);
                         (Owner as Vault).AddChest(chest, this);
-                        //player.Client.SendPacket(new BuyResultPacket
-                        //{
-                        //    Result = 0,
-                        //    Message = "{\"key\":\"server.buy_success\"}"
-                        //});
-                        player.SendInfo("Purchase successful!");
+                        player.Client.SendPacket(new BuyResultPacket
+                        {
+                            Result = 0,
+                            Message = "{\"key\":\"server.buy_success\"}"
+                        });
                     }
                     else
                     {
-                        player.SendInfo("Not enough gold for purchase. Consider donate to help us supporting your server and getting special features! Check at www.loerealm.com/theserver/donate.");
-                        //player.Client.SendPacket(new BuyResultPacket
-                        //{
-                        //    Result = BUY_NO_GOLD,
-                        //    Message = "{\"key\":\"server.not_enough_gold\"}"
-                        //});
+                        player.Client.SendPacket(new BuyResultPacket
+                        {
+                            Result = BUY_NO_GOLD,
+                            Message = "{\"key\":\"server.not_enough_gold\"}"
+                        });
                     }
                 }
                 if (ObjectType == 0x0736)
                 {
-                    player.SendInfo("Server Error #92 - SellableObject.cs. Contact LoE Team.");
-                    //player.Client.SendPacket(new BuyResultPacket()
-                    //{
-                    //    Result = 9,
-                    //    Message = "{\"key\":\"server.not_enough_game\"}"
-                    //});
+                    player.Client.SendPacket(new BuyResultPacket()
+                    {
+                        Result = 9,
+                        Message = "{\"key\":\"server.not_enough_game\"}"
+                    });
                 }
             });
         }

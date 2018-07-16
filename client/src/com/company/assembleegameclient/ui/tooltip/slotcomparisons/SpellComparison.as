@@ -1,50 +1,48 @@
-package com.company.assembleegameclient.ui.tooltip.slotcomparisons {
+﻿package com.company.assembleegameclient.ui.tooltip.slotcomparisons {
 import kabam.rotmg.text.model.TextKey;
 import kabam.rotmg.text.view.stringBuilder.AppendingLineBuilder;
 import kabam.rotmg.text.view.stringBuilder.StringBuilder;
 
 public class SpellComparison extends SlotComparison {
 
-      private var itemXML:XML;
+    private var itemXML:XML;
+    private var curItemXML:XML;
+    private var projXML:XML;
+    private var otherProjXML:XML;
 
-      private var curItemXML:XML;
+    public function SpellComparison() {
+        comparisonStringBuilder = new AppendingLineBuilder();
+    }
 
-      private var projXML:XML;
+    override protected function compareSlots(_arg_1:XML, _arg_2:XML):void {
+        this.itemXML = _arg_1;
+        this.curItemXML = _arg_2;
+        this.projXML = _arg_1.Projectile[0];
+        this.otherProjXML = _arg_2.Projectile[0];
+        this.getDamageText();
+        this.getRangeText();
+        processedTags[this.projXML.toXMLString()] = true;
+    }
 
-      private var otherProjXML:XML;
+    private function getDamageText():StringBuilder {
+        var _local_1:int = int(this.projXML.MinDamage);
+        var _local_2:int = int(this.projXML.MaxDamage);
+        var _local_3:int = int(this.otherProjXML.MinDamage);
+        var _local_4:int = int(this.otherProjXML.MaxDamage);
+        var _local_5:Number = ((_local_1 + _local_2) / 2);
+        var _local_6:Number = ((_local_3 + _local_4) / 2);
+        var _local_7:uint = getTextColor((_local_5 - _local_6));
+        var _local_8:String = (((_local_1) == _local_2) ? _local_2.toString() : ((_local_1 + " - ") + _local_2));
+        return (comparisonStringBuilder.pushParams(TextKey.DAMAGE, {"damage": (((('<font color="#' + _local_7.toString(16)) + '">') + _local_8) + "</font>")}));
+    }
 
-      public function SpellComparison() {
-         super();
-         comparisonStringBuilder = new AppendingLineBuilder();
-      }
+    private function getRangeText():StringBuilder {
+        var _local_1:Number = ((Number(this.projXML.Speed) * Number(this.projXML.LifetimeMS)) / 10000);
+        var _local_2:Number = ((Number(this.otherProjXML.Speed) * Number(this.otherProjXML.LifetimeMS)) / 10000);
+        var _local_3:uint = getTextColor((_local_1 - _local_2));
+        return (comparisonStringBuilder.pushParams(TextKey.RANGE, {"range": (((('<font color="#' + _local_3.toString(16)) + '">') + _local_1) + "</font>")}));
+    }
 
-      override protected function compareSlots(param1:XML, param2:XML) : void {
-         this.itemXML = param1;
-         this.curItemXML = param2;
-         this.projXML = param1.Projectile[0];
-         this.otherProjXML = param2.Projectile[0];
-         this.getDamageText();
-         this.getRangeText();
-         processedTags[this.projXML.toXMLString()] = true;
-      }
 
-      private function getDamageText() : StringBuilder {
-         var _local1:int = int(this.projXML.MinDamage);
-         var _local2:int = int(this.projXML.MaxDamage);
-         var _local3:int = int(this.otherProjXML.MinDamage);
-         var _local4:int = int(this.otherProjXML.MaxDamage);
-         var _local5:Number = (_local1 + _local2) / 2;
-         var _local6:Number = (_local3 + _local4) / 2;
-         var _local7:uint = getTextColor(_local5 - _local6);
-         var _local8:String = _local1 == _local2?_local2.toString():_local1 + " - " + _local2;
-         return comparisonStringBuilder.pushParams(TextKey.DAMAGE,{"damage":"<font color=\"#" + _local7.toString(16) + "\">" + _local8 + "</font>"});
-      }
-
-      private function getRangeText() : StringBuilder {
-         var _local1:Number = Number(this.projXML.Speed) * Number(this.projXML.LifetimeMS) / 10000;
-         var _local2:Number = Number(this.otherProjXML.Speed) * Number(this.otherProjXML.LifetimeMS) / 10000;
-         var _local3:uint = getTextColor(_local1 - _local2);
-         return comparisonStringBuilder.pushParams(TextKey.RANGE,{"range":"<font color=\"#" + _local3.toString(16) + "\">" + _local1 + "</font>"});
-      }
-   }
 }
+}//package com.company.assembleegameclient.ui.tooltip.slotcomparisons

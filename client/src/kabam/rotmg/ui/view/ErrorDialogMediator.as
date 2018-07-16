@@ -1,4 +1,4 @@
-package kabam.rotmg.ui.view {
+﻿package kabam.rotmg.ui.view {
 import com.company.assembleegameclient.screens.CharacterSelectionAndNewsScreen;
 import com.company.assembleegameclient.ui.dialogs.ErrorDialog;
 
@@ -12,38 +12,34 @@ import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class ErrorDialogMediator extends Mediator {
 
-      [Inject]
-      public var view:ErrorDialog;
+    [Inject]
+    public var view:ErrorDialog;
+    [Inject]
+    public var invalidateData:InvalidateDataSignal;
+    [Inject]
+    public var setScreenWithValidData:SetScreenWithValidDataSignal;
+    [Inject]
+    public var close:CloseDialogsSignal;
 
-      [Inject]
-      public var invalidateData:InvalidateDataSignal;
 
-      [Inject]
-      public var setScreenWithValidData:SetScreenWithValidDataSignal;
+    override public function initialize():void {
+        addViewListener(Event.COMPLETE, this.onComplete);
+        this.view.ok.addOnce(this.onClose);
+    }
 
-      [Inject]
-      public var close:CloseDialogsSignal;
+    override public function destroy():void {
+        removeViewListener(Event.COMPLETE, this.onComplete);
+    }
 
-      public function ErrorDialogMediator() {
-         super();
-      }
+    public function onClose():void {
+        this.close.dispatch();
+    }
 
-      override public function initialize() : void {
-         addViewListener(Event.COMPLETE,this.onComplete);
-         this.view.ok.addOnce(this.onClose);
-      }
+    private function onComplete(_arg_1:Event):void {
+        this.invalidateData.dispatch();
+        this.setScreenWithValidData.dispatch(new CharacterSelectionAndNewsScreen());
+    }
 
-      override public function destroy() : void {
-         removeViewListener(Event.COMPLETE,this.onComplete);
-      }
 
-      public function onClose() : void {
-         this.close.dispatch();
-      }
-
-      private function onComplete(param1:Event) : void {
-         this.invalidateData.dispatch();
-         this.setScreenWithValidData.dispatch(new CharacterSelectionAndNewsScreen());
-      }
-   }
 }
+}//package kabam.rotmg.ui.view

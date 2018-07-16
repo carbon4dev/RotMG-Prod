@@ -1,113 +1,108 @@
-package kabam.rotmg.account.steam {
+﻿package kabam.rotmg.account.steam {
 import com.company.util.EmailValidator;
 
 import kabam.rotmg.account.core.Account;
 
 public class SteamAccount implements Account {
 
-      public static const NETWORK_NAME:String = "steam";
+    public static const NETWORK_NAME:String = "steam";
 
-      [Inject]
-      public var api:SteamApi;
+    [Inject]
+    public var api:SteamApi;
+    private var userId:String = "";
+    private var password:String = null;
+    private var isVerifiedEmail:Boolean;
+    private var platformToken:String;
 
-      private var userId:String = "";
 
-      private var password:String = null;
+    public function updateUser(_arg_1:String, _arg_2:String):void {
+        this.userId = _arg_1;
+        this.password = _arg_2;
+    }
 
-      private var isVerifiedEmail:Boolean;
+    public function getUserName():String {
+        return (this.api.getPersonaName());
+    }
 
-      private var platformToken:String;
+    public function getUserId():String {
+        return ((this.userId = ((this.userId) || (""))));
+    }
 
-      public function SteamAccount() {
-         super();
-      }
+    public function getPassword():String {
+        return ("");
+    }
 
-      public function updateUser(param1:String, param2:String) : void {
-         this.userId = param1;
-         this.password = param2;
-      }
+    public function getSecret():String {
+        return ((this.password = ((this.password) || (""))));
+    }
 
-      public function getUserName() : String {
-         return this.api.getPersonaName();
-      }
+    public function getCredentials():Object {
+        var _local_1:Object = {};
+        _local_1.guid = this.getUserId();
+        _local_1.secret = this.getSecret();
+        _local_1.steamid = this.api.getSteamId();
+        return (_local_1);
+    }
 
-      public function getUserId() : String {
-         return this.userId = this.userId || "";
-      }
+    public function isRegistered():Boolean {
+        return (!((this.getSecret() == "")));
+    }
 
-      public function getPassword() : String {
-         return "";
-      }
+    public function isLinked():Boolean {
+        return (EmailValidator.isValidEmail(this.userId));
+    }
 
-      public function getSecret() : String {
-         return this.password = this.password || "";
-      }
+    public function gameNetworkUserId():String {
+        return (this.api.getSteamId());
+    }
 
-      public function getCredentials() : Object {
-         var _local1:Object = {};
-         _local1.guid = this.getUserId();
-         _local1.secret = this.getSecret();
-         _local1.steamid = this.api.getSteamId();
-         return _local1;
-      }
+    public function gameNetwork():String {
+        return (NETWORK_NAME);
+    }
 
-      public function isRegistered() : Boolean {
-         return this.getSecret() != "";
-      }
+    public function playPlatform():String {
+        return ("steam");
+    }
 
-      public function isLinked() : Boolean {
-         return EmailValidator.isValidEmail(this.userId);
-      }
+    public function reportIntStat(_arg_1:String, _arg_2:int):void {
+        this.api.reportStatistic(_arg_1, _arg_2);
+    }
 
-      public function gameNetworkUserId() : String {
-         return this.api.getSteamId();
-      }
+    public function getRequestPrefix():String {
+        return ("/steamworks");
+    }
 
-      public function gameNetwork() : String {
-         return NETWORK_NAME;
-      }
+    public function getEntryTag():String {
+        return ("steamworks");
+    }
 
-      public function playPlatform() : String {
-         return "steam";
-      }
+    public function clear():void {
+    }
 
-      public function reportIntStat(param1:String, param2:int) : void {
-         this.api.reportStatistic(param1,param2);
-      }
+    public function verify(_arg_1:Boolean):void {
+        this.isVerifiedEmail = _arg_1;
+    }
 
-      public function getRequestPrefix() : String {
-         return "/steamworks";
-      }
+    public function isVerified():Boolean {
+        return (this.isVerifiedEmail);
+    }
 
-      public function getEntryTag() : String {
-         return "steamworks";
-      }
+    public function getPlatformToken():String {
+        return (((this.platformToken) || ("")));
+    }
 
-      public function clear() : void {
-      }
+    public function setPlatformToken(_arg_1:String):void {
+        this.platformToken = _arg_1;
+    }
 
-      public function verify(param1:Boolean) : void {
-         this.isVerifiedEmail = param1;
-      }
+    public function getMoneyAccessToken():String {
+        throw (new Error("No current support for new Kabam offer wall on Steam."));
+    }
 
-      public function isVerified() : Boolean {
-         return this.isVerifiedEmail;
-      }
+    public function getMoneyUserId():String {
+        throw (new Error("No current support for new Kabam offer wall on Steam."));
+    }
 
-      public function getPlatformToken() : String {
-         return this.platformToken || "";
-      }
 
-      public function setPlatformToken(param1:String) : void {
-         this.platformToken = param1;
-      }
-
-      public function getMoneyAccessToken() : String {
-         throw new Error("No current support for new Kabam offer wall on Steam.");
-      }
-
-      public function getMoneyUserId() : String {
-         throw new Error("No current support for new Kabam offer wall on Steam.");
-      }
-   }
 }
+}//package kabam.rotmg.account.steam

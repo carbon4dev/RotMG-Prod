@@ -140,29 +140,30 @@ namespace wServer.logic
                      new TimedTransition(2000, "nothing")
                      )
                  ),
-                new MostDamagers(5,
+                    new Threshold(0.32,
                     new ItemLoot("Potion of Dexterity", 1),
-                    new ItemLoot("Potion of Defense", 0.09),
+                    new ItemLoot("Potion of Defense", 0.05)
+                ),
+                new Threshold(0.1,
+                    new ItemLoot("Staff of Extreme Prejudice", 0.005),
+                    new ItemLoot("Cloak of the Planewalker", 0.005),
+                    new ItemLoot("Wine Cellar Incantation", 0.005),
+                    new ItemLoot("Sprite Wand", 0.01),
+
+                    new TierLoot(3, ItemType.Ring, 0.2),
+
+                    new TierLoot(6, ItemType.Armor, 0.2),
+
+                    new TierLoot(3, ItemType.Ability, 0.2),
+                    new TierLoot(4, ItemType.Ability, 0.15),
+                    new TierLoot(5, ItemType.Ability, 0.1),
+                 new Threshold(0.2,
                     new EggLoot(EggRarity.Common, 0.1),
                     new EggLoot(EggRarity.Uncommon, 0.05),
                     new EggLoot(EggRarity.Rare, 0.01),
                     new EggLoot(EggRarity.Legendary, 0.002)
-                    ),
-                new MostDamagers(3,
-                    new OnlyOne(
-                        new ItemLoot("Staff of Endless Prejudice", blackbag),
-                        new ItemLoot("Staff of Extreme Prejudice", whitebag),
-                        new ItemLoot("Cloak of the Planewalker", whitebag)
-                        ),
-                    new ItemLoot("Wine Cellar Incantation", winecellar),
-                    new ItemLoot("Sprite Wand", 0.01),
-                    new TierLoot(3, ItemType.Ring, 0.2),
-                    new TierLoot(6, ItemType.Armor, 0.2),
-                    new TierLoot(3, ItemType.Ability, 0.2),
-                    new TierLoot(4, ItemType.Ability, 0.15),
-                    new TierLoot(5, ItemType.Ability, 0.1)
-                    )
-
+                     )
+            )
             )
         .Init("Limon Element 1",
              new State(

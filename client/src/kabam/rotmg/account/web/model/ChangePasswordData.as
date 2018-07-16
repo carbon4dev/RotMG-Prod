@@ -1,12 +1,9 @@
-package kabam.rotmg.account.web.model {
-   public class ChangePasswordData {
+﻿package kabam.rotmg.account.web.model {
+public class ChangePasswordData {
 
-      public var currentPassword:String;
+    public var currentPassword:String;
+    public var newPassword:String;
 
-      public var newPassword:String;
 
-      public function ChangePasswordData() {
-         super();
-      }
-   }
 }
+}//package kabam.rotmg.account.web.model

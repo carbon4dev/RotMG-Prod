@@ -1,10 +1,8 @@
-package kabam.rotmg.language.control {
+﻿package kabam.rotmg.language.control {
 import org.osflash.signals.Signal;
 
 public class ReloadCurrentScreenSignal extends Signal {
 
-      public function ReloadCurrentScreenSignal() {
-         super();
-      }
-   }
+
 }
+}//package kabam.rotmg.language.control

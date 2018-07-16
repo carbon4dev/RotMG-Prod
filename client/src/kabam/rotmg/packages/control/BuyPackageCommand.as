@@ -1,22 +1,20 @@
-package kabam.rotmg.packages.control {
+﻿package kabam.rotmg.packages.control {
 import kabam.lib.tasks.TaskMonitor;
 import kabam.rotmg.packages.services.BuyPackageTask;
 
 public class BuyPackageCommand {
 
-      [Inject]
-      public var buyPackageTask:BuyPackageTask;
+    [Inject]
+    public var buyPackageTask:BuyPackageTask;
+    [Inject]
+    public var taskMonitor:TaskMonitor;
 
-      [Inject]
-      public var taskMonitor:TaskMonitor;
 
-      public function BuyPackageCommand() {
-         super();
-      }
+    public function execute():void {
+        this.taskMonitor.add(this.buyPackageTask);
+        this.buyPackageTask.start();
+    }
 
-      public function execute() : void {
-         this.taskMonitor.add(this.buyPackageTask);
-         this.buyPackageTask.start();
-      }
-   }
+
 }
+}//package kabam.rotmg.packages.control

@@ -1,70 +1,56 @@
-package kabam.rotmg.application.model
-{
+﻿package kabam.rotmg.application.model {
 import flash.display.DisplayObjectContainer;
-import flash.system.Capabilities;
 import flash.display.LoaderInfo;
+import flash.system.Capabilities;
 
-public class PlatformModel
-{
+public class PlatformModel {
 
-    private static var platform:kabam.rotmg.application.model.PlatformType;
+    private static var platform:PlatformType;
+
+    private const DESKTOP:String = "Desktop";
 
     [Inject]
     public var root:DisplayObjectContainer;
 
-    private const DESKTOP:String = "Desktop";
 
-    public function PlatformModel()
-    {
-        super();
+    public function isWeb():Boolean {
+        return (!((Capabilities.playerType == this.DESKTOP)));
     }
 
-    public function isWeb() : Boolean
-    {
-        return Capabilities.playerType != this.DESKTOP;
+    public function isDesktop():Boolean {
+        return ((Capabilities.playerType == this.DESKTOP));
     }
 
-    public function isDesktop() : Boolean
-    {
-        return Capabilities.playerType == this.DESKTOP;
+    public function getPlatform():PlatformType {
+        return ((platform = ((platform) || (this.determinePlatform()))));
     }
 
-    public function getPlatform() : kabam.rotmg.application.model.PlatformType
-    {
-        return platform = platform || this.determinePlatform();
-    }
-
-    private function determinePlatform() : kabam.rotmg.application.model.PlatformType
-    {
-        var _local1:Object = LoaderInfo(this.root.stage.root.loaderInfo).parameters;
-        if(this.isKongregate(_local1))
-        {
-            return PlatformType.KONGREGATE;
+    private function determinePlatform():PlatformType {
+        var _local_1:Object = LoaderInfo(this.root.stage.root.loaderInfo).parameters;
+        if (this.isKongregate(_local_1)) {
+            return (PlatformType.KONGREGATE);
         }
-        if(this.isSteam(_local1))
-        {
-            return PlatformType.STEAM;
+        if (this.isSteam(_local_1)) {
+            return (PlatformType.STEAM);
         }
-        if(this.isKabam(_local1))
-        {
-            return PlatformType.KABAM;
+        if (this.isKabam(_local_1)) {
+            return (PlatformType.KABAM);
         }
-        return PlatformType.WEB;
+        return (PlatformType.WEB);
     }
 
-    private function isKongregate(param1:Object) : Boolean
-    {
-        return param1.kongregate_api_path != null;
+    private function isKongregate(_arg_1:Object):Boolean {
+        return (!((_arg_1.kongregate_api_path == null)));
     }
 
-    private function isSteam(param1:Object) : Boolean
-    {
-        return param1.steam_api_path != null;
+    private function isSteam(_arg_1:Object):Boolean {
+        return (!((_arg_1.steam_api_path == null)));
     }
 
-    private function isKabam(param1:Object) : Boolean
-    {
-        return param1.kabam_signed_request != null;
+    private function isKabam(_arg_1:Object):Boolean {
+        return (!((_arg_1.kabam_signed_request == null)));
     }
+
+
 }
-}
+}//package kabam.rotmg.application.model

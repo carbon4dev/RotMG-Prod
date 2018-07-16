@@ -34,17 +34,10 @@ namespace wServer.logic
                         "Your life is an affront to Oryx. You will die."
                         )
                     ),
-                new MostDamagers(5,
-                    new OnlyOne(
-                        new ItemLoot("SLVRDLLR's Kendo Stick", whitebag)
-                        )
-                    ),
-                new Threshold(1,
-                    new ItemLoot("Golden Sword", 0.04),
-                    new ItemLoot("Ring of Greater Defense", 0.04),
-                    new ItemLoot("Potion of Speed", 0.03),
-                    new ItemLoot("Steel Helm", 0.04)    
-                    )
+                new ItemLoot("Golden Sword", 0.04),
+                new ItemLoot("Ring of Greater Defense", 0.04),
+                new ItemLoot("Potion of Speed", 0.03),
+                new ItemLoot("Steel Helm", 0.04)
             )
             .Init("Imp",
                 new State(

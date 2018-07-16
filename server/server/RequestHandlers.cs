@@ -48,13 +48,13 @@ namespace server
             else if (acc == null && String.IsNullOrWhiteSpace(Query["password"]))
                 return true;
 
-            //if (acc.Banned)
-            //{
-            //    using (StreamWriter wtr = new StreamWriter(Context.Response.OutputStream))
-            //        wtr.WriteLine("<Error>Account under maintenance</Error>");
-            //    Context.Response.Close();
-            //    return false;
-            //}
+            if (acc.Banned)
+            {
+                using (StreamWriter wtr = new StreamWriter(Context.Response.OutputStream))
+                    wtr.WriteLine("<Error>Account under maintenance</Error>");
+                Context.Response.Close();
+                return false;
+            }
             if (checkAccInUse)
             {
                 int? timeout = 0;
@@ -62,10 +62,10 @@ namespace server
                 {
                     if (timeout != null)
                         using (StreamWriter wtr = new StreamWriter(Context.Response.OutputStream))
-                            wtr.WriteLine("<Error>Account in use (" + timeout + " seconds until timeout)!</Error>");
+                            wtr.WriteLine("<Error>Account in use. (" + timeout + " seconds until timeout.)</Error>");
                     else
                         using (StreamWriter wtr = new StreamWriter(Context.Response.OutputStream))
-                            wtr.WriteLine("<Error>Account in use!</Error>");
+                            wtr.WriteLine("<Error>Account in use.</Error>");
 
                     Context.Response.Close();
                     return false;

@@ -1,4 +1,4 @@
-package kabam.rotmg.death.view {
+﻿package kabam.rotmg.death.view {
 import com.company.assembleegameclient.ui.dialogs.Dialog;
 
 import flash.display.Sprite;
@@ -8,27 +8,26 @@ import org.osflash.signals.Signal;
 
 public class ZombifyDialog extends Sprite {
 
-      public static const TITLE:String = "ZombifyDialog.title";
+    public static const TITLE:String = "ZombifyDialog.title";
+    public static const BODY:String = "ZombifyDialog.body";
+    public static const BUTTON:String = "ZombifyDialog.button";
 
-      public static const BODY:String = "ZombifyDialog.body";
+    public const closed:Signal = new Signal();
 
-      public static const BUTTON:String = "ZombifyDialog.button";
+    private var dialog:Dialog;
 
-      public const closed:Signal = new Signal();
+    public function ZombifyDialog() {
+        this.dialog = new Dialog(TITLE, BODY, BUTTON, null, null);
+        this.dialog.offsetX = -100;
+        this.dialog.offsetY = 200;
+        this.dialog.addEventListener(Dialog.LEFT_BUTTON, this.onButtonClick);
+        addChild(this.dialog);
+    }
 
-      private var dialog:Dialog;
+    private function onButtonClick(_arg_1:Event):void {
+        this.closed.dispatch();
+    }
 
-      public function ZombifyDialog() {
-         super();
-         this.dialog = new Dialog(TITLE,BODY,BUTTON,null,null);
-         this.dialog.offsetX = -100;
-         this.dialog.offsetY = 200;
-         this.dialog.addEventListener(Dialog.LEFT_BUTTON,this.onButtonClick);
-         addChild(this.dialog);
-      }
 
-      private function onButtonClick(param1:Event) : void {
-         this.closed.dispatch();
-      }
-   }
 }
+}//package kabam.rotmg.death.view

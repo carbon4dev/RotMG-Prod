@@ -25,7 +25,7 @@ namespace wServer.networking.handlers
                     client.Player.Credits = client.Account.Credits;
                     client.Player.UpdateCount++;
                 }
-            }, PendingPriority.Normal);
+            }, PendingPriority.Networking);
         }
     }
 }

@@ -1,28 +1,18 @@
-// Decompiled by AS3 Sorcerer 1.40
-// http://www.as3sorcerer.com/
-
-//kabam.rotmg.messaging.impl.outgoing.OutgoingMessage
-
-package kabam.rotmg.messaging.impl.outgoing
-{
+﻿package kabam.rotmg.messaging.impl.outgoing {
 import flash.utils.IDataInput;
 
 import kabam.lib.net.impl.Message;
 
-public class OutgoingMessage extends Message
-    {
+public class OutgoingMessage extends Message {
 
-        public function OutgoingMessage(_arg1:uint, _arg2:Function)
-        {
-            super(_arg1, _arg2);
-        }
-
-        final override public function parseFromInput(_arg1:IDataInput):void
-        {
-            throw (new Error((("Client should not receive " + id) + " messages")));
-        }
-
-
+    public function OutgoingMessage(_arg_1:uint, _arg_2:Function) {
+        super(_arg_1, _arg_2);
     }
-}//package kabam.rotmg.messaging.impl.outgoing
 
+    final override public function parseFromInput(_arg_1:IDataInput):void {
+        throw (new Error((("Client should not receive " + id) + " messages")));
+    }
+
+
+}
+}//package kabam.rotmg.messaging.impl.outgoing

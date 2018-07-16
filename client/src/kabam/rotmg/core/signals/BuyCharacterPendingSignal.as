@@ -1,10 +1,8 @@
-package kabam.rotmg.core.signals {
+﻿package kabam.rotmg.core.signals {
 import org.osflash.signals.Signal;
 
 public class BuyCharacterPendingSignal extends Signal {
 
-      public function BuyCharacterPendingSignal() {
-         super();
-      }
-   }
+
 }
+}//package kabam.rotmg.core.signals

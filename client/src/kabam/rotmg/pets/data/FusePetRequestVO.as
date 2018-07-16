@@ -1,17 +1,15 @@
-package kabam.rotmg.pets.data {
-   public class FusePetRequestVO implements IUpgradePetRequestVO {
+﻿package kabam.rotmg.pets.data {
+public class FusePetRequestVO implements IUpgradePetRequestVO {
 
-      public var petInstanceIdOne:int;
+    public var petInstanceIdOne:int;
+    public var petInstanceIdTwo:int;
+    public var paymentTransType:int;
 
-      public var petInstanceIdTwo:int;
+    public function FusePetRequestVO(_arg_1:int, _arg_2:int, _arg_3:int) {
+        this.petInstanceIdOne = _arg_1;
+        this.petInstanceIdTwo = _arg_2;
+        this.paymentTransType = _arg_3;
+    }
 
-      public var paymentTransType:int;
-
-      public function FusePetRequestVO(param1:int, param2:int, param3:int) {
-         super();
-         this.petInstanceIdOne = param1;
-         this.petInstanceIdTwo = param2;
-         this.paymentTransType = param3;
-      }
-   }
 }
+}//package kabam.rotmg.pets.data

@@ -1,7 +1,7 @@
-package com.company.assembleegameclient.ui.panels {
-import com.company.assembleegameclient.LOEBUILD_c8d46d341bea4fd5bff866a65ff8aea9.GameSprite;
-import com.company.assembleegameclient.LOEBUILD_5891da2d64975cae48d175d1e001f5da.LOEBUILD_5e926ae2981199c65b99066bd9e14d29;
-import kabam.rotmg.assets.model.Player;
+﻿package com.company.assembleegameclient.ui.panels {
+import com.company.assembleegameclient.game.GameSprite;
+import com.company.assembleegameclient.objects.IInteractiveObject;
+import com.company.assembleegameclient.objects.Player;
 import com.company.assembleegameclient.ui.panels.itemgrids.ItemGrid;
 
 import flash.display.Sprite;
@@ -9,97 +9,92 @@ import flash.events.Event;
 
 public class InteractPanel extends Sprite {
 
-      public static const MAX_DIST:Number = 1;
+    public static const MAX_DIST:Number = 1;
 
-      public var gs_:GameSprite;
+    public var gs_:GameSprite;
+    public var player_:Player;
+    public var w_:int;
+    public var h_:int;
+    public var currentPanel:Panel = null;
+    public var currObj_:IInteractiveObject = null;
+    public var partyPanel_:PartyPanel;
+    private var overridePanel_:Panel;
+    public var requestInteractive:Function;
 
-      public var player_:Player;
+    public function InteractPanel(_arg_1:GameSprite, _arg_2:Player, _arg_3:int, _arg_4:int) {
+        this.gs_ = _arg_1;
+        this.player_ = _arg_2;
+        this.w_ = _arg_3;
+        this.h_ = _arg_4;
+        this.partyPanel_ = new PartyPanel(_arg_1);
+    }
 
-      public var w_:int;
+    public function setOverride(_arg_1:Panel):void {
+        if (this.overridePanel_ != null) {
+            this.overridePanel_.removeEventListener(Event.COMPLETE, this.onComplete);
+        }
+        this.overridePanel_ = _arg_1;
+        this.overridePanel_.addEventListener(Event.COMPLETE, this.onComplete);
+    }
 
-      public var h_:int;
+    public function redraw():void {
+        this.currentPanel.draw();
+    }
 
-      public var currentPanel:Panel = null;
-
-      public var currObj_:LOEBUILD_5e926ae2981199c65b99066bd9e14d29 = null;
-
-      public var partyPanel_:PartyPanel;
-
-      private var overridePanel_:Panel;
-
-      public var requestInteractive:Function;
-
-      public function InteractPanel(param1:GameSprite, param2:Player, param3:int, param4:int) {
-         super();
-         this.gs_ = param1;
-         this.player_ = param2;
-         this.w_ = param3;
-         this.h_ = param4;
-         this.partyPanel_ = new PartyPanel(param1);
-      }
-
-      public function setOverride(param1:Panel) : void {
-         if(this.overridePanel_ != null) {
-            this.overridePanel_.removeEventListener(Event.COMPLETE,this.onComplete);
-         }
-         this.overridePanel_ = param1;
-         this.overridePanel_.addEventListener(Event.COMPLETE,this.onComplete);
-      }
-
-      public function redraw() : void {
-         this.currentPanel.draw();
-      }
-
-      public function draw() : void {
-         var _local1:LOEBUILD_5e926ae2981199c65b99066bd9e14d29 = null;
-         var _local2:Panel = null;
-         if(this.overridePanel_ != null) {
+    public function draw():void {
+        var _local_1:IInteractiveObject;
+        var _local_2:Panel;
+        if (this.overridePanel_ != null) {
             this.setPanel(this.overridePanel_);
             this.currentPanel.draw();
             return;
-         }
-         _local1 = this.requestInteractive();
-         if(this.currentPanel == null || _local1 != this.currObj_) {
-            this.currObj_ = _local1;
-            if(this.currObj_ != null) {
-               _local2 = this.currObj_.getPanel(this.gs_);
-               this.partyPanel_ = new PartyPanel(this.gs_);
-            } else {
-               _local2 = this.partyPanel_;
+        }
+        _local_1 = this.requestInteractive();
+        if ((((this.currentPanel == null)) || (!((_local_1 == this.currObj_))))) {
+            this.currObj_ = _local_1;
+            if (this.currObj_ != null) {
+                _local_2 = this.currObj_.getPanel(this.gs_);
+                this.partyPanel_ = new PartyPanel(this.gs_);
             }
-            this.setPanel(_local2);
-         }
-         if(this.currentPanel) {
+            else {
+                _local_2 = this.partyPanel_;
+            }
+            this.setPanel(_local_2);
+        }
+        if (this.currentPanel) {
             this.currentPanel.draw();
-         }
-      }
+        }
+    }
 
-      private function onComplete(param1:Event) : void {
-         if(this.overridePanel_ != null) {
-            this.overridePanel_.removeEventListener(Event.COMPLETE,this.onComplete);
+    private function onComplete(_arg_1:Event):void {
+        if (this.overridePanel_ != null) {
+            this.overridePanel_.removeEventListener(Event.COMPLETE, this.onComplete);
             this.overridePanel_ = null;
-         }
-         this.setPanel(null);
-         this.draw();
-      }
+        }
+        this.setPanel(null);
+        this.draw();
+    }
 
-      public function setPanel(param1:Panel) : void {
-         if(param1 != this.currentPanel) {
-            this.currentPanel && removeChild(this.currentPanel);
-            this.currentPanel = param1;
-            this.currentPanel && this.positionPanelAndAdd();
-         }
-      }
+    public function setPanel(_arg_1:Panel):void {
+        if (_arg_1 != this.currentPanel) {
+            ((this.currentPanel) && (removeChild(this.currentPanel)));
+            this.currentPanel = _arg_1;
+            ((this.currentPanel) && (this.positionPanelAndAdd()));
+        }
+    }
 
-      private function positionPanelAndAdd() : void {
-         if(this.currentPanel is ItemGrid) {
-            this.currentPanel.x = (this.w_ - this.currentPanel.width) * 0.5;
+    private function positionPanelAndAdd():void {
+        if ((this.currentPanel is ItemGrid)) {
+            this.currentPanel.x = ((this.w_ - this.currentPanel.width) * 0.5);
             this.currentPanel.y = 8;
-         } else {
+        }
+        else {
             this.currentPanel.x = 6;
             this.currentPanel.y = 8;
-         }
-         addChild(this.currentPanel);
-      }
-   }
+        }
+        addChild(this.currentPanel);
+    }
+
+
 }
+}//package com.company.assembleegameclient.ui.panels

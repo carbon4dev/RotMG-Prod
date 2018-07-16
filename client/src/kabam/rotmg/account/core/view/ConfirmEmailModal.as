@@ -1,6 +1,6 @@
-package kabam.rotmg.account.core.view {
+﻿package kabam.rotmg.account.core.view {
 import com.company.assembleegameclient.account.ui.Frame;
-import com.company.assembleegameclient.account.ui.LOEBUILD_b5d88c64baa451896772d5efdf29f2bf;
+import com.company.assembleegameclient.account.ui.TextInputField;
 import com.company.util.EmailValidator;
 import com.company.util.MoreObjectUtil;
 
@@ -20,125 +20,124 @@ import org.osflash.signals.Signal;
 
 public class ConfirmEmailModal extends Frame {
 
-      public var register:Signal;
+    public var register:Signal;
+    public var cancel:Signal;
+    private var emailInput:TextInputField;
+    private var account:Account;
+    private var closeButton:DialogCloseButton;
+    private var isKabam:Boolean = false;
 
-      public var cancel:Signal;
+    public function ConfirmEmailModal() {
+        this.register = new Signal(AccountData);
+        super(TextKey.VERIFY_WEB_ACCOUNT_DIALOG_TITLE, TextKey.REGISTER_WEB_ACCOUNT_DIALOG_LEFTBUTTON, TextKey.VERIFY_WEB_ACCOUNT_DIALOG_BUTTON);
+        this.positionAndStuff();
+        removeChild(leftButton_);
+        this.account = StaticInjectorContext.getInjector().getInstance(Account);
+        this.createAssets();
+        this.enableForTabBehavior();
+        this.addEventListeners();
+    }
 
-      private var emailInput:LOEBUILD_b5d88c64baa451896772d5efdf29f2bf;
+    private function addEventListeners():void {
+        rightButton_.addEventListener(MouseEvent.CLICK, this.onVerify);
+        this.closeButton.addEventListener(MouseEvent.CLICK, this.onCancel);
+    }
 
-      private var account:Account;
-
-      private var closeButton:DialogCloseButton;
-
-      private var isKabam:Boolean = false;
-
-      public function ConfirmEmailModal() {
-         this.register = new Signal(AccountData);
-         super(TextKey.VERIFY_WEB_ACCOUNT_DIALOG_TITLE,TextKey.REGISTER_WEB_ACCOUNT_DIALOG_LEFTBUTTON,TextKey.VERIFY_WEB_ACCOUNT_DIALOG_BUTTON);
-         this.positionAndStuff();
-         removeChild(leftButton_);
-         this.account = StaticInjectorContext.getInjector().getInstance(Account);
-         this.createAssets();
-         this.enableForTabBehavior();
-         this.addEventListeners();
-      }
-
-      private function addEventListeners() : void {
-         rightButton_.addEventListener(MouseEvent.CLICK,this.onVerify);
-         this.closeButton.addEventListener(MouseEvent.CLICK,this.onCancel);
-      }
-
-      private function createAssets() : void {
-         this.emailInput = new LOEBUILD_b5d88c64baa451896772d5efdf29f2bf(TextKey.REGISTER_WEB_ACCOUNT_EMAIL,false);
-         if(EmailValidator.isValidEmail(this.account.getUserId())) {
+    private function createAssets():void {
+        this.emailInput = new TextInputField(TextKey.REGISTER_WEB_ACCOUNT_EMAIL, false);
+        if (EmailValidator.isValidEmail(this.account.getUserId())) {
             this.emailInput.inputText_.setText(this.account.getUserId());
-         } else {
+        }
+        else {
             this.emailInput.inputText_.setText("");
             this.isKabam = true;
-         }
-         addTextInputField(this.emailInput);
-         this.closeButton = new DialogCloseButton();
-         this.closeButton.y = -2;
-         this.closeButton.x = w_ - this.closeButton.width - 8;
-         addChild(this.closeButton);
-      }
+        }
+        addTextInputField(this.emailInput);
+        this.closeButton = new DialogCloseButton();
+        this.closeButton.y = -2;
+        this.closeButton.x = ((w_ - this.closeButton.width) - 8);
+        addChild(this.closeButton);
+    }
 
-      private function enableForTabBehavior() : void {
-         this.emailInput.tabIndex = 1;
-         rightButton_.tabIndex = 2;
-         this.emailInput.tabEnabled = true;
-         rightButton_.tabEnabled = true;
-      }
+    private function enableForTabBehavior():void {
+        this.emailInput.tabIndex = 1;
+        rightButton_.tabIndex = 2;
+        this.emailInput.tabEnabled = true;
+        rightButton_.tabEnabled = true;
+    }
 
-      private function onCancel(param1:MouseEvent) : void {
-         this.close();
-      }
+    private function onCancel(_arg_1:MouseEvent):void {
+        this.close();
+    }
 
-      private function close() : void {
-         if(Boolean(parent) && Boolean(parent.contains(this))) {
+    private function close():void {
+        if (((parent) && (parent.contains(this)))) {
             parent.removeChild(this);
-         }
-      }
+        }
+    }
 
-      private function onVerify(param1:MouseEvent) : void {
-         var _local2:AppEngineClient = null;
-         var _local3:Object = null;
-         if(this.isEmailValid()) {
-            _local2 = StaticInjectorContext.getInjector().getInstance(AppEngineClient);
-            _local2.complete.addOnce(this.onComplete);
-            _local3 = {"newGuid":this.emailInput.text()};
-            MoreObjectUtil.addToObject(_local3,this.account.getCredentials());
-            _local2.sendRequest("account/changeEmail",_local3);
-            rightButton_.removeEventListener(MouseEvent.CLICK,this.onVerify);
-         }
-      }
+    private function onVerify(_arg_1:MouseEvent):void {
+        var _local_2:AppEngineClient;
+        var _local_3:Object;
+        if (this.isEmailValid()) {
+            _local_2 = StaticInjectorContext.getInjector().getInstance(AppEngineClient);
+            _local_2.complete.addOnce(this.onComplete);
+            _local_3 = {"newGuid": this.emailInput.text()};
+            MoreObjectUtil.addToObject(_local_3, this.account.getCredentials());
+            _local_2.sendRequest("account/changeEmail", _local_3);
+            rightButton_.removeEventListener(MouseEvent.CLICK, this.onVerify);
+        }
+    }
 
-      private function onComplete(param1:Boolean, param2:*) : void {
-         if(param1) {
+    private function onComplete(_arg_1:Boolean, _arg_2:*):void {
+        if (_arg_1) {
             this.onSent();
-         } else {
-            this.onError(param2);
-         }
-         rightButton_.addEventListener(MouseEvent.CLICK,this.onVerify);
-      }
+        }
+        else {
+            this.onError(_arg_2);
+        }
+        rightButton_.addEventListener(MouseEvent.CLICK, this.onVerify);
+    }
 
-      private function onSent() : void {
-         var _local1:Account = StaticInjectorContext.getInjector().getInstance(Account);
-         if(!this.isKabam) {
-            _local1.updateUser(this.emailInput.text(),_local1.getPassword());
-         }
-         removeChild(titleText_);
-         titleText_ = new TextFieldDisplayConcrete().setSize(12).setColor(11776947);
-         titleText_.setStringBuilder(new LineBuilder().setParams("WebAccountDetailDialog.sent"));
-         titleText_.filters = [new DropShadowFilter(0,0,0)];
-         titleText_.x = 5;
-         titleText_.y = 3;
-         titleText_.filters = [new DropShadowFilter(0,0,0,0.5,12,12)];
-         addChild(titleText_);
-      }
+    private function onSent():void {
+        var _local_1:Account = StaticInjectorContext.getInjector().getInstance(Account);
+        if (!this.isKabam) {
+            _local_1.updateUser(this.emailInput.text(), _local_1.getPassword());
+        }
+        removeChild(titleText_);
+        titleText_ = new TextFieldDisplayConcrete().setSize(12).setColor(0xB3B3B3);
+        titleText_.setStringBuilder(new LineBuilder().setParams("WebAccountDetailDialog.sent"));
+        titleText_.filters = [new DropShadowFilter(0, 0, 0)];
+        titleText_.x = 5;
+        titleText_.y = 3;
+        titleText_.filters = [new DropShadowFilter(0, 0, 0, 0.5, 12, 12)];
+        addChild(titleText_);
+    }
 
-      private function onError(param1:String) : void {
-         removeChild(titleText_);
-         titleText_ = new TextFieldDisplayConcrete().setSize(12).setColor(16549442);
-         titleText_.setStringBuilder(new LineBuilder().setParams(param1));
-         titleText_.filters = [new DropShadowFilter(0,0,0)];
-         titleText_.x = 5;
-         titleText_.y = 3;
-         titleText_.filters = [new DropShadowFilter(0,0,0,0.5,12,12)];
-         addChild(titleText_);
-      }
+    private function onError(_arg_1:String):void {
+        removeChild(titleText_);
+        titleText_ = new TextFieldDisplayConcrete().setSize(12).setColor(16549442);
+        titleText_.setStringBuilder(new LineBuilder().setParams(_arg_1));
+        titleText_.filters = [new DropShadowFilter(0, 0, 0)];
+        titleText_.x = 5;
+        titleText_.y = 3;
+        titleText_.filters = [new DropShadowFilter(0, 0, 0, 0.5, 12, 12)];
+        addChild(titleText_);
+    }
 
-      private function isEmailValid() : Boolean {
-         var _local1:Boolean = EmailValidator.isValidEmail(this.emailInput.text());
-         if(!_local1) {
+    private function isEmailValid():Boolean {
+        var _local_1:Boolean = EmailValidator.isValidEmail(this.emailInput.text());
+        if (!_local_1) {
             this.emailInput.setError(TextKey.INVALID_EMAIL_ADDRESS);
-         }
-         return _local1;
-      }
+        }
+        return (_local_1);
+    }
 
-      private function positionAndStuff() : void {
-         this.x = WebMain.STAGE.stageWidth / 2 - this.w_ / 2;
-         this.y = WebMain.STAGE.stageHeight / 2 - this.h_ / 2;
-      }
-   }
+    private function positionAndStuff():void {
+        this.x = ((WebMain.STAGE.stageWidth / 2) - (this.w_ / 2));
+        this.y = ((WebMain.STAGE.stageHeight / 2) - (this.h_ / 2));
+    }
+
+
 }
+}//package kabam.rotmg.account.core.view

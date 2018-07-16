@@ -13,7 +13,7 @@ namespace wServer.logic
         private _ Crystal = () => Behav()
             .Init("Mysterious Crystal",
                 new State(
-                    new CopyDamageOnDeath("Crystal Prisoner", 99),
+                    new DropPortalOnDeath("Deadwater Docks", 100),
                     new State("Idle",
                         new Taunt(0.1, "Break the crystal for great rewards..."),
                         new Taunt(0.1, "Help me..."),
@@ -76,7 +76,6 @@ namespace wServer.logic
             )
             .Init("Crystal Prisoner",
                 new State(
-                    new DropPortalOnDeath("Deadwater Docks", 100),
                     new Spawn("Crystal Prisoner Steed", 5, 0, 200),
                     new State("pause",
                         new ConditionalEffect(ConditionEffectIndex.Invulnerable),
@@ -227,34 +226,16 @@ namespace wServer.logic
                         new TimedTransition(3000, "Daisy_attack")
                         )
                     ),
-                 new MostDamagers(10,
-                    LootTemplates.StatIncreasePotionsLoot()
+                new Threshold(1,
+                    new ItemLoot("Potion of Vitality", 1)
                 ),
-                 new MostDamagers(5,
-                     new ItemLoot("Crystal Wand", normalloot),
-                     new ItemLoot("Crystal Sword", normalloot),
-                     new OnlyOne(
-                        new ItemLoot("Flawless Crystal Wand", greatloot),
-                        new ItemLoot("Giant Crystal Sword", greatloot)
-                         )
-                     )
-            /*
-            Crystal Prisoner (Prod Loot):
-            -- init white bag loot
-            - crystal wand
-            - crystal sword
-            -- end white bag loot
-
-            -- init pot loot
-            - att
-            - def
-            - spd
-            - dex
-            - vit
-            - wis
-            -- end pot loot
-
-            */
+                new Threshold(0.015,
+                    new TierLoot(2, ItemType.Potion, 0.07)
+                    ),
+                new Threshold(0.03,
+                    new ItemLoot("Crystal Wand", 0.005),
+                    new ItemLoot("Crystal Sword", 0.006)
+                    )
             )
             .Init("Crystal Prisoner Clone",
                 new State(

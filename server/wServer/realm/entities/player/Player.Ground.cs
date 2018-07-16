@@ -28,7 +28,7 @@ namespace wServer.realm.entities.player
                         UpdateCount++;
 
                         if (HP <= 0)
-                            Death("Suffocation");
+                            Death("server.damage_suffocation");
                     }
                     else
                     {

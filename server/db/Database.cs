@@ -10,7 +10,6 @@ using MySql.Data.MySqlClient;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Data.SqlClient;
 
 #endregion
 
@@ -19,45 +18,33 @@ namespace db
     public partial class Database : IDisposable
     {
         private static readonly List<string> emails = new List<string>();
-
         private static readonly string[] Names =
         {
-            "Deyst", "Drac", "Drol",
+            "Darq", "Deyst", "Drac", "Drol",
             "Eango", "Eashy", "Eati", "Eendi", "Ehoni",
-            "Iatho", "Iawa", "Iri", "Itani",
-            "Odaru", "Oeti",
-            "Rayr", "Ril", "Rilr",
+            "Gharr", "Iatho", "Iawa", "Idrae", "Iri", "Issz", "Itani",
+            "Laen", "Lauk", "Lorz",
+            "Oalei", "Odaru", "Oeti", "Orothi", "Oshyu",
+            "Queq", "Radph", "Rayr", "Ril", "Rilr", "Risrr",
             "Saylt", "Scheev", "Sek", "Serl", "Seus",
-            "Tal", "Uoro", "Urake", "Utanu",
-            "Vorck", "Vorv", "Yangu", "Zhiar"
+            "Tal", "Tiar", "Uoro", "Urake", "Utanu",
+            "Vorck", "Vorv", "Yangu", "Yimi", "Zhiar"
         };
 
         private static string _host, _databaseName, _user, _password;
-
         private readonly MySqlConnection _con;
-
         public MySqlConnection Connection { get { return _con; } }
 
-        public Database()
+        public Database(string host, string database, string user, string password)
         {
-            _host = "";
-            _databaseName = "";
-            _user = "";
-            _password = "";
+            _host = host;
+            _databaseName = database;
+            _user = user;
+            _password = password;
 
-            string connectionString = String.Format(
-                "Data Source={0}; Initial Catalog={1}; User ID={2}; Password={3};",
-                _host,_databaseName,_user,_password);
-            
             _con = new MySqlConnection(
-            String.Format(
-                "Server=" + _host + ";" +
-                "Database=" + _databaseName + ";" +
-                "uid=" + _user + ";" +
-                "password=" + _password + ";" +
-                "convert zero datetime=true; max pool size=999999; pooling=true; Connection Lifetime=8200; Connection Timeout=8200;"
-                )
-            );
+                String.Format("Server={0};Database={1};uid={2};password={3};convert zero datetime=True;",
+                    host, database ?? "rotmgprod", user ?? "root", password ?? ""));
             _con.Open();
 
             if (File.Exists("UnlockedAccounts.txt"))
@@ -76,6 +63,14 @@ namespace db
             }
         }
 
+        public Database()
+        {
+            _con = new MySqlConnection(
+                String.Format("Server={0};Database={1};uid={2};password={3};convert zero datetime=True;",
+                    _host, _databaseName, _user, _password));
+            _con.Open();
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -91,6 +86,7 @@ namespace db
                     _con.Dispose();
                 }
             }
+            //GC.SuppressFinalize(this);//Updated
         }
 
         private static string UppercaseFirst(string s)
@@ -211,11 +207,11 @@ AND characters.charId=death.chrId;";
             }
             return GetAccount(accId, data);
         }
-        
+
         public QuestItem GetDailyQuest(string accId, XmlData data)
         {
             var cmd = CreateQuery();
-            cmd.CommandText = "SELECT * FROM dailyquests WHERE accId=@id;";
+            cmd.CommandText = "SELECT * FROM dailyQuests WHERE accId=@id;";
             cmd.Parameters.AddWithValue("@id", accId);
             QuestItem quest = null;
             using (var rdr = cmd.ExecuteReader())
@@ -265,7 +261,6 @@ AND characters.charId=death.chrId;";
             cmd.ExecuteNonQuery();
 
         }
-
         public void UnmuteAccount(string accId)
         {
             MySqlCommand cmd = CreateQuery();
@@ -282,10 +277,8 @@ AND characters.charId=death.chrId;";
             if ((int)(long)cmd.ExecuteScalar() > 0) return null;
 
             cmd = CreateQuery();
-            cmd.CommandText = @"INSERT INTO accounts(uuid, password, name, rank,
-namechosen, verified, guild, guildRank, guildFame, vaultCount, maxCharSlot,
-regTime, guest, banned, locked, ignored, gifts, isAgeVerified, authToken) 
-VALUES(@uuid, SHA1(@password), @randomName, @rank, 0, 1, 0, 0, 0, 2, 2, @regTime, @guest, 0, @empty, @empty, @empty, 1, @authToken);";
+            cmd.CommandText =
+                "INSERT INTO accounts(uuid, password, name, rank, namechosen, verified, guild, guildRank, guildFame, vaultCount, maxCharSlot, regTime, guest, banned, locked, ignored, gifts, isAgeVerified, authToken) VALUES(@uuid, SHA1(@password), @randomName, @rank, 0, 0, 0, 0, 0, 1, 2, @regTime, @guest, 0, @empty, @empty, @empty, 1, @authToken);";
             cmd.Parameters.AddWithValue("@uuid", uuid);
             cmd.Parameters.AddWithValue("@randomName", Names[new Random().Next(0, Names.Length)]);
             cmd.Parameters.AddWithValue("@password", password);
@@ -296,7 +289,7 @@ VALUES(@uuid, SHA1(@password), @randomName, @rank, 0, 1, 0, 0, 0, 2, 2, @regTime
             cmd.Parameters.AddWithValue("@empty", "");
 
             if (emails.Contains(uuid))
-                cmd.Parameters.AddWithValue("@rank", 0);
+                cmd.Parameters.AddWithValue("@rank", 1);
             else
                 cmd.Parameters.AddWithValue("@rank", 0);
 
@@ -307,23 +300,12 @@ VALUES(@uuid, SHA1(@password), @randomName, @rank, 0, 1, 0, 0, 0, 2, 2, @regTime
             {
                 cmd = CreateQuery();
                 cmd.CommandText =
-                    "INSERT INTO stats(accId, fame, totalFame, credits, totalCredits) VALUES(@accId, 0, 0, 75, 75);";
+                    "INSERT INTO stats(accId, fame, totalFame, credits, totalCredits) VALUES(@accId, 1000, 1000, 20000, 20000);";
                 cmd.Parameters.AddWithValue("@accId", accId);
                 cmd.ExecuteNonQuery();
 
                 cmd = CreateQuery();
                 cmd.CommandText = "INSERT INTO vaults(accId, items) VALUES(@accId, '-1, -1, -1, -1, -1, -1, -1, -1');";
-                cmd.Parameters.AddWithValue("@accId", accId);
-                cmd.ExecuteNonQuery();
-
-                cmd = CreateQuery();
-                cmd.CommandText = "INSERT INTO vaults(accId, items) VALUES(@accId, '-1, -1, -1, -1, -1, -1, -1, -1');";
-                cmd.Parameters.AddWithValue("@accId", accId);
-                cmd.ExecuteNonQuery();
-
-                cmd = CreateQuery();
-                cmd.CommandText = @"INSERT INTO pets(accId, petId, objType, skinName, skin, family, rarity, maxLevel, abilities, levels, xp) 
-VALUES(@accId, 1, 32567, '{pets.Baby_Skin}', 32819, 0, 0, 30, '407, 408, 406', '0, 0, 0', '0, 0, 0');";
                 cmd.Parameters.AddWithValue("@accId", accId);
                 cmd.ExecuteNonQuery();
             }
@@ -365,7 +347,7 @@ VALUES(@accId, 1, 32567, '{pets.Baby_Skin}', 32819, 0, 0, 30, '407, 408, 406', '
             while(items.Count < DailyQuestConstants.QuestsPerDay);
 
             var cmd = CreateQuery();
-            cmd.CommandText = "INSERT INTO dailyquests(accId, goals, tier, time) VALUES(@accId, @goals, @tier, @time) ON DUPLICATE KEY UPDATE accId=@accId, goals=@goals, tier=@tier, time=@time;";
+            cmd.CommandText = "INSERT INTO dailyQuests(accId, goals, tier, time) VALUES(@accId, @goals, @tier, @time) ON DUPLICATE KEY UPDATE accId=@accId, goals=@goals, tier=@tier, time=@time;";
             cmd.Parameters.AddWithValue("@tier", 1);
             cmd.Parameters.AddWithValue("@accId", accId);
             cmd.Parameters.AddWithValue("@goals", Utils.GetCommaSepString(items.ToArray()));
@@ -457,7 +439,7 @@ VALUES(@accId, 1, 32567, '{pets.Baby_Skin}', 32819, 0, 0, 30, '407, 408, 406', '
                 };
             }
             ReadStats(ret);
-            //ReadGiftCodes(ret);
+            ReadGiftCodes(ret);
             ret.Guild.Name = GetGuildName(ret.Guild.Id);
             ret.DailyQuest = GetDailyQuest(ret.AccountId, data);
             return ret;
@@ -730,7 +712,6 @@ SELECT MAX(chestId) FROM vaults WHERE accId = @accId;";
             }
             return null;
         }
-
         public List<AbilityItem> GetPetAbilities(MySqlDataReader rdr)
         {
             List<AbilityItem> ret = new List<AbilityItem>();
@@ -1012,230 +993,37 @@ items = @items;";
         public void Death(XmlData data, Account acc, Char chr, string killer) //Save first
         {
             MySqlCommand cmd = CreateQuery();
-//            cmd.CommandText = @"UPDATE characters SET 
-//dead=TRUE, 
-//deathTime=NOW() 
-//WHERE accId=@accId AND charId=@charId;";
-//            cmd.Parameters.AddWithValue("@accId", acc.AccountId);
-//            cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//            cmd.ExecuteNonQuery();
+            cmd.CommandText = @"UPDATE characters SET 
+dead=TRUE, 
+deathTime=NOW() 
+WHERE accId=@accId AND charId=@charId;";
+            cmd.Parameters.AddWithValue("@accId", acc.AccountId);
+            cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
+            cmd.ExecuteNonQuery();
 
             bool firstBorn;
             int finalFame = chr.FameStats.CalculateTotal(data, acc, chr, chr.CurrentFame, out firstBorn);
-            //Random randomize = new Random();
 
-            //int invDeath = 0;
-            //int backpackDeath = 0;
+            cmd = CreateQuery();
+            cmd.CommandText = @"UPDATE stats SET 
+fame=fame+@amount, 
+totalFame=totalFame+@amount 
+WHERE accId=@accId;";
+            cmd.Parameters.AddWithValue("@accId", acc.AccountId);
+            cmd.Parameters.AddWithValue("@amount", finalFame);
+            cmd.ExecuteNonQuery();
 
-            //if((chr.Level > 20) && (chr.Level <= 50))
-            //{
-            //    invDeath = randomize.Next(100);
-            //    backpackDeath = randomize.Next(75);
-            //}
-            //else if((chr.Level > 50) && (chr.Level <= 100))
-            //{
-            //    invDeath = randomize.Next(75);
-            //    backpackDeath = randomize.Next(50);
-            //}
-            //else if((chr.Level > 100) && (chr.Level <= 150))
-            //{
-            //    invDeath = randomize.Next(50);
-            //    backpackDeath = randomize.Next(25);
-            //}
-            //else if((chr.Level > 150) && (chr.Level <= 200))
-            //{
-            //    invDeath = randomize.Next(25);
-            //    backpackDeath = randomize.Next(15);
-            //}
-            //else if(chr.Level > 200)
-            //{
-            //    invDeath = randomize.Next(15);
-            //    backpackDeath = randomize.Next(10);
-            //}
-
-            if(acc.Rank == 1)
-            {
-//                update characters set 
-//items=replace(items,substring_index(items,',',-8),'-1, -1, -1, -1, -1, -1, -1, -1')
-//where charId=1;
-                cmd.CommandText = @"UPDATE characters SET  
-level=1,
-hp=100,
-mp=100,
-stats='100, 100, 0, 0, 0, 0, 0, 0',
-tex1=0,
-tex2=0,
-exp=exp-(0.1*exp),
-fame=fame-(0.25*fame),
-deathTime=NOW() 
-WHERE accId=@accId AND charId=@charId;";
-                cmd.Parameters.AddWithValue("@accId", acc.AccountId);
-                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-                cmd.ExecuteNonQuery();
-
-                cmd = CreateQuery();
-                cmd.CommandText = @"UPDATE stats SET 
-                fame=fame+(2*@amount), 
-                totalFame=totalFame+(2*@amount)
-                WHERE accId=@accId;";
-                cmd.Parameters.AddWithValue("@accId", acc.AccountId);
-                cmd.Parameters.AddWithValue("@amount", finalFame);
-                cmd.ExecuteNonQuery();
-            } else
-            {
-                cmd.CommandText = @"UPDATE characters SET  
-level=1,
-hp=100,
-mp=100,
-stats='100, 100, 0, 0, 0, 0, 0, 0',
-tex1=0,
-tex2=0,
-exp=exp-(0.2*exp),
-fame=fame-(0.25*fame),
-deathTime=NOW() 
-WHERE accId=@accId AND charId=@charId;";
-                cmd.Parameters.AddWithValue("@accId", acc.AccountId);
-                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-                cmd.ExecuteNonQuery();
-
-                cmd = CreateQuery();
-                cmd.CommandText = @"UPDATE stats SET 
-                fame=fame+@amount, 
-                totalFame=totalFame+@amount 
-                WHERE accId=@accId;";
-                cmd.Parameters.AddWithValue("@accId", acc.AccountId);
-                cmd.Parameters.AddWithValue("@amount", finalFame);
-                cmd.ExecuteNonQuery();
-            }
-//            if(invDeath == 1)
-//            {
-//                cmd.CommandText = @"UPDATE characters SET 
-//items=replace(items,substring_index(items,',',-1),' -1') 
-//where charId=@charId;";
-//                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//                cmd.ExecuteNonQuery();
-//            }
-//            else if(invDeath == 2) {
-//                cmd.CommandText = @"UPDATE characters SET 
-//items=replace(items,substring_index(items,',',-2),' -1, -1') 
-//where charId=@charId;";
-//                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//                cmd.ExecuteNonQuery();
-//            }
-//            else if(invDeath == 3) {
-//                cmd.CommandText = @"UPDATE characters SET 
-//items=replace(items,substring_index(items,',',-3),' -1, -1, -1') 
-//where charId=@charId;";
-//                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//                cmd.ExecuteNonQuery();
-//            }
-//            else if(invDeath == 4) {
-//                cmd.CommandText = @"UPDATE characters SET 
-//items=replace(items,substring_index(items,',',-4),' -1, -1, -1, -1') 
-//where charId=@charId;";
-//                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//                cmd.ExecuteNonQuery();
-//            }
-//            else if(invDeath == 5) {
-//                cmd.CommandText = @"UPDATE characters SET 
-//items=replace(items,substring_index(items,',',-5),' -1, -1, -1, -1, -1') 
-//where charId=@charId;";
-//                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//                cmd.ExecuteNonQuery();
-//            }
-//            else if(invDeath == 6) {
-//                cmd.CommandText = @"UPDATE characters SET 
-//items=replace(items,substring_index(items,',',-6),' -1, -1, -1, -1, -1, -1') 
-//where charId=@charId;";
-//                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//                cmd.ExecuteNonQuery();
-//            }
-//            else if(invDeath == 7) {
-//                cmd.CommandText = @"UPDATE characters SET 
-//items=replace(items,substring_index(items,',',-7),' -1, -1, -1, -1, -1, -1, -1') 
-//where charId=@charId;";
-//                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//                cmd.ExecuteNonQuery();
-//            }
-//            else if(invDeath == 8) {
-//                cmd.CommandText = @"UPDATE characters SET 
-//items=replace(items,substring_index(items,',',-8),' -1, -1, -1, -1, -1, -1, -1, -1') 
-//where charId=@charId;";
-//                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//                cmd.ExecuteNonQuery();
-//            }
-//            if(chr.HasBackpack == 1)
-//            {
-//            if(backpackDeath == 1)
-//            {
-//                cmd.CommandText = @"UPDATE backpacks SET 
-//items=replace(items,substring_index(items,',',-1),' -1') 
-//where charId=@charId;";
-//                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//                cmd.ExecuteNonQuery();
-//            }
-//            else if(backpackDeath == 2) {
-//                cmd.CommandText = @"UPDATE backpacks SET 
-//items=replace(items,substring_index(items,',',-2),' -1, -1') 
-//where charId=@charId;";
-//                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//                cmd.ExecuteNonQuery();
-//            }
-//            else if(backpackDeath == 3) {
-//                cmd.CommandText = @"UPDATE backpacks SET 
-//items=replace(items,substring_index(items,',',-3),' -1, -1, -1') 
-//where charId=@charId;";
-//                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//                cmd.ExecuteNonQuery();
-//            }
-//            else if(backpackDeath == 4) {
-//                cmd.CommandText = @"UPDATE backpacks SET 
-//items=replace(items,substring_index(items,',',-4),' -1, -1, -1, -1') 
-//where charId=@charId;";
-//                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//                cmd.ExecuteNonQuery();
-//            }
-//            else if(backpackDeath == 5) {
-//                cmd.CommandText = @"UPDATE backpacks SET 
-//items=replace(items,substring_index(items,',',-5),' -1, -1, -1, -1, -1') 
-//where charId=@charId;";
-//                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//                cmd.ExecuteNonQuery();
-//            }
-//            else if(backpackDeath == 6) {
-//                cmd.CommandText = @"UPDATE backpacks SET 
-//items=replace(items,substring_index(items,',',-6),' -1, -1, -1, -1, -1, -1') 
-//where charId=@charId;";
-//                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//                cmd.ExecuteNonQuery();
-//            }
-//            else if(backpackDeath == 7) {
-//                cmd.CommandText = @"UPDATE backpacks SET 
-//items=replace(items,substring_index(items,',',-7),' -1, -1, -1, -1, -1, -1, -1') 
-//where charId=@charId;";
-//                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//                cmd.ExecuteNonQuery();
-//            }
-//            else if(backpackDeath == 8) {
-//                cmd.CommandText = @"UPDATE backpacks SET 
-//items=replace(items,substring_index(items,',',-8),' -1, -1, -1, -1, -1, -1, -1, -1') 
-//where charId=@charId;";
-//                cmd.Parameters.AddWithValue("@charId", chr.CharacterId);
-//                cmd.ExecuteNonQuery();
-//            }
-//            }
-
-            //            cmd = CreateQuery();
-            //            cmd.CommandText = @"INSERT INTO classstats(accId, objType, bestLv, bestFame) 
-            //VALUES(@accId, @objType, @bestLv, @bestFame) 
-            //ON DUPLICATE KEY UPDATE 
-            //bestLv = GREATEST(bestLv, @bestLv), 
-            //bestFame = GREATEST(bestFame, @bestFame);";
-            //            cmd.Parameters.AddWithValue("@accId", acc.AccountId);
-            //            cmd.Parameters.AddWithValue("@objType", chr.ObjectType);
-            //            cmd.Parameters.AddWithValue("@bestLv", chr.Level);
-            //            cmd.Parameters.AddWithValue("@bestFame", finalFame);
-            //            cmd.ExecuteNonQuery();
+            cmd = CreateQuery();
+            cmd.CommandText = @"INSERT INTO classstats(accId, objType, bestLv, bestFame) 
+VALUES(@accId, @objType, @bestLv, @bestFame) 
+ON DUPLICATE KEY UPDATE 
+bestLv = GREATEST(bestLv, @bestLv), 
+bestFame = GREATEST(bestFame, @bestFame);";
+            cmd.Parameters.AddWithValue("@accId", acc.AccountId);
+            cmd.Parameters.AddWithValue("@objType", chr.ObjectType);
+            cmd.Parameters.AddWithValue("@bestLv", chr.Level);
+            cmd.Parameters.AddWithValue("@bestFame", finalFame);
+            cmd.ExecuteNonQuery();
 
             if (acc.Guild.Id != 0)
             {
@@ -1256,30 +1044,29 @@ WHERE id=@id;";
                 cmd.Parameters.AddWithValue("@id", acc.AccountId);
                 cmd.ExecuteNonQuery();
             }
-    //        if(acc.Rank == 1)
-    //        {
-    //            cmd = CreateQuery();
-    //            cmd.CommandText =
-    //                @"INSERT INTO death(accId, chrId, name, charType, tex1, tex2, skin, items, fame, exp, fameStats, totalFame, firstBorn, killer) 
-    //VALUES(@accId, @chrId, @name, @objType, @tex1, @tex2, @skin, @items, @fame, @exp, @fameStats, @totalFame, @firstBorn, @killer);";
-    //            cmd.Parameters.AddWithValue("@accId", acc.AccountId);
-    //            cmd.Parameters.AddWithValue("@chrId", chr.CharacterId);
-    //            cmd.Parameters.AddWithValue("@name", acc.Name);
-    //            cmd.Parameters.AddWithValue("@objType", chr.ObjectType);
-    //            cmd.Parameters.AddWithValue("@tex1", chr.Tex1);
-    //            cmd.Parameters.AddWithValue("@tex2", chr.Tex2);
-    //            cmd.Parameters.AddWithValue("@skin", chr.Skin);
-    //            cmd.Parameters.AddWithValue("@items", chr._Equipment);
-    //            cmd.Parameters.AddWithValue("@fame", chr.CurrentFame);
-    //            cmd.Parameters.AddWithValue("@exp", chr.Exp);
-    //            cmd.Parameters.AddWithValue("@fameStats", chr.PCStats);
-    //            cmd.Parameters.AddWithValue("@totalFame", finalFame);
-    //            cmd.Parameters.AddWithValue("@firstBorn", firstBorn);
-    //            cmd.Parameters.AddWithValue("@killer", killer);
-    //            cmd.ExecuteNonQuery();
-    //        }
+
+            cmd = CreateQuery();
+            cmd.CommandText =
+                @"INSERT INTO death(accId, chrId, name, charType, tex1, tex2, skin, items, fame, exp, fameStats, totalFame, firstBorn, killer) 
+VALUES(@accId, @chrId, @name, @objType, @tex1, @tex2, @skin, @items, @fame, @exp, @fameStats, @totalFame, @firstBorn, @killer);";
+            cmd.Parameters.AddWithValue("@accId", acc.AccountId);
+            cmd.Parameters.AddWithValue("@chrId", chr.CharacterId);
+            cmd.Parameters.AddWithValue("@name", acc.Name);
+            cmd.Parameters.AddWithValue("@objType", chr.ObjectType);
+            cmd.Parameters.AddWithValue("@tex1", chr.Tex1);
+            cmd.Parameters.AddWithValue("@tex2", chr.Tex2);
+            cmd.Parameters.AddWithValue("@skin", chr.Skin);
+            cmd.Parameters.AddWithValue("@items", chr._Equipment);
+            cmd.Parameters.AddWithValue("@fame", chr.CurrentFame);
+            cmd.Parameters.AddWithValue("@exp", chr.Exp);
+            cmd.Parameters.AddWithValue("@fameStats", chr.PCStats);
+            cmd.Parameters.AddWithValue("@totalFame", finalFame);
+            cmd.Parameters.AddWithValue("@firstBorn", firstBorn);
+            cmd.Parameters.AddWithValue("@killer", killer);
+            cmd.ExecuteNonQuery();
         }
-        
+
+
         public void AddToArenaLb(int wave, List<string> participants)
         {
             string players = string.Join(", ", participants.ToArray());
@@ -1357,7 +1144,8 @@ WHERE id=@id;";
 
             return guildrankings.ToArray();
         }
-        
+
+
         public List<string> GetLockeds(string accId)
         {
             List<string> ret = new List<string>();
@@ -1545,126 +1333,6 @@ VALUES(@accId, @petId, @objType, @skinName, @skin, @rarity, @maxLevel, @abilitie
             UnlockAccount(acc);
             return false;
         }
-        
-        public int GetWarnings(Account acc)
-        {
-            int warnings = 0;
-            MySqlCommand cmd = CreateQuery();
-            cmd.CommandText = "SELECT accWarnings FROM accounts WHERE id=@accId;";
-            cmd.Parameters.AddWithValue("@accId", acc.AccountId);
-            using (MySqlDataReader rdr = cmd.ExecuteReader()) {
-                while (rdr.Read()) {
-                    warnings = rdr.GetInt32("accWarnings");
-                    return warnings;
-                }
-            };
-            return warnings;
-        }
-
-        public bool CheckBanTime(Account acc, ref string banDaysLeft) {
-            MySqlCommand cmd = CreateQuery();
-            cmd.CommandText = "SELECT banEnd FROM accounts WHERE id=@accId;";
-            cmd.Parameters.AddWithValue("@accId", acc.AccountId);
-            using (MySqlDataReader rdr = cmd.ExecuteReader()) {
-                while (rdr.Read()) {
-                    DateTime BANTimer = rdr.GetDateTime("banEnd");
-                    string format_day = "";
-                    string format_hour = "";
-                    string format_minute = "";
-                    int days = (int)(BANTimer - DateTime.UtcNow).Days;
-                    int hours = (int)(BANTimer - DateTime.UtcNow).Hours;
-                    int minutes = (int)(BANTimer - DateTime.UtcNow).Minutes;
-                    if(days > 1)
-                        format_day = days + " day";
-                    else
-                        format_day = days + " days";
-                    if(hours > 1)
-                        format_hour = hours + " hour";
-                    else
-                        format_hour = hours + " hours";
-                    if(minutes > 1)
-                        format_minute = minutes + " minute";
-                    else
-                        format_minute = minutes + " minutes";
-                    //if(warnings == 5)
-                    //    banDaysLeft = "You reached the limit 5 of 5 warnings and your account is permanently banned!";
-                    //else
-                    banDaysLeft = format_day + ", " + format_hour + ", " + format_minute + " left to end your ban time.";
-                    //Your account has " + warnings + " of 5 warnings until permanently banishment.";
-                    int BANtimeInSec = (int)(BANTimer - DateTime.UtcNow).TotalSeconds;
-                    if (BANtimeInSec > 0)
-                        return false;//time
-                    else
-                        return true;//gone
-                }
-            }
-            return false;
-        }
-
-        public bool CheckVIPTime(Account acc, ref string daysLeft)
-        {
-            //UPDATE accounts SET vipEnd = CASE WHEN vipEnd=NOW() THEN rank=0 ELSE rank=rank END where id='@accId';
-            MySqlCommand cmd = CreateQuery();
-            cmd.CommandText = "SELECT vipEnd FROM accounts WHERE id=@accId;";
-            cmd.Parameters.AddWithValue("@accId", acc.AccountId);
-            using (MySqlDataReader rdr = cmd.ExecuteReader())
-            {
-                while (rdr.Read())
-                {
-                    DateTime VIPTime = rdr.GetDateTime("vipEnd");
-                    string format_day = "";
-                    string format_hour = "";
-                    string format_minute = "";
-                    int days = (int)(VIPTime - DateTime.UtcNow).Days;
-                    int hours = (int)(VIPTime - DateTime.UtcNow).Hours;
-                    int minutes = (int)(VIPTime - DateTime.UtcNow).Minutes;
-                    if(days > 1)
-                        format_day = days + " day";
-                    else
-                        format_day = days + " days";
-                    if(hours > 1)
-                        format_hour = hours + " hour";
-                    else
-                        format_hour = hours + " hours";
-                    if(minutes > 1)
-                        format_minute = minutes + " minute";
-                    else
-                        format_minute = minutes + " minutes";
-                    daysLeft = format_day + ", " + format_hour + ", " + format_minute + " left to end your VIP Account time.";
-                    int VIPtimeInSec = (int)(VIPTime - DateTime.UtcNow).TotalSeconds;
-                    if (VIPtimeInSec > 0)
-                        return false;
-                    else
-                        return true;
-                    //if(VIPTime == DateTime.Now)
-                    //{
-                    //    cmd.CommandText = "UPDATE accounts SET rank=0 WHERE id=@accId;";
-                    //    cmd.Parameters.AddWithValue("@accId", acc.AccountId);
-                    //    cmd.ExecuteNonQuery();
-                    //    return true;
-                    //}
-                    //else
-                    //    return false;
-                }
-            };
-            return false;
-        }
-
-        public void UpdateVIPtoFREE(Account acc)
-        {
-            MySqlCommand cmd = CreateQuery();
-            cmd.CommandText = "UPDATE accounts SET rank=0 WHERE id=@accountID;";
-            cmd.Parameters.AddWithValue("@accountID", acc.AccountId);
-            cmd.ExecuteNonQuery();
-        }
-
-        public void UpdateUnBan(Account acc)
-        {
-            MySqlCommand cmd = CreateQuery();
-            cmd.CommandText = "UPDATE accounts SET banned=0 WHERE id=@accountID;";
-            cmd.Parameters.AddWithValue("@accountID", acc.AccountId);
-            cmd.ExecuteNonQuery();
-        }
 
         public void LockAccount(Account acc)
         {
@@ -1682,6 +1350,21 @@ VALUES(@accId, @petId, @objType, @skinName, @skin, @rarity, @maxLevel, @abilitie
             cmd.CommandText = "UPDATE accounts SET accountInUse=0 WHERE id=@accId;";
             cmd.Parameters.AddWithValue("@accId", acc.AccountId);
             cmd.ExecuteScalar();
+        }
+
+        public string GenerateGiftcode(string contents, string accId)
+        {
+            var code = generateGiftCode(5, 5);
+            while (giftCodeExists(code))
+                code = generateGiftCode(5, 5);
+
+            var cmd = CreateQuery();
+            cmd.CommandText = "INSERT INTO giftCodes(code, content, accId) VALUES(@code, @contents, @accId);";
+            cmd.Parameters.AddWithValue("@code", code);
+            cmd.Parameters.AddWithValue("@contents", contents);
+            cmd.Parameters.AddWithValue("@accId", accId);
+            cmd.ExecuteNonQuery();
+            return code;
         }
 
         private string generateGiftCode(int blocks, int blockLength)

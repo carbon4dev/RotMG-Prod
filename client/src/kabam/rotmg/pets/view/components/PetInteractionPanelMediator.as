@@ -1,4 +1,4 @@
-package kabam.rotmg.pets.view.components {
+﻿package kabam.rotmg.pets.view.components {
 import flash.events.MouseEvent;
 
 import kabam.rotmg.dialogs.control.OpenDialogNoModalSignal;
@@ -10,35 +10,32 @@ import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class PetInteractionPanelMediator extends Mediator {
 
-      [Inject]
-      public var view:PetInteractionPanel;
+    [Inject]
+    public var view:PetInteractionPanel;
+    [Inject]
+    public var openNoModalDialog:OpenDialogNoModalSignal;
+    [Inject]
+    public var openDialog:OpenDialogSignal;
 
-      [Inject]
-      public var openNoModalDialog:OpenDialogNoModalSignal;
 
-      [Inject]
-      public var openDialog:OpenDialogSignal;
+    override public function initialize():void {
+        this.view.init();
+        this.view.feedButton.addEventListener(MouseEvent.CLICK, this.onButtonLeftClick);
+        this.view.fuseButton.addEventListener(MouseEvent.CLICK, this.onButtonRightClick);
+    }
 
-      public function PetInteractionPanelMediator() {
-         super();
-      }
+    override public function destroy():void {
+        super.destroy();
+    }
 
-      override public function initialize() : void {
-         this.view.init();
-         this.view.feedButton.addEventListener(MouseEvent.CLICK,this.onButtonLeftClick);
-         this.view.fuseButton.addEventListener(MouseEvent.CLICK,this.onButtonRightClick);
-      }
+    protected function onButtonRightClick(_arg_1:MouseEvent):void {
+        this.openDialog.dispatch(new FusePetView());
+    }
 
-      override public function destroy() : void {
-         super.destroy();
-      }
+    protected function onButtonLeftClick(_arg_1:MouseEvent):void {
+        this.openNoModalDialog.dispatch(new FeedPetView());
+    }
 
-      protected function onButtonRightClick(param1:MouseEvent) : void {
-         this.openDialog.dispatch(new FusePetView());
-      }
 
-      protected function onButtonLeftClick(param1:MouseEvent) : void {
-         this.openNoModalDialog.dispatch(new FeedPetView());
-      }
-   }
 }
+}//package kabam.rotmg.pets.view.components

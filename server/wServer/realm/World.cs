@@ -24,6 +24,7 @@ namespace wServer.realm
     {
         public const int TUT_ID = -1;
         public const int NEXUS_ID = -2;
+        //public const int RAND_REALM = -3;
         public const int NEXUS_LIMBO = -3;
         public const int VAULT_ID = -5;
         public const int TEST_ID = -6;
@@ -35,10 +36,6 @@ namespace wServer.realm
         public const int PETYARD_ID = -12;
         public const int DAILY_QUEST_ID = -13;
         public const int GUILD_ID = -14;
-        public const int ELDER_MONTAINS = -15;
-        public const int ELDER_MONTAINS_SV1 = -16;
-        public const int ELDER_MONTAINS_SV2 = -17;
-        public const int ELDER_MONTAINS_SV3 = -18;
         protected static readonly ILog Log = LogManager.GetLogger(typeof(World));
         public string ExtraVar = "Default";
         private int entityInc;
@@ -57,30 +54,16 @@ namespace wServer.realm
             ClientXml = ExtraXml = Empty<string>.Array;
             AllowTeleport = true;
             ShowDisplays = true;
-            SetMusic("main");
             MaxPlayers = -1;
 
             //Mark world for removal after 2 minutes if the 
             //world is a dungeon and if no players in there;
-            Timers.Add(new WorldTimer(2* 60 * 1000, (w, t) =>
+            Timers.Add(new WorldTimer(120 * 1000, (w, t) =>
             {
                 canBeClosed = true;
                 if (NeedsPortalKey)
                     PortalKeyExpired = true;
             }));
-        }
-
-        public void SetMusic(params string[] music)
-        {
-            Music = music;
-        }
-
-        public string GetMusic()
-        {
-            if (Music.Length == 0)
-                return "null";
-            var rand = new wRandom();
-            return Music[rand.Next(0, Music.Length)];
         }
 
         public bool IsLimbo { get; protected set; }
@@ -105,7 +88,6 @@ namespace wServer.realm
         public byte[] PortalKey { get; private set; }
         public bool PortalKeyExpired { get; private set; }
         public uint Seed { get; private set; }
-        public string[] Music { get; set; }
 
         public virtual bool NeedsPortalKey => false;
 
@@ -215,8 +197,8 @@ namespace wServer.realm
                         Log.Error(ex);
                     }
                 }
-            EnemiesCollision = new CollisionMap<Entity>(0, w, h);//was 0
-            PlayersCollision = new CollisionMap<Entity>(1, w, h);//was 1
+            EnemiesCollision = new CollisionMap<Entity>(0, w, h);
+            PlayersCollision = new CollisionMap<Entity>(1, w, h);
 
             Projectiles.Clear();
             StaticObjects.Clear();
@@ -471,7 +453,7 @@ namespace wServer.realm
             }
             catch (Exception e)
             {
-                //Log.Error("World: " + Name + "\n" + e);
+                Log.Error("World: " + Name + "\n" + e);
             }
         }
 
@@ -479,7 +461,7 @@ namespace wServer.realm
 
         public bool IsDungeon()
         {
-            return !(this is ElderMountains) && !(this is ElderMountainsSv1) && !(this is ElderMountainsSv2) && !(this is ElderMountainsSv3) && !(this is Nexus) && !(this is GameWorld) && !(this is ClothBazaar) && !(this is Test) && !(this is GuildHall) && !(this is Tutorial) && !(this is DailyQuestRoom) && !IsLimbo;
+            return !(this is Nexus) && !(this is GameWorld) && !(this is ClothBazaar) && !(this is Test) && !(this is GuildHall) && !(this is Tutorial) && !(this is DailyQuestRoom) && !IsLimbo;
         }
 
         protected void LoadMap(string embeddedResource, MapType type)

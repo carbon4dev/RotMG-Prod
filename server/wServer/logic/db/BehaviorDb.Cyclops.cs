@@ -14,7 +14,6 @@ namespace wServer.logic
             .Init("Cyclops God",
                 new State(
                     new DropPortalOnDeath("Spider Den Portal", 20, PortalDespawnTimeSec: 100),
-                    new TransformOnDeath("Lich", 1, 1, 0.2, false),
                     new State("idle",
                         new PlayerWithinTransition(11, "blade_attack"),
                         new HpLessTransition(0.8, "blade_attack")

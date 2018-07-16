@@ -1,25 +1,26 @@
-package kabam.rotmg.account.steam {
+﻿package kabam.rotmg.account.steam {
 import org.osflash.signals.OnceSignal;
 import org.osflash.signals.Signal;
 
 public interface SteamApi {
 
-      function load(param1:String) : void;
+    function load(_arg_1:String):void;
 
-      function get loaded() : Signal;
+    function get loaded():Signal;
 
-      function requestSessionTicket() : void;
+    function requestSessionTicket():void;
 
-      function get sessionReceived() : Signal;
+    function get sessionReceived():Signal;
 
-      function getSessionAuthentication() : Object;
+    function getSessionAuthentication():Object;
 
-      function getSteamId() : String;
+    function getSteamId():String;
 
-      function reportStatistic(param1:String, param2:int) : void;
+    function reportStatistic(_arg_1:String, _arg_2:int):void;
 
-      function get paymentAuthorized() : OnceSignal;
+    function get paymentAuthorized():OnceSignal;
 
-      function getPersonaName() : String;
-   }
+    function getPersonaName():String;
+
 }
+}//package kabam.rotmg.account.steam

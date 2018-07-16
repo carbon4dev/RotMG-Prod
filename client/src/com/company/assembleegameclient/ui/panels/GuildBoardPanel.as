@@ -1,6 +1,6 @@
-package com.company.assembleegameclient.ui.panels {
-import com.company.assembleegameclient.LOEBUILD_c8d46d341bea4fd5bff866a65ff8aea9.GameSprite;
-import kabam.rotmg.assets.model.Player;
+﻿package com.company.assembleegameclient.ui.panels {
+import com.company.assembleegameclient.game.GameSprite;
+import com.company.assembleegameclient.objects.Player;
 import com.company.assembleegameclient.ui.board.GuildBoardWindow;
 import com.company.assembleegameclient.util.GuildUtil;
 
@@ -10,16 +10,18 @@ import kabam.rotmg.text.model.TextKey;
 
 public class GuildBoardPanel extends ButtonPanel {
 
-      public function GuildBoardPanel(param1:GameSprite) {
-         super(param1,TextKey.GUILD_BOARD_TITLE,TextKey.PANEL_VIEW_BUTTON);
-      }
+    public function GuildBoardPanel(_arg_1:GameSprite) {
+        super(_arg_1, TextKey.GUILD_BOARD_TITLE, TextKey.PANEL_VIEW_BUTTON);
+    }
 
-      override protected function onButtonClick(param1:MouseEvent) : void {
-         var _local2:Player = gs_.map.player_;
-         if(_local2 == null) {
+    override protected function onButtonClick(_arg_1:MouseEvent):void {
+        var _local_2:Player = gs_.map.player_;
+        if (_local_2 == null) {
             return;
-         }
-         gs_.addChild(new GuildBoardWindow(_local2.guildRank_ >= GuildUtil.OFFICER));
-      }
-   }
+        }
+        gs_.addChild(new GuildBoardWindow((_local_2.guildRank_ >= GuildUtil.OFFICER)));
+    }
+
+
 }
+}//package com.company.assembleegameclient.ui.panels

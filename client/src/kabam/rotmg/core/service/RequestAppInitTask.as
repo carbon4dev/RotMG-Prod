@@ -1,4 +1,4 @@
-package kabam.rotmg.core.service {
+﻿package kabam.rotmg.core.service {
 import kabam.lib.tasks.BaseTask;
 import kabam.rotmg.account.core.Account;
 import kabam.rotmg.appengine.api.AppEngineClient;
@@ -9,39 +9,35 @@ import robotlegs.bender.framework.api.ILogger;
 
 public class RequestAppInitTask extends BaseTask {
 
-      [Inject]
-      public var logger:ILogger;
+    [Inject]
+    public var logger:ILogger;
+    [Inject]
+    public var client:AppEngineClient;
+    [Inject]
+    public var account:Account;
+    [Inject]
+    public var appInitConfigData:AppInitDataReceivedSignal;
 
-      [Inject]
-      public var client:AppEngineClient;
 
-      [Inject]
-      public var account:Account;
+    override protected function startTask():void {
+        this.client.setMaxRetries(2);
+        this.client.complete.addOnce(this.onComplete);
+        this.client.sendRequest("/app/init", {"game_net": this.account.gameNetwork()});
+    }
 
-      [Inject]
-      public var appInitConfigData:AppInitDataReceivedSignal;
+    private function onComplete(_arg_1:Boolean, _arg_2:*):void {
+        var _local_3:XML = XML(_arg_2);
+        ((_arg_1) && (this.appInitConfigData.dispatch(_local_3)));
+        this.initDynamicSettingsClass(_local_3);
+        completeTask(_arg_1, _arg_2);
+    }
 
-      public function RequestAppInitTask() {
-         super();
-      }
+    private function initDynamicSettingsClass(_arg_1:XML):void {
+        if (_arg_1 != null) {
+            DynamicSettings.xml = _arg_1;
+        }
+    }
 
-      override protected function startTask() : void {
-         this.client.setMaxRetries(2);
-         this.client.complete.addOnce(this.onComplete);
-         this.client.sendRequest("/app/init",{"game_net":this.account.gameNetwork()});
-      }
 
-      private function onComplete(param1:Boolean, param2:*) : void {
-         var _local3:XML = XML(param2);
-         param1 && this.appInitConfigData.dispatch(_local3);
-         this.initDynamicSettingsClass(_local3);
-         completeTask(param1,param2);
-      }
-
-      private function initDynamicSettingsClass(param1:XML) : void {
-         if(param1 != null) {
-            DynamicSettings.xml = param1;
-         }
-      }
-   }
 }
+}//package kabam.rotmg.core.service

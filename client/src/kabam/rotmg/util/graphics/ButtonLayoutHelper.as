@@ -1,39 +1,38 @@
-package kabam.rotmg.util.graphics {
+﻿package kabam.rotmg.util.graphics {
 import flash.display.DisplayObject;
 import flash.errors.IllegalOperationError;
 import flash.geom.Rectangle;
 
 public class ButtonLayoutHelper {
 
-      public function ButtonLayoutHelper() {
-         super();
-      }
 
-      public function layout(param1:int, ... rest) : void {
-         var _local3:int = rest.length;
-         switch(_local3) {
+    public function layout(_arg_1:int, ... rest):void {
+        var _local_3:int = rest.length;
+        switch (_local_3) {
             case 1:
-               this.centerButton(param1,rest[0]);
-               break;
+                this.centerButton(_arg_1, rest[0]);
+                return;
             case 2:
-               this.twoButtons(param1,rest[0],rest[1]);
-               break;
+                this.twoButtons(_arg_1, rest[0], rest[1]);
+                return;
             default:
-               throw new IllegalOperationError("Currently unable to layout more than 2 buttons");
-         }
-      }
+                throw (new IllegalOperationError("Currently unable to layout more than 2 buttons"));
+        }
+    }
 
-      private function centerButton(param1:int, param2:DisplayObject) : void {
-         var _local3:Rectangle = param2.getRect(param2);
-         param2.x = (param1 - _local3.width) * 0.5 - _local3.left;
-      }
+    private function centerButton(_arg_1:int, _arg_2:DisplayObject):void {
+        var _local_3:Rectangle = _arg_2.getRect(_arg_2);
+        _arg_2.x = (((_arg_1 - _local_3.width) * 0.5) - _local_3.left);
+    }
 
-      private function twoButtons(param1:int, param2:DisplayObject, param3:DisplayObject) : void {
-         var _local5:Rectangle = null;
-         var _local4:Rectangle = param2.getRect(param2);
-         _local5 = param3.getRect(param3);
-         param2.x = (param1 - 2 * param2.width) * 0.25 - _local4.left;
-         param3.x = (3 * param1 - 2 * param3.width) * 0.25 - _local5.left;
-      }
-   }
+    private function twoButtons(_arg_1:int, _arg_2:DisplayObject, _arg_3:DisplayObject):void {
+        var _local_5:Rectangle;
+        var _local_4:Rectangle = _arg_2.getRect(_arg_2);
+        _local_5 = _arg_3.getRect(_arg_3);
+        _arg_2.x = (((_arg_1 - (2 * _arg_2.width)) * 0.25) - _local_4.left);
+        _arg_3.x = ((((3 * _arg_1) - (2 * _arg_3.width)) * 0.25) - _local_5.left);
+    }
+
+
 }
+}//package kabam.rotmg.util.graphics

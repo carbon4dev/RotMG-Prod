@@ -1,53 +1,57 @@
-package com.company.assembleegameclient.ui.panels.itemgrids {
-import com.company.assembleegameclient.LOEBUILD_5891da2d64975cae48d175d1e001f5da.GameObject;
-import kabam.rotmg.assets.model.Player;
+﻿package com.company.assembleegameclient.ui.panels.itemgrids {
+import com.company.assembleegameclient.objects.GameObject;
+import com.company.assembleegameclient.objects.Player;
 import com.company.assembleegameclient.ui.panels.itemgrids.itemtiles.InventoryTile;
 
 public class InventoryGrid extends ItemGrid {
 
-      private const NUM_SLOTS:uint = 8;
+    private const NUM_SLOTS:uint = 8;
 
-      private var tiles:Vector.<InventoryTile>;
+    private var tiles:Vector.<InventoryTile>;
+    private var isBackpack:Boolean;
 
-      private var isBackpack:Boolean;
+    public function InventoryGrid(_arg_1:GameObject, _arg_2:Player, _arg_3:int = 0, _arg_4:Boolean = false) {
+        var _local_6:InventoryTile;
+        super(_arg_1, _arg_2, _arg_3);
+        this.tiles = new Vector.<InventoryTile>(this.NUM_SLOTS);
+        this.isBackpack = _arg_4;
+        var _local_5:int;
+        while (_local_5 < this.NUM_SLOTS) {
+            _local_6 = new InventoryTile((_local_5 + indexOffset), this, interactive);
+            _local_6.addTileNumber((_local_5 + 1));
+            addToGrid(_local_6, 2, _local_5);
+            this.tiles[_local_5] = _local_6;
+            _local_5++;
+        }
+    }
 
-      public function InventoryGrid(param1:GameObject, param2:Player, param3:int = 0, param4:Boolean = false) {
-         var _local6:InventoryTile = null;
-         super(param1,param2,param3);
-         this.tiles = new Vector.<InventoryTile>(this.NUM_SLOTS);
-         this.isBackpack = param4;
-         var _local5:int = 0;
-         while(_local5 < this.NUM_SLOTS) {
-            _local6 = new InventoryTile(_local5 + indexOffset,this,interactive);
-            _local6.addTileNumber(_local5 + 1);
-            addToGrid(_local6,2,_local5);
-            this.tiles[_local5] = _local6;
-            _local5++;
-         }
-      }
-
-      override public function setItems(param1:Vector.<int>, param2:int = 0) : void {
-         var _local3:Boolean = false;
-         var _local4:int = 0;
-         var _local5:int = 0;
-         if(param1) {
-            _local3 = false;
-            _local4 = param1.length;
-            _local5 = 0;
-            while(_local5 < this.NUM_SLOTS) {
-               if(_local5 + indexOffset < _local4) {
-                  if(this.tiles[_local5].setItem(param1[_local5 + indexOffset])) {
-                     _local3 = true;
-                  }
-               } else if(this.tiles[_local5].setItem(-1)) {
-                  _local3 = true;
-               }
-               _local5++;
+    override public function setItems(_arg_1:Vector.<int>, _arg_2:int = 0):void {
+        var _local_3:Boolean;
+        var _local_4:int;
+        var _local_5:int;
+        if (_arg_1) {
+            _local_3 = false;
+            _local_4 = _arg_1.length;
+            _local_5 = 0;
+            while (_local_5 < this.NUM_SLOTS) {
+                if ((_local_5 + indexOffset) < _local_4) {
+                    if (this.tiles[_local_5].setItem(_arg_1[(_local_5 + indexOffset)])) {
+                        _local_3 = true;
+                    }
+                }
+                else {
+                    if (this.tiles[_local_5].setItem(-1)) {
+                        _local_3 = true;
+                    }
+                }
+                _local_5++;
             }
-            if(_local3) {
-               refreshTooltip();
+            if (_local_3) {
+                refreshTooltip();
             }
-         }
-      }
-   }
+        }
+    }
+
+
 }
+}//package com.company.assembleegameclient.ui.panels.itemgrids

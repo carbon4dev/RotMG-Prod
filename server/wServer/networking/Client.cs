@@ -27,7 +27,7 @@ namespace wServer.networking
 
     public class Client : IDisposable
     {
-        public const string SERVER_VERSION = "7.32.451X3";
+        public const string SERVER_VERSION = "27.3.2";
         private bool disposed;
 
         private static readonly ILog log = LogManager.GetLogger(typeof (Client));
@@ -68,7 +68,7 @@ namespace wServer.networking
 
         public void BeginProcess()
         {
-            //log.InfoFormat($"Received client @ {Socket.RemoteEndPoint}.");
+            log.InfoFormat($"Received client @ {Socket.RemoteEndPoint}.");
             handler = new NetworkHandler(this, Socket);
             handler.BeginHandling();
         }
@@ -162,24 +162,20 @@ namespace wServer.networking
         //Following must execute, network loop will discard disconnected client, so logic loop
         private void DisconnectFromRealm()
         {
-            Save();
-            Manager.Disconnect(this);
-            /*Manager.Logic.AddPendingAction(t =>
+            Manager.Logic.AddPendingAction(t =>
             {
                 Save();
                 Manager.Disconnect(this);
-            }, PendingPriority.Destruction);*/
+            }, PendingPriority.Destruction);
         }
 
         public void Reconnect(ReconnectPacket pkt)
         {
-            Save();
-            SendPacket(pkt);
-            /*Manager.Logic.AddPendingAction(t =>
+            Manager.Logic.AddPendingAction(t =>
             {
                 Save();
                 SendPacket(pkt);
-            }, PendingPriority.Destruction);*/
+            }, PendingPriority.Destruction);
         }
 
         public void GiftCodeReceived(string type)
@@ -192,6 +188,26 @@ namespace wServer.networking
                 case "LevelUp":
                     break;
             }
+
+            AddGiftCode(GiftCode.GenerateRandom(Manager.GameData));
+        }
+
+        private void AddGiftCode(GiftCode code)
+        {
+            Manager.Database.DoActionAsync(db =>
+            {
+                var key = db.GenerateGiftcode(code.ToJson(), Account.AccountId);
+
+                //var message = new MailMessage();
+                //message.To.Add(Account.Email);
+                //message.IsBodyHtml = true;
+                //message.Subject = "You received a new GiftCode";
+                //message.From = new MailAddress(Program.Settings.GetValue<string>("serverEmail", ""));
+                //message.Body = "<center>Your giftcode is: " + code + "</br> Check the items in your giftcode <a href=\"" + Program.Settings.GetValue<string>("serverDomain", "localhost") + "/CheckGiftCode.html\" target=\"_blank\">here</a> or redeem the code <a href=\"" + Program.Settings.GetValue<string>("serverDomain", "localhost") + "/RedeemGiftCode.html\" target=\"_blank\">here</a></center>";
+
+                //Program.SendEmail(message);
+                Player.SendInfo($"You have received a new GiftCode: {key}\nRedeem it at: {Program.Settings.GetValue("serverDomain")}/GiftCode.html or\n type /giftcode to scan it with your mobile via qr code");
+            });
         }
 
         public void Dispose()

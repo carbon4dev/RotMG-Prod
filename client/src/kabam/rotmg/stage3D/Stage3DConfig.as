@@ -1,6 +1,6 @@
-package kabam.rotmg.stage3D {
-import com.company.assembleegameclient.LOEBUILD_c0a0ad5a20fa962e79dbafea298b8ea4.LOEBUILD_1cd204050ec7f52020766f99b3129701;
-import com.company.assembleegameclient.LOEBUILD_166e64f6c3677d0c513901242a3e702d.LOEBUILD_3225a10b07f1580f10dee4abc3779e6c;
+﻿package kabam.rotmg.stage3D {
+import com.company.assembleegameclient.engine3d.Model3D;
+import com.company.assembleegameclient.parameters.Parameters;
 import com.company.assembleegameclient.util.Stage3DProxy;
 import com.company.assembleegameclient.util.StageProxy;
 
@@ -21,42 +21,23 @@ import robotlegs.bender.framework.api.IConfig;
 
 public class Stage3DConfig implements IConfig {
 
-    public static var WIDTH:int = 600;
-
-    public static var HALF_WIDTH:int = WIDTH / 2;
-
-    public static var HEIGHT:int = 600;
-
-    public static var HALF_HEIGHT:int = HEIGHT / 2;
+    public static const WIDTH:int = 600;
+    public static const HALF_WIDTH:int = (WIDTH / 2);//300
+    public static const HEIGHT:int = 600;
+    public static const HALF_HEIGHT:int = (HEIGHT / 2);//300
 
     [Inject]
     public var stageProxy:StageProxy;
-
     [Inject]
     public var injector:Injector;
-
     public var renderer:Renderer;
-
     private var stage3D:Stage3DProxy;
 
-    public function Stage3DConfig() {
-        super();
-    }
-
-    public static function resetDimensions():void {
-        var _local1:Number = LOEBUILD_3225a10b07f1580f10dee4abc3779e6c.data_["mscale"];
-        var _local2:Number = (WebMain.sWidth / _local1);
-        var _local3:Number = (WebMain.sHeight / _local1);
-        WIDTH = _local2;
-        HALF_WIDTH = (_local2 / 2);
-        HEIGHT = _local3;
-        HALF_HEIGHT = (_local3 / 2);
-    }
 
     public function configure():void {
         this.mapSingletons();
         this.stage3D = this.stageProxy.getStage3Ds(0);
-        this.stage3D.addEventListener(ErrorEvent.ERROR, LOEBUILD_3225a10b07f1580f10dee4abc3779e6c.clearGpuRenderEvent);
+        this.stage3D.addEventListener(ErrorEvent.ERROR, Parameters.clearGpuRenderEvent);
         this.stage3D.addEventListener(Event.CONTEXT3D_CREATE, this.onContextCreate);
         this.stage3D.requestContext3D();
     }
@@ -68,20 +49,22 @@ public class Stage3DConfig implements IConfig {
         this.injector.map(VertexBufferFactory).asSingleton();
     }
 
-    private function onContextCreate(param1:Event):void {
+    private function onContextCreate(_arg_1:Event):void {
         this.stage3D.removeEventListener(Event.CONTEXT3D_CREATE, this.onContextCreate);
-        var _local2:Context3DProxy = this.stage3D.getContext3D();
-        if (_local2.GetContext3D().driverInfo.toLowerCase().indexOf("software") != -1) {
-            LOEBUILD_3225a10b07f1580f10dee4abc3779e6c.clearGpuRender();
+        var _local_2:Context3DProxy = this.stage3D.getContext3D();
+        if (_local_2.GetContext3D().driverInfo.toLowerCase().indexOf("software") != -1) {
+            Parameters.clearGpuRender();
         }
-        _local2.configureBackBuffer(WIDTH, HEIGHT, 2, true);
-        _local2.setBlendFactors(Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA);
-        _local2.setDepthTest(false, Context3DCompareMode.LESS_EQUAL);
-        this.injector.map(Context3DProxy).toValue(_local2);
+        _local_2.configureBackBuffer(WIDTH, HEIGHT, 2, true);
+        _local_2.setBlendFactors(Context3DBlendFactor.SOURCE_ALPHA, Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA);
+        _local_2.setDepthTest(false, Context3DCompareMode.LESS_EQUAL);
+        this.injector.map(Context3DProxy).toValue(_local_2);
         Graphic3DHelper.map(this.injector);
         this.renderer = this.injector.getInstance(Renderer);
-        this.renderer.init(_local2.GetContext3D());
-        LOEBUILD_1cd204050ec7f52020766f99b3129701.Create3dBuffer(_local2.GetContext3D());
+        this.renderer.init(_local_2.GetContext3D());
+        Model3D.Create3dBuffer(_local_2.GetContext3D());
     }
+
+
 }
-}
+}//package kabam.rotmg.stage3D

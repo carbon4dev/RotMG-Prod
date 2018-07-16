@@ -104,8 +104,7 @@ namespace wServer
         BeachBall = 16,
         ElectricBolts = 17, //If a pet paralyzes a monster
         ElectricFlashing = 18, //If a monster got paralyzed from a electric pet
-        SavageEffect = 19, //If a pet is standing still (this white particles)
-        ThrowProjectile = 20
+        SavageEffect = 19 //If a pet is standing still (this white particles)
     }
 
     public struct ARGB

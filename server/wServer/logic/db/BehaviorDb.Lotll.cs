@@ -17,7 +17,7 @@ namespace wServer.logic
         private _ LordOfTheLostLands = () => Behav()
             .Init("Lord of the Lost Lands",
                 new State(
-                    new DropPortalOnDeath("Ice Cave Portal", 65),
+                    new DropPortalOnDeath("Ice Cave Portal", 10),
                     new HpLessTransition(0.15, "IMDONELIKESOOOODONE!"),
                     new State("timetogeticey",
                         new PlayerWithinTransition(8, "startupandfireup")
@@ -79,32 +79,23 @@ namespace wServer.logic
                         new Suicide()
                         )
                     ),
-                new MostDamagers(5,
-                    LootTemplates.StatIncreasePotionsLoot()
-                    ),
                 new MostDamagers(3,
-                    new OnlyOne(
-                        new ItemLoot("Ancient Shield of Ogmur", blackbag),
-                        new ItemLoot("Shield of Ogmur", whitebag)
-                        ),
-                    new EggLoot(EggRarity.Common, eggbag + goodloot),
-                    new EggLoot(EggRarity.Uncommon, eggbag + greatloot),
-                    new EggLoot(EggRarity.Rare, eggbag + awesomeloot),
-                    new EggLoot(EggRarity.Legendary, eggbag),
-                    new TierLoot(8, ItemType.Weapon, mediumloot),
-                    new TierLoot(9, ItemType.Weapon, normalloot),
-                    new TierLoot(10, ItemType.Weapon, goodloot),
-                    new TierLoot(11, ItemType.Weapon, goodloot),
-                    new TierLoot(8, ItemType.Armor, mediumloot),
-                    new TierLoot(9, ItemType.Armor, mediumloot),
-                    new TierLoot(10, ItemType.Armor, normalloot),
-                    new TierLoot(11, ItemType.Armor, normalloot),
-                    new TierLoot(12, ItemType.Armor, goodloot),
-                    new TierLoot(4, ItemType.Ability, normalloot),
-                    new TierLoot(5, ItemType.Ability, goodloot),
-                    new TierLoot(3, ItemType.Ring, mediumloot),
-                    new TierLoot(4, ItemType.Ring, normalloot),
-                    new TierLoot(5, ItemType.Ring, goodloot)
+                    LootTemplates.StatIncreasePotionsLoot()
+                ),
+                new Threshold(0.05,
+                    new ItemLoot("Shield of Ogmur", 0.005),
+                    new TierLoot(8, ItemType.Weapon, 0.2),
+                    new TierLoot(9, ItemType.Weapon, 0.175),
+                    new TierLoot(10, ItemType.Weapon, 0.125),
+                    new TierLoot(11, ItemType.Weapon, 0.05),
+                    new TierLoot(8, ItemType.Armor, 0.2),
+                    new TierLoot(9, ItemType.Armor, 0.175),
+                    new TierLoot(10, ItemType.Armor, 0.15),
+                    new TierLoot(11, ItemType.Armor, 0.1),
+                    new TierLoot(12, ItemType.Armor, 0.05),
+                    new TierLoot(4, ItemType.Ability, 0.15),
+                    new TierLoot(5, ItemType.Ability, 0.1),
+                    new TierLoot(5, ItemType.Ring, 0.05)
                 )
             )
             .Init("Protection Crystal",

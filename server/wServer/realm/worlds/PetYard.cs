@@ -16,45 +16,31 @@ namespace wServer.realm.worlds
     {
         private readonly Player player;
 
-        public const string WINTER_RESOURCE = "wServer.realm.worlds.maps.petyard_winter.jm";
-
         public PetYard(Player player)
         {
             this.player = player;
             Name = "Pet Yard";
-            ClientWorldName = "Pet Yard";
+            ClientWorldName = "{nexus.Pet_Yard_" + player.Client.Account.PetYardType + "}";
             Background = 0;
             Difficulty = -1;
             ShowDisplays = true;
             AllowTeleport = false;
-            SetMusic("petyard");
         }
-
-        //private void CheckVIP(Player player)
-        //{
-        //    Manager.Database.DoActionAsync(db =>
-        //    {
-        //        MySqlCommand cmd = db.CreateQuery();
-        //        cmd.CommandText = "UPDATE accounts SET vipEnd = CASE WHEN vipEnd=NOW() THEN rank=0 ELSE rank=rank END where id='@accId';";
-        //        cmd.Parameters.AddWithValue("@accId", player.AccountId);
-        //        cmd.ExecuteNonQuery();
-        //    });
-        //}
 
         protected override void Init()
         {
-            //string petYard = "wServer.realm.worlds.maps.PetYard_Divine.wmap";
-            //switch (player.Client.Account.PetYardType)
-            //{
-            //    case 1: petYard = "wServer.realm.worlds.maps.PetYard_Divine.wmap"; break;
-            //    case 2: petYard = "wServer.realm.worlds.maps.PetYard_Uncommon.wmap"; break;
-            //    case 3: petYard = "wServer.realm.worlds.maps.PetYard_Rare.wmap"; break;
-            //    case 4: petYard = "wServer.realm.worlds.maps.PetYard_Legendary.wmap"; break;
-            //    case 5: petYard = "wServer.realm.worlds.maps.PetYard_Common.wmap"; break;
-            //}
-            LoadMap(WINTER_RESOURCE, MapType.Json);
+            string petYard = "wServer.realm.worlds.maps.PetYard_Common.wmap";
+            switch (player.Client.Account.PetYardType)
+            {
+                case 1: petYard = "wServer.realm.worlds.maps.PetYard_Common.wmap"; break;
+                case 2: petYard = "wServer.realm.worlds.maps.PetYard_Uncommon.wmap"; break;
+                case 3: petYard = "wServer.realm.worlds.maps.PetYard_Rare.wmap"; break;
+                case 4: petYard = "wServer.realm.worlds.maps.PetYard_Legendary.wmap"; break;
+                case 5: petYard = "wServer.realm.worlds.maps.PetYard_Divine.wmap"; break;
+            }
+
+            LoadMap(petYard, MapType.Wmap);
             LoadPetYardData(player);
-            //CheckVIP(player);
         }
 
         private void LoadPetYardData(Player player)

@@ -53,7 +53,7 @@ namespace wServer.logic.behaviors
                         entity.Owner.BroadcastPacket(new NotificationPacket
                         {
                             ObjectId = entity.Id,
-                            Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"+ " + n + " HP\"}}",
+                            Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"+" + n + "\"}}",
                             Color = new ARGB(0xff00ff00)
                         }, null);
                     }

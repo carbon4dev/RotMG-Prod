@@ -1,4 +1,4 @@
-package kabam.rotmg.promotions.commands {
+﻿package kabam.rotmg.promotions.commands {
 import kabam.lib.tasks.BranchingTask;
 import kabam.lib.tasks.DispatchSignalTask;
 import kabam.lib.tasks.Task;
@@ -14,45 +14,39 @@ import kabam.rotmg.promotions.view.BeginnersPackageOfferDialog;
 
 public class ShowBeginnersPackageCommand {
 
-      [Inject]
-      public var account:Account;
+    [Inject]
+    public var account:Account;
+    [Inject]
+    public var model:BeginnersPackageModel;
+    [Inject]
+    public var openDialog:OpenDialogSignal;
+    [Inject]
+    public var getDaysRemaining:GetDaysRemainingTask;
+    [Inject]
+    public var getOffers:GetOffersTask;
+    [Inject]
+    public var monitor:TaskMonitor;
 
-      [Inject]
-      public var model:BeginnersPackageModel;
 
-      [Inject]
-      public var openDialog:OpenDialogSignal;
+    public function execute():void {
+        var _local_1:BranchingTask = new BranchingTask(this.getDaysRemaining, this.makeSuccessTask(), this.makeFailureTask());
+        this.monitor.add(_local_1);
+        _local_1.start();
+    }
 
-      [Inject]
-      public var getDaysRemaining:GetDaysRemainingTask;
+    private function makeSuccessTask():Task {
+        var _local_1:TaskSequence = new TaskSequence();
+        ((this.account.isRegistered()) && (_local_1.add(this.getOffers)));
+        _local_1.add(new DispatchSignalTask(this.openDialog, new BeginnersPackageOfferDialog()));
+        return (_local_1);
+    }
 
-      [Inject]
-      public var getOffers:GetOffersTask;
+    private function makeFailureTask():Task {
+        var _local_1:TaskSequence = new TaskSequence();
+        _local_1.add(new DispatchSignalTask(this.openDialog, new AlreadyPurchasedBeginnersPackageDialog()));
+        return (_local_1);
+    }
 
-      [Inject]
-      public var monitor:TaskMonitor;
 
-      public function ShowBeginnersPackageCommand() {
-         super();
-      }
-
-      public function execute() : void {
-         var _local1:BranchingTask = new BranchingTask(this.getDaysRemaining,this.makeSuccessTask(),this.makeFailureTask());
-         this.monitor.add(_local1);
-         _local1.start();
-      }
-
-      private function makeSuccessTask() : Task {
-         var _local1:TaskSequence = new TaskSequence();
-         this.account.isRegistered() && _local1.add(this.getOffers);
-         _local1.add(new DispatchSignalTask(this.openDialog,new BeginnersPackageOfferDialog()));
-         return _local1;
-      }
-
-      private function makeFailureTask() : Task {
-         var _local1:TaskSequence = new TaskSequence();
-         _local1.add(new DispatchSignalTask(this.openDialog,new AlreadyPurchasedBeginnersPackageDialog()));
-         return _local1;
-      }
-   }
 }
+}//package kabam.rotmg.promotions.commands

@@ -1,4 +1,4 @@
-package kabam.rotmg.external.service {
+﻿package kabam.rotmg.external.service {
 import com.company.util.MoreObjectUtil;
 
 import flash.events.TimerEvent;
@@ -12,82 +12,87 @@ import kabam.rotmg.game.model.GameModel;
 
 public class RequestPlayerCreditsTask extends BaseTask {
 
-      private static const REQUEST:String = "account/getCredits";
+    private static const REQUEST:String = "account/getCredits";
 
-      [Inject]
-      public var account:Account;
+    [Inject]
+    public var account:Account;
+    [Inject]
+    public var client:AppEngineClient;
+    [Inject]
+    public var gameModel:GameModel;
+    [Inject]
+    public var playerModel:PlayerModel;
+    private var retryTimes:Array;
+    private var timer:Timer;
+    private var retryCount:int = 0;
 
-      [Inject]
-      public var client:AppEngineClient;
+    public function RequestPlayerCreditsTask() {
+        this.retryTimes = [2, 5, 15];
+        this.timer = new Timer(1000);
+        super();
+    }
 
-      [Inject]
-      public var gameModel:GameModel;
+    override protected function startTask():void {
+        this.timer.addEventListener(TimerEvent.TIMER, this.handleTimer);
+        this.timer.start();
+    }
 
-      [Inject]
-      public var playerModel:PlayerModel;
-
-      private var retryTimes:Array;
-
-      private var timer:Timer;
-
-      private var retryCount:int = 0;
-
-      public function RequestPlayerCreditsTask() {
-         this.retryTimes = [2,5,15];
-         this.timer = new Timer(1000);
-         super();
-      }
-
-      override protected function startTask() : void {
-         this.timer.addEventListener(TimerEvent.TIMER,this.handleTimer);
-         this.timer.start();
-      }
-
-      private function handleTimer(param1:TimerEvent) : void {
-         this.retryTimes[this.retryCount]--;
-         if(this.retryTimes[this.retryCount] <= 0) {
-            this.timer.removeEventListener(TimerEvent.TIMER,this.handleTimer);
+    private function handleTimer(_arg_1:TimerEvent):void {
+        var _local_2 = this.retryTimes;
+        var _local_3 = this.retryCount;
+        var _local_4 = (_local_2[_local_3] - 1);
+        _local_2[_local_3] = _local_4;
+        if (this.retryTimes[this.retryCount] <= 0) {
+            this.timer.removeEventListener(TimerEvent.TIMER, this.handleTimer);
             this.makeRequest();
             this.retryCount++;
             this.timer.stop();
-         }
-      }
+        }
+    }
 
-      private function makeRequest() : void {
-         this.client.complete.addOnce(this.onComplete);
-         this.client.sendRequest(REQUEST,this.makeRequestObject());
-      }
+    private function makeRequest():void {
+        this.client.complete.addOnce(this.onComplete);
+        this.client.sendRequest(REQUEST, this.makeRequestObject());
+    }
 
-      private function onComplete(param1:Boolean, param2:*) : void {
-         var _local4:String = null;
-         var _local3:Boolean = false;
-         if(param1) {
-            _local4 = XML(param2).toString();
-            if(_local4 != "" && _local4.search("Error") != -1) {
-               this.setCredits(int(_local4));
+    private function onComplete(_arg_1:Boolean, _arg_2:*):void {
+        var _local_4:String;
+        var _local_3:Boolean;
+        if (_arg_1) {
+            _local_4 = XML(_arg_2).toString();
+            if (((!((_local_4 == ""))) && (!((_local_4.search("Error") == -1))))) {
+                this.setCredits(int(_local_4));
             }
-         } else if(this.retryCount < this.retryTimes.length) {
-            this.timer.addEventListener(TimerEvent.TIMER,this.handleTimer);
-            this.timer.start();
-            _local3 = true;
-         }
-         !_local3 && completeTask(param1,param2);
-      }
-
-      private function setCredits(param1:int) : void {
-         if(param1 >= 0) {
-            if(this.gameModel != null && this.gameModel.player != null && param1 != this.gameModel.player.credits_) {
-               this.gameModel.player.credits_ = param1;
-            } else if(this.playerModel != null && this.playerModel.getCredits() != param1) {
-               this.playerModel.setCredits(param1);
+        }
+        else {
+            if (this.retryCount < this.retryTimes.length) {
+                this.timer.addEventListener(TimerEvent.TIMER, this.handleTimer);
+                this.timer.start();
+                _local_3 = true;
             }
-         }
-      }
+        }
+        ((!(_local_3)) && (completeTask(_arg_1, _arg_2)));
+    }
 
-      private function makeRequestObject() : Object {
-         var _local1:Object = {};
-         MoreObjectUtil.addToObject(_local1,this.account.getCredentials());
-         return _local1;
-      }
-   }
+    private function setCredits(_arg_1:int):void {
+        if (_arg_1 >= 0) {
+            if (((((!((this.gameModel == null))) && (!((this.gameModel.player == null))))) && (!((_arg_1 == this.gameModel.player.credits_))))) {
+                this.gameModel.player.credits_ = _arg_1;
+            }
+            else {
+                if (((!((this.playerModel == null))) && (!((this.playerModel.getCredits() == _arg_1))))) {
+                    this.playerModel.setCredits(_arg_1);
+                }
+            }
+        }
+    }
+
+    private function makeRequestObject():Object {
+        var _local_1:Object = {};
+        MoreObjectUtil.addToObject(_local_1, this.account.getCredentials());
+        return (_local_1);
+    }
+
+
 }
+}//package kabam.rotmg.external.service

@@ -1,5 +1,5 @@
-package kabam.rotmg.pets.view {
-import com.company.assembleegameclient.LOEBUILD_5891da2d64975cae48d175d1e001f5da.LOEBUILD_efda783509bc93eea698457c87bbee3f;
+﻿package kabam.rotmg.pets.view {
+import com.company.assembleegameclient.objects.ObjectLibrary;
 
 import flash.display.BitmapData;
 
@@ -11,35 +11,32 @@ import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class CaretakerQueryDialogMediator extends Mediator {
 
-      [Inject]
-      public var view:CaretakerQueryDialog;
+    [Inject]
+    public var view:CaretakerQueryDialog;
+    [Inject]
+    public var model:PetsModel;
+    [Inject]
+    public var closeDialogs:CloseDialogsSignal;
 
-      [Inject]
-      public var model:PetsModel;
 
-      [Inject]
-      public var closeDialogs:CloseDialogsSignal;
+    override public function initialize():void {
+        this.view.closed.addOnce(this.onClosed);
+        this.view.setCaretakerIcon(this.makeCaretakerIcon());
+    }
 
-      public function CaretakerQueryDialogMediator() {
-         super();
-      }
+    private function makeCaretakerIcon():BitmapData {
+        var _local_1:int = this.model.getPetYardObjectID();
+        return (ObjectLibrary.getRedrawnTextureFromType(_local_1, 80, true));
+    }
 
-      override public function initialize() : void {
-         this.view.closed.addOnce(this.onClosed);
-         this.view.setCaretakerIcon(this.makeCaretakerIcon());
-      }
+    override public function destroy():void {
+        this.view.closed.removeAll();
+    }
 
-      private function makeCaretakerIcon() : BitmapData {
-         var _local1:int = this.model.getPetYardObjectID();
-         return LOEBUILD_efda783509bc93eea698457c87bbee3f.getRedrawnTextureFromType(_local1,80,true);
-      }
+    private function onClosed():void {
+        this.closeDialogs.dispatch();
+    }
 
-      override public function destroy() : void {
-         this.view.closed.removeAll();
-      }
 
-      private function onClosed() : void {
-         this.closeDialogs.dispatch();
-      }
-   }
 }
+}//package kabam.rotmg.pets.view

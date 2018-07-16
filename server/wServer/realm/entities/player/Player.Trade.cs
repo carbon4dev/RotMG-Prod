@@ -22,11 +22,11 @@ namespace wServer.realm.entities.player
                 SendInfo("{\"key\":\"server.player_not_found\",\"tokens\":{\"player\":\"" + pkt.Name + "\"}}");
                 return;
             }
-            /*if (!NameChosen || !target.NameChosen)
+            if (!NameChosen || !target.NameChosen)
             {
                 SendInfo("{\"key\":\"server.trade_needs_their_name\"}");
                 return;
-            }*/
+            }
             if (Client.Player == target)
             {
                 SendInfo("{\"key\":\"server.self_trade\"}");

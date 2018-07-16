@@ -1,12 +1,11 @@
-package kabam.rotmg.pets.view.dialogs {
-   public class ItemBackgroundFactory {
+﻿package kabam.rotmg.pets.view.dialogs {
+public class ItemBackgroundFactory {
 
-      public function ItemBackgroundFactory() {
-         super();
-      }
 
-      public function create(param1:int, param2:Array) : PetItemBackground {
-         return new PetItemBackground(param1,param2);
-      }
-   }
+    public function create(_arg_1:int, _arg_2:Array):PetItemBackground {
+        return (new PetItemBackground(_arg_1, _arg_2));
+    }
+
+
 }
+}//package kabam.rotmg.pets.view.dialogs

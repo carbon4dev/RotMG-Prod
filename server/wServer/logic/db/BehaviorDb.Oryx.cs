@@ -55,38 +55,28 @@ namespace wServer.logic
                             coolDownOffset: 1000),
                         new Shoot(25, projectileIndex: 6, count: 3, shootAngle: 10, predictive: 1, coolDown: 1000,
                             coolDownOffset: 1000),
-                        new TossObject("Monstrosity Scarab", 7, 0, coolDown: 1000, randomToss: true),
+                        //new TossObject("Monstrosity Scarab", 7, 0, coolDown: 1000, randomToss: true),
                         new Taunt(1, 6000, "Puny mortals! My {HP} HP will annihilate you!")
                     )
                 ),
-                new MostDamagers(15,
-                    new ItemLoot("Potion of Vitality", 0.5),
-                    new ItemLoot("Potion of Attack", 0.5),
-                    new ItemLoot("Potion of Defense", 0.5),
-                    new ItemLoot("Potion of Wisdom", 0.5)
-                    ),
-                new MostDamagers(10,
-                    new ItemLoot("Greater Potion of Vitality", 0.15),
-                    new ItemLoot("Greater Potion of Attack", 0.15),
-                    new ItemLoot("Greater Potion of Defense", 0.15),
-                    new ItemLoot("Greater Potion of Wisdom", 0.15),
-                    new TierLoot(10, ItemType.Weapon, goodloot),
-                    new TierLoot(11, ItemType.Weapon, goodloot),
-                    new TierLoot(12, ItemType.Weapon, greatloot),
-                    new TierLoot(5, ItemType.Ability, goodloot),
-                    new TierLoot(6, ItemType.Ability, greatloot),
-                    new TierLoot(11, ItemType.Armor, normalloot),
-                    new TierLoot(12, ItemType.Armor, goodloot),
-                    new TierLoot(13, ItemType.Armor, greatloot),
-                    new TierLoot(5, ItemType.Ring, goodloot),
-                    new OnlyOne(
-                        new ItemLoot("Blade of the Mad God", blackbag*2),
-                        new ItemLoot("Ancient Almandine Armor of Anger", blackbag*2),
-                        new ItemLoot("Ancient Almandine Ring of Wrath", blackbag*2),
-                        new ItemLoot("Arch-Blade of the Mad God", superbag*2),
-                        new ItemLoot("Royal Almandine Armor of Anger", superbag*2),
-                        new ItemLoot("Ancient Almandine Crown of Wrath", superbag*2)
-                        )
+                new MostDamagers(3,
+                    new ItemLoot("Potion of Vitality", 1)
+                ),
+                new Threshold(0.05,
+                    new ItemLoot("Potion of Attack", 0.3),
+                    new ItemLoot("Potion of Defense", 0.3),
+                    new ItemLoot("Potion of Wisdom", 0.3)
+                ),
+                new Threshold(0.1,
+                    new TierLoot(10, ItemType.Weapon, 0.07),
+                    new TierLoot(11, ItemType.Weapon, 0.06),
+                    new TierLoot(12, ItemType.Weapon, 0.05),
+                    new TierLoot(5, ItemType.Ability, 0.07),
+                    new TierLoot(6, ItemType.Ability, 0.05),
+                    new TierLoot(11, ItemType.Armor, 0.07),
+                    new TierLoot(12, ItemType.Armor, 0.06),
+                    new TierLoot(13, ItemType.Armor, 0.05),
+                    new TierLoot(5, ItemType.Ring, 0.06)
                 )
             )
             .Init("Henchman of Oryx",
@@ -146,7 +136,6 @@ namespace wServer.logic
                         new TossObject("Ring Element", 9, 336, 320000),
                         new TossObject("Ring Element", 9, 360, 320000),
                         new ConditionalEffect(ConditionEffectIndex.Invulnerable),
-                        new Grenade(4, 150, 12, coolDown: 2000),
                         //new Grenade(radius: 4, damage: 150, fixedAngle: new Random().Next(0, 359), range: 5, coolDown: 2000),
                         //new Grenade(radius: 4, damage: 150, fixedAngle: new Random().Next(0, 359), range: 5, coolDown: 2000),
                         //new Grenade(radius: 4, damage: 150, fixedAngle: new Random().Next(0, 359), range: 5, coolDown: 2000),
@@ -158,7 +147,7 @@ namespace wServer.logic
                         new Shoot(50, 3, projectileIndex: 9, coolDown: 1500, coolDownOffset: 200),
                         new Shoot(50, 10, projectileIndex: 8, coolDown: 2000, coolDownOffset: 200),
                         new Shoot(50, 10, projectileIndex: 7, coolDown: 500, coolDownOffset: 200),
-                        new Grenade(4, 150, 12, coolDown: 2000),
+
                         //Inner Elements
                         new TossObject("Guardian Element 1", 1, 0, 90000001, 1000),
                         new TossObject("Guardian Element 1", 1, 90, 90000001, 1000),
@@ -176,7 +165,6 @@ namespace wServer.logic
                         new Taunt("All who looks upon my face shall die."),
                         new Shoot(count: 2, coolDown: 1000, projectileIndex: 1, radius: 7, shootAngle: 10,
                             coolDownOffset: 800),
-                        new Grenade(4, 150, 12, coolDown: 2000),
                         new TimedTransition(10000, "Dance 2")
                         #endregion gaze
 
@@ -238,30 +226,6 @@ namespace wServer.logic
                             coolDownOffset: 2000),
                         new Follow(0.85, range: 1, coolDown: 0),
                         new Flash(0xfFF0000, 0.5, 9000001)
-                        )
-                    ),
-                new MostDamagers(15,
-                    new ItemLoot("Potion of Attack", 0.85),
-                    new ItemLoot("Potion of Defense", 0.85),
-                    new TierLoot(9, ItemType.Armor, mediumloot*2),
-                    new TierLoot(10, ItemType.Armor, normalloot*2),
-                    new TierLoot(11, ItemType.Armor, normalloot*2),
-                    new TierLoot(12, ItemType.Armor, goodloot*2),
-                    new TierLoot(9, ItemType.Weapon, normalloot*2),
-                    new TierLoot(10, ItemType.Weapon, goodloot*2),
-                    new TierLoot(11, ItemType.Weapon, goodloot*2),
-                    new TierLoot(4, ItemType.Ability, normalloot*2),
-                    new TierLoot(5, ItemType.Ability, goodloot*2),
-                    new TierLoot(3, ItemType.Ring, mediumloot*2),
-                    new TierLoot(4, ItemType.Ring, normalloot*2),
-                    new TierLoot(5, ItemType.Ring, goodloot*2)
-                    ),
-                new MostDamagers(3,
-                    new OnlyOne(
-                        new ItemLoot("Sword of the Mad God", awesomeloot),
-                        new ItemLoot("Onyx Shield of the Mad God", awesomeloot),
-                        new ItemLoot("Almandine Armor of Anger", awesomeloot),
-                        new ItemLoot("Almandine Ring of Wrath", awesomeloot)
                         )
                     )
             )

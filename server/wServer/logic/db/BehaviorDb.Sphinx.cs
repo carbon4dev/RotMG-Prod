@@ -51,7 +51,7 @@ namespace wServer.logic
                         new State("WeakenAttack",
                             new Wander(0.0005),
                             new StayCloseToSpawn(0.5, 8),
-                            new Shoot(10, projectileIndex: 2, count: 3, shootAngle: 120, coolDown: 900),
+                            new Shoot(10, projectileIndex: 3, count: 3, shootAngle: 120, coolDown: 900),
                             new Shoot(10, projectileIndex: 2, count: 3, shootAngle: 15, fixedAngle: 40, coolDown: 1600, coolDownOffset: 0),
                             new Shoot(10, projectileIndex: 2, count: 3, shootAngle: 15, fixedAngle: 220, coolDown: 1600, coolDownOffset: 0),
                             new Shoot(10, projectileIndex: 2, count: 3, shootAngle: 15, fixedAngle: 130, coolDown: 1600, coolDownOffset: 800),
@@ -64,20 +64,17 @@ namespace wServer.logic
                             new TimedTransition(2000, "BlindAttack")
                         )
                     ),
-                    new MostDamagers(15,
-                        new ItemLoot("Potion of Vitality", 0.5),
-                        new ItemLoot("Potion of Wisdom", 0.5),
-                        new EggLoot(EggRarity.Common, eggbag + goodloot),
-                        new EggLoot(EggRarity.Uncommon, eggbag + greatloot),
-                        new EggLoot(EggRarity.Rare, eggbag + awesomeloot),
-                        new EggLoot(EggRarity.Legendary, eggbag)
-                        ),
-                    new MostDamagers(10,
+                    new MostDamagers(3,
+                        new ItemLoot("Potion of Vitality", 1),
+                        new ItemLoot("Potion of Wisdom", 1)
+                    ),
+                    new Threshold(0.05,
+                        new ItemLoot("Helm of the Juggernaut", 0.005)
+                    ),
+                    new Threshold(0.1,
                         new OnlyOne(
-                            new ItemLoot("Helm of the Great Juggernaut", blackbag),
-                            new ItemLoot("Helm of the Juggernaut", whitebag),
-                            new ItemLoot("The Sentinel Warden", whitebag)
-                            )
+                            LootTemplates.DefaultEggLoot(EggRarity.Legendary)
+                        )
                     )
                 )
                 .Init("Horrid Reaper",

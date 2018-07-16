@@ -1,7 +1,6 @@
-package com.company.assembleegameclient.ui.dialogs {
+﻿package com.company.assembleegameclient.ui.dialogs {
 import com.company.assembleegameclient.ui.DeprecatedTextButton;
 import com.company.assembleegameclient.util.StageProxy;
-import com.company.googleanalytics.GA;
 import com.company.util.GraphicsUtil;
 
 import flash.display.CapsStyle;
@@ -27,140 +26,110 @@ import kabam.rotmg.ui.view.SignalWaiter;
 public class Dialog extends Sprite {
 
     public static const LEFT_BUTTON:String = "dialogLeftButton";
-
     public static const RIGHT_BUTTON:String = "dialogRightButton";
-
-    public static const GREY:int = 11776947;
-
+    public static const GREY:int = 0xB3B3B3;
     public static const WIDTH:int = 300;
-
     public var box_:Sprite;
-
     public var rect_:Shape;
-
     public var textText_:TextFieldDisplayConcrete;
-
     public var titleText_:TextFieldDisplayConcrete = null;
-
-    public var analyticsPageName_:String = null;
-
     public var offsetX:Number = 0;
-
     public var offsetY:Number = 0;
-
     public var stageProxy:StageProxy;
-
     public var titleYPosition:int = 2;
-
     public var titleTextSpace:int = 8;
-
     public var buttonSpace:int = 16;
-
     public var bottomSpace:int = 10;
-
     public var dialogWidth:int;
-
-    private var outlineFill_:GraphicsSolidFill;
-
-    private var lineStyle_:GraphicsStroke;
-
-    private var backgroundFill_:GraphicsSolidFill;
-
-    protected var path_:GraphicsPath;
-
-    protected var graphicsData_:Vector.<IGraphicsData>;
-
+    private var outlineFill_:GraphicsSolidFill = new GraphicsSolidFill(0xFFFFFF, 1);
+    private var lineStyle_:GraphicsStroke = new GraphicsStroke(
+            1, false, LineScaleMode.NORMAL, CapsStyle.NONE, JointStyle.ROUND, 3, outlineFill_
+    );
+    private var backgroundFill_:GraphicsSolidFill = new GraphicsSolidFill(0x363636, 1);
+    protected var path_:GraphicsPath = new GraphicsPath(new Vector.<int>(), new Vector.<Number>());
     protected var uiWaiter:SignalWaiter;
-
     protected var leftButton:DeprecatedTextButton;
-
     protected var rightButton:DeprecatedTextButton;
-
     private var leftButtonKey:String;
-
     private var rightButtonKey:String;
-
     private var replaceTokens:Object;
+    protected const graphicsData_:Vector.<IGraphicsData> = new <IGraphicsData>[
+        lineStyle_, backgroundFill_, path_, GraphicsUtil.END_FILL, GraphicsUtil.END_STROKE
+    ];
 
-    public function Dialog(param1:String, param2:String, param3:String, param4:String, param5:String, param6:Object = null) {
+    public function Dialog(_arg_1:String, _arg_2:String, _arg_3:String, _arg_4:String, _arg_6:Object = null) {
         this.box_ = new Sprite();
         this.rect_ = new Shape();
         this.dialogWidth = this.setDialogWidth();
-        this.outlineFill_ = new GraphicsSolidFill(16777215, 1);
-        this.lineStyle_ = new GraphicsStroke(1, false, LineScaleMode.NORMAL, CapsStyle.NONE, JointStyle.ROUND, 3, this.outlineFill_);
-        this.backgroundFill_ = new GraphicsSolidFill(3552822, 1);
-        this.path_ = new GraphicsPath(new Vector.<int>(), new Vector.<Number>());
-        this.graphicsData_ = new <IGraphicsData>[lineStyle_, backgroundFill_, path_, GraphicsUtil.END_FILL, GraphicsUtil.END_STROKE];
         this.uiWaiter = new SignalWaiter();
-        this.replaceTokens = param6;
-        this.leftButtonKey = param3;
-        this.rightButtonKey = param4;
+        this.replaceTokens = _arg_6;
+        this.leftButtonKey = _arg_3;
+        this.rightButtonKey = _arg_4;
         super();
         this.stageProxy = new StageProxy(this);
-        this.analyticsPageName_ = param5;
-        this._makeUIAndAdd(param2, param1);
+        this._makeUIAndAdd(_arg_2, _arg_1);
         this.makeUIAndAdd();
         this.uiWaiter.complete.addOnce(this.onComplete);
         addChild(this.box_);
     }
 
     public function getLeftButtonKey():String {
-        return this.leftButtonKey;
+        return (this.leftButtonKey);
     }
 
     public function getRightButtonKey():String {
-        return this.rightButtonKey;
+        return (this.rightButtonKey);
     }
 
-    public function setTextParams(param1:String, param2:Object):void {
-        this.textText_.setStringBuilder(new LineBuilder().setParams(param1, param2));
+    public function setTextParams(_arg_1:String, _arg_2:Object):void {
+        this.textText_.setStringBuilder(new LineBuilder().setParams(_arg_1, _arg_2));
     }
 
-    public function setTitleStringBuilder(param1:StringBuilder):void {
-        this.titleText_.setStringBuilder(param1);
+    public function setTitleStringBuilder(_arg_1:StringBuilder):void {
+        this.titleText_.setStringBuilder(_arg_1);
     }
 
     protected function setDialogWidth():int {
-        return WIDTH;
+        return (WIDTH);
     }
 
-    private function _makeUIAndAdd(param1:String, param2:String):void {
-        this.initText(param1);
+    private function _makeUIAndAdd(_arg_1:String, _arg_2:String):void {
+        this.initText(_arg_1);
         this.addTextFieldDisplay(this.textText_);
-        this.initNonNullTitleAndAdd(param2);
+        this.initNonNullTitleAndAdd(_arg_2);
         this.makeNonNullButtons();
     }
 
     protected function makeUIAndAdd():void {
     }
 
-    protected function initText(param1:String):void {
+    protected function initText(_arg_1:String):void {
         this.textText_ = new TextFieldDisplayConcrete().setSize(14).setColor(GREY);
-        this.textText_.setTextWidth(this.dialogWidth - 40);
+        this.textText_.setTextWidth((this.dialogWidth - 40));
         this.textText_.x = 20;
         this.textText_.setMultiLine(true).setWordWrap(true).setAutoSize(TextFieldAutoSize.CENTER);
         this.textText_.setHTML(true);
-        var _local2:LineBuilder = new LineBuilder().setParams(param1).setPrefix("<p align=\"center\">").setPostfix("</p>");
+        var _local_2:LineBuilder = new LineBuilder().setParams(_arg_1).setPrefix('<p align="center">').setPostfix("</p>");
         if (this.replaceTokens) {
-            _local2.setParams(param1, this.replaceTokens);
+            _local_2.setParams(_arg_1, this.replaceTokens);
         }
-        this.textText_.setStringBuilder(_local2);
+        this.textText_.setStringBuilder(_local_2);
         this.textText_.mouseEnabled = true;
         this.textText_.filters = [new DropShadowFilter(0, 0, 0, 1, 6, 6, 1)];
     }
 
-    private function addTextFieldDisplay(param1:TextFieldDisplayConcrete):void {
-        this.box_.addChild(param1);
-        this.uiWaiter.push(param1.textChanged);
+    private function addTextFieldDisplay(_arg_1:TextFieldDisplayConcrete):void {
+        this.box_.addChild(_arg_1);
+        this.uiWaiter.push(_arg_1.textChanged);
     }
 
-    private function initNonNullTitleAndAdd(param1:String):void {
-        if (param1 != null) {
+    private function initNonNullTitleAndAdd(_arg_1:String):void {
+        if (_arg_1 != null) {
             this.titleText_ = new TextFieldDisplayConcrete().setSize(18).setColor(5746018);
             this.titleText_.setBold(true);
             this.titleText_.setAutoSize(TextFieldAutoSize.CENTER);
             this.titleText_.filters = [new DropShadowFilter(0, 0, 0, 1, 8, 8, 1)];
-            this.titleText_.setStringBuilder(new LineBuilder().setParams(param1));
+            this.titleText_.setStringBuilder(new LineBuilder().setParams(_arg_1));
             this.addTextFieldDisplay(this.titleText_);
         }
     }
@@ -178,25 +147,12 @@ public class Dialog extends Sprite {
 
     private function onComplete():void {
         this.draw();
-        this.positionDialogAndTryAnalytics();
+        this.positionDialog();
     }
 
-    private function positionDialogAndTryAnalytics():void {
-        this.box_.x = this.offsetX + 800 / 2 - this.box_.width / 2;
-        this.box_.y = this.offsetY + 600 / 2 - this.getBoxHeight() / 2;
-        if (this.analyticsPageName_ != null) {
-            this.tryAnalytics();
-        }
-    }
-
-    private function tryAnalytics():void {
-        try {
-            GA.global().trackPageview(this.analyticsPageName_);
-            return;
-        }
-        catch (error:Error) {
-            return;
-        }
+    private function positionDialog():void {
+        this.box_.x = ((this.offsetX + (this.stageProxy.getStageWidth() / 2)) - (this.box_.width / 2));
+        this.box_.y = ((this.offsetY + (this.stageProxy.getStageHeight() / 2)) - (this.getBoxHeight() / 2));
     }
 
     private function draw():void {
@@ -225,58 +181,62 @@ public class Dialog extends Sprite {
 
     private function drawBackground():void {
         GraphicsUtil.clearPath(this.path_);
-        GraphicsUtil.drawCutEdgeRect(0, 0, this.dialogWidth, this.getBoxHeight() + this.bottomSpace, 4, [1, 1, 1, 1], this.path_);
-        var _local1:Graphics = this.rect_.graphics;
-        _local1.clear();
-        _local1.drawGraphicsData(this.graphicsData_);
+        GraphicsUtil.drawCutEdgeRect(0, 0, this.dialogWidth, (this.getBoxHeight() + this.bottomSpace), 4, [1, 1, 1, 1], this.path_);
+        var _local_1:Graphics = this.rect_.graphics;
+        _local_1.clear();
+        _local_1.drawGraphicsData(this.graphicsData_);
     }
 
     protected function getBoxHeight():Number {
-        return this.box_.height;
+        return (this.box_.height);
     }
 
     private function addButtonsAndLayout():void {
-        var _local1:int = 0;
+        var _local_1:int;
         if (this.leftButton != null) {
-            _local1 = this.box_.height + this.buttonSpace;
+            _local_1 = (this.box_.height + this.buttonSpace);
             this.box_.addChild(this.leftButton);
-            this.leftButton.y = _local1;
+            this.leftButton.y = _local_1;
             if (this.rightButton == null) {
-                this.leftButton.x = this.dialogWidth / 2 - this.leftButton.width / 2;
-            } else {
-                this.leftButton.x = this.dialogWidth / 4 - this.leftButton.width / 2;
+                this.leftButton.x = ((this.dialogWidth / 2) - (this.leftButton.width / 2));
+            }
+            else {
+                this.leftButton.x = ((this.dialogWidth / 4) - (this.leftButton.width / 2));
                 this.box_.addChild(this.rightButton);
-                this.rightButton.x = 3 * this.dialogWidth / 4 - this.rightButton.width / 2;
-                this.rightButton.y = _local1;
+                this.rightButton.x = (((3 * this.dialogWidth) / 4) - (this.rightButton.width / 2));
+                this.rightButton.y = _local_1;
             }
         }
     }
 
     private function drawTitleAndText():void {
         if (this.titleText_ != null) {
-            this.titleText_.x = this.dialogWidth / 2;
+            this.titleText_.x = (this.dialogWidth / 2);
             this.titleText_.y = this.titleYPosition;
-            this.textText_.y = this.titleText_.height + this.titleTextSpace;
-        } else {
+            this.textText_.y = (this.titleText_.height + this.titleTextSpace);
+        }
+        else {
             this.textText_.y = 4;
         }
     }
 
     private function removeButtonsIfAlreadyAdded():void {
-        if (Boolean(this.leftButton) && Boolean(this.box_.contains(this.leftButton))) {
+        if (((this.leftButton) && (this.box_.contains(this.leftButton)))) {
             this.box_.removeChild(this.leftButton);
         }
-        if (Boolean(this.rightButton) && Boolean(this.box_.contains(this.rightButton))) {
+        if (((this.rightButton) && (this.box_.contains(this.rightButton)))) {
             this.box_.removeChild(this.rightButton);
         }
     }
 
-    protected function onLeftButtonClick(param1:MouseEvent):void {
+    protected function onLeftButtonClick(_arg_1:MouseEvent):void {
         dispatchEvent(new Event(LEFT_BUTTON));
     }
 
-    protected function onRightButtonClick(param1:Event):void {
+    protected function onRightButtonClick(_arg_1:Event):void {
         dispatchEvent(new Event(RIGHT_BUTTON));
     }
+
+
 }
-}
+}//package com.company.assembleegameclient.ui.dialogs

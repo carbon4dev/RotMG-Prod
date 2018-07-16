@@ -1,10 +1,8 @@
-package kabam.rotmg.pets.controller {
+﻿package kabam.rotmg.pets.controller {
 import org.osflash.signals.Signal;
 
 public class OpenCaretakerQueryDialogSignal extends Signal {
 
-      public function OpenCaretakerQueryDialogSignal() {
-         super();
-      }
-   }
+
 }
+}//package kabam.rotmg.pets.controller

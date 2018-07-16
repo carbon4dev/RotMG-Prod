@@ -1,40 +1,38 @@
-package kabam.rotmg.characters.model {
-import com.company.assembleegameclient.LOEBUILD_1f4c42c309fe6bc45253d598cfdf9b99.LOEBUILD_7ebef6bdf3535c86294f666e62e89578;
+﻿package kabam.rotmg.characters.model {
+import com.company.assembleegameclient.appengine.SavedCharacter;
 
 import kabam.rotmg.core.model.PlayerModel;
 
 public class LegacyCharacterModel implements CharacterModel {
 
-      [Inject]
-      public var wrapped:PlayerModel;
+    [Inject]
+    public var wrapped:PlayerModel;
+    private var selected:SavedCharacter;
 
-      private var selected:LOEBUILD_7ebef6bdf3535c86294f666e62e89578;
 
-      public function LegacyCharacterModel() {
-         super();
-      }
+    public function getCharacterCount():int {
+        return (this.wrapped.getCharacterCount());
+    }
 
-      public function getCharacterCount() : int {
-         return this.wrapped.getCharacterCount();
-      }
+    public function getCharacter(_arg_1:int):SavedCharacter {
+        return (this.wrapped.getCharById(_arg_1));
+    }
 
-      public function getCharacter(param1:int) : LOEBUILD_7ebef6bdf3535c86294f666e62e89578 {
-         return this.wrapped.getCharById(param1);
-      }
-
-      public function deleteCharacter(param1:int) : void {
-         this.wrapped.deleteCharacter(param1);
-         if(this.selected.charId() == param1) {
+    public function deleteCharacter(_arg_1:int):void {
+        this.wrapped.deleteCharacter(_arg_1);
+        if (this.selected.charId() == _arg_1) {
             this.selected = null;
-         }
-      }
+        }
+    }
 
-      public function select(param1:LOEBUILD_7ebef6bdf3535c86294f666e62e89578) : void {
-         this.selected = param1;
-      }
+    public function select(_arg_1:SavedCharacter):void {
+        this.selected = _arg_1;
+    }
 
-      public function getSelected() : LOEBUILD_7ebef6bdf3535c86294f666e62e89578 {
-         return this.selected;
-      }
-   }
+    public function getSelected():SavedCharacter {
+        return (this.selected);
+    }
+
+
 }
+}//package kabam.rotmg.characters.model

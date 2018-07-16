@@ -1,4 +1,4 @@
-package kabam.rotmg.ui.view {
+﻿package kabam.rotmg.ui.view {
 import com.company.assembleegameclient.ui.dialogs.Dialog;
 
 import flash.display.Sprite;
@@ -10,40 +10,35 @@ import org.osflash.signals.Signal;
 
 public class CharacterSlotNeedGoldDialog extends Sprite {
 
-      private static const ANALYTICS_PAGE:String = "/charSlotNeedGold";
+    public const buyGold:Signal = new Signal();
+    public const cancel:Signal = new Signal();
 
-      public const buyGold:Signal = new Signal();
+    private var dialog:Dialog;
+    private var price:int;
 
-      public const cancel:Signal = new Signal();
 
-      private var dialog:Dialog;
+    public function setPrice(_arg_1:int):void {
+        this.price = _arg_1;
+        ((((this.dialog) && (contains(this.dialog)))) && (removeChild(this.dialog)));
+        this.makeDialog();
+        this.dialog.addEventListener(Dialog.LEFT_BUTTON, this.onCancel);
+        this.dialog.addEventListener(Dialog.RIGHT_BUTTON, this.onBuyGold);
+    }
 
-      private var price:int;
+    private function makeDialog():void {
+        this.dialog = new Dialog(TextKey.NOT_ENOUGH_GOLD, "", TextKey.FRAME_CANCEL, TextKey.BUY_GOLD);
+        this.dialog.setTextParams(TextKey.CHARACTERSLOTNEEDGOLDDIALOG_PRICE, {"price": this.price});
+        addChild(this.dialog);
+    }
 
-      public function CharacterSlotNeedGoldDialog() {
-         super();
-      }
+    public function onCancel(_arg_1:Event):void {
+        this.cancel.dispatch();
+    }
 
-      public function setPrice(param1:int) : void {
-         this.price = param1;
-         this.dialog && contains(this.dialog) && removeChild(this.dialog);
-         this.makeDialog();
-         this.dialog.addEventListener(Dialog.LEFT_BUTTON,this.onCancel);
-         this.dialog.addEventListener(Dialog.RIGHT_BUTTON,this.onBuyGold);
-      }
+    public function onBuyGold(_arg_1:Event):void {
+        this.buyGold.dispatch();
+    }
 
-      private function makeDialog() : void {
-         this.dialog = new Dialog(TextKey.NOT_ENOUGH_GOLD,"",TextKey.FRAME_CANCEL,TextKey.BUY_GOLD,ANALYTICS_PAGE);
-         this.dialog.setTextParams(TextKey.CHARACTERSLOTNEEDGOLDDIALOG_PRICE,{"price":this.price});
-         addChild(this.dialog);
-      }
 
-      public function onCancel(param1:Event) : void {
-         this.cancel.dispatch();
-      }
-
-      public function onBuyGold(param1:Event) : void {
-         this.buyGold.dispatch();
-      }
-   }
 }
+}//package kabam.rotmg.ui.view

@@ -33,16 +33,16 @@ namespace wServer.realm.entities.player
                 {"Great Coil Snake", Tuple.Create(6, 6, 12)},
                 {"Lich", Tuple.Create(9, 6, 1000)},
                 {"Actual Lich", Tuple.Create(9, 7, 1000)},
-                //{"Ent Ancient", Tuple.Create(10, 7, 1000)},
-                //{"Actual Ent Ancient", Tuple.Create(10, 7, 1000)},
-                //{"Oasis Giant", Tuple.Create(11, 8, 1000)},
+                {"Ent Ancient", Tuple.Create(10, 7, 1000)},
+                {"Actual Ent Ancient", Tuple.Create(10, 7, 1000)},
+                {"Oasis Giant", Tuple.Create(11, 8, 1000)},
                 {"Phoenix Lord", Tuple.Create(11, 9, 1000)},
-                //{"Ghost King", Tuple.Create(12, 10, 1000)},
-                //{"Actual Ghost King", Tuple.Create(12, 10, 1000)},
+                {"Ghost King", Tuple.Create(12, 10, 1000)},
+                {"Actual Ghost King", Tuple.Create(12, 10, 1000)},
                 {"Cyclops God", Tuple.Create(13, 10, 1000)},
                 {"Red Demon", Tuple.Create(15, 15, 1000)},
                 {"Lucky Djinn", Tuple.Create(15, 15, 1000)},
-                {"Lucky Ent God", Tuple.Create(15, 15, 1000)},
+                {"Lucky Ent", Tuple.Create(15, 15, 1000)},
                 {"Skull Shrine", Tuple.Create(16, 15, 1000)},
                 {"Pentaract", Tuple.Create(16, 15, 1000)},
                 {"Cube God", Tuple.Create(16, 15, 1000)},
@@ -50,48 +50,41 @@ namespace wServer.realm.entities.player
                 {"Lord of the Lost Lands", Tuple.Create(16, 15, 1000)},
                 {"Hermit God", Tuple.Create(16, 15, 1000)},
                 {"Ghost Ship", Tuple.Create(16, 15, 1000)},
-                //{"Unknown Giant Golem", Tuple.Create(16, 15, 1000)},
-                {"Evil Chicken God", Tuple.Create(999, 1, 1000)},
-                {"Bonegrind The Butcher", Tuple.Create(999, 1, 1000)},
-                {"Dreadstump the Pirate King", Tuple.Create(999, 1, 1000)},
-                {"Arachna the Spider Queen", Tuple.Create(999, 1, 1000)},
-                {"Stheno the Snake Queen", Tuple.Create(999, 1, 1000)},
-                {"Mixcoatl the Masked God", Tuple.Create(999, 1, 1000)},
-                {"Limon the Sprite God", Tuple.Create(999, 1, 1000)},
-                {"Septavius the Ghost God", Tuple.Create(999, 1, 1000)},
-                {"Davy Jones", Tuple.Create(999, 1, 1000)},
-                {"Lord Ruthven", Tuple.Create(999, 1, 1000)},
-                {"Archdemon Malphas", Tuple.Create(999, 1, 1000)},
-                //{"Mysterious Crystal", Tuple.Create(999, 1, 1000)},
-                {"shtrs Defense System", Tuple.Create(999, 1, 1000)},
-                {"Thessal the Mermaid Goddess", Tuple.Create(999, 1, 1000)},
-                {"Dr Terrible", Tuple.Create(999, 1, 1000)},
-                {"Maurth the Succubus Queen", Tuple.Create(999, 1, 1000)},
-                {"Masked Party God", Tuple.Create(999, 1, 10000)},
-                {"Son of Arachna", Tuple.Create(999, 1, 1000)},
-                {"Inactive Sarcophagus", Tuple.Create(999, 1, 1000)},
-                {"Active Sarcophagus", Tuple.Create(999, 1, 1000)},
-                {"Tomb Attacker", Tuple.Create(999, 1, 1000)},
-                {"Tomb Defender", Tuple.Create(999, 1, 1000)},
-                {"Tomb Support", Tuple.Create(999, 1, 1000)},
-                {"Dragon Head", Tuple.Create(999, 1, 1000)},
-                {"NM Red Dragon God", Tuple.Create(999, 1, 1000)},
-                {"NM Blue Dragon God", Tuple.Create(999, 1, 1000)},
-                {"NM Black Dragon God", Tuple.Create(999, 1, 1000)},
-                {"NM Green Dragon God", Tuple.Create(999, 1, 1000)},
-                {"lod Ivory Wyvern", Tuple.Create(999, 1, 1000)},
-                {"Oryx Stone Guardian Left", Tuple.Create(999, 1, 1000)},
-                {"Oryx Stone Guardian Right", Tuple.Create(999, 1, 1000)},
-                {"Oryx the Mad God 1", Tuple.Create(999, 1, 1000)},
-                {"Oryx the Mad God 2", Tuple.Create(999, 1, 1000)},
-                {"Puppet Master v2", Tuple.Create(999, 1, 1000)},
-                {"Lord of Death", Tuple.Create(999, 1, 1000)},
-                {"Epic Larva", Tuple.Create(999, 1, 1000)},
-                {"Epic Mama Megamoth", Tuple.Create(999, 1, 1000)},
-                {"Murderous Megamoth", Tuple.Create(999, 1, 1000)},
+                {"Unknown Giant Golem", Tuple.Create(16, 15, 1000)},
+                {"Evil Chicken God", Tuple.Create(20, 1, 1000)},
+                {"Bonegrind The Butcher", Tuple.Create(20, 1, 1000)},
+                {"Dreadstump the Pirate King", Tuple.Create(20, 1, 1000)},
+                {"Arachna the Spider Queen", Tuple.Create(20, 1, 1000)},
+                {"Stheno the Snake Queen", Tuple.Create(20, 1, 1000)},
+                {"Mixcoatl the Masked God", Tuple.Create(20, 1, 1000)},
+                {"Limon the Sprite God", Tuple.Create(20, 1, 1000)},
+                {"Septavius the Ghost God", Tuple.Create(20, 1, 1000)},
+                {"Davy Jones", Tuple.Create(20, 1, 1000)},
+                {"Lord Ruthven", Tuple.Create(20, 1, 1000)},
+                {"Archdemon Malphas", Tuple.Create(20, 1, 1000)},
+                {"Elder Tree", Tuple.Create(20, 1, 1000)},
+                {"Thessal the Mermaid Goddess", Tuple.Create(20, 1, 1000)},
+                {"Dr. Terrible", Tuple.Create(20, 1, 1000)},
+                {"Horrific Creation", Tuple.Create(20, 1, 1000)},
+                {"Masked Party God", Tuple.Create(20, 1, 10000)},
+                {"Stone Guardian Left", Tuple.Create(20, 1, 1000)},
+                {"Stone Guardian Right", Tuple.Create(20, 1, 1000)},
+                {"Oryx the Mad God 1", Tuple.Create(20, 1, 1000)},
+                {"Oryx the Mad God 2", Tuple.Create(20, 1, 1000)},
             };
 
         public Entity Quest { get; private set; }
+
+        private static int GetExpGoal(int level)
+        {
+            return 50 + (level - 1)*100;
+        }
+
+        private static int GetLevelExp(int level)
+        {
+            if (level == 1) return 0;
+            return 50*(level - 1) + (level - 2)*(level - 1)*50;
+        }
 
         private static int GetFameGoal(int fame)
         {
@@ -136,7 +129,7 @@ namespace wServer.realm.entities.player
                     if (!questDat.TryGetValue(i.ObjectDesc.ObjectId, out x)) continue;
 
                     if ((Level < x.Item2 || Level > x.Item3)) continue;
-                    var score = (999 - Math.Abs((i.ObjectDesc.Level ?? 0) - Level))*x.Item1 -
+                    var score = (20 - Math.Abs((i.ObjectDesc.Level ?? 0) - Level))*x.Item1 -
                                 //priority * level diff
                                 Dist(this, i)/100; //minus 1 for every 100 tile distance
                     if (score < 0)
@@ -158,7 +151,7 @@ namespace wServer.realm.entities.player
             if (time.tickCount%500 != 0 && Quest?.Owner != null) return;
             var newQuest = FindQuest();
             if (newQuest == null || newQuest == Quest) return;
-            Owner.Timers.Add(new WorldTimer(5000, (w, t) =>
+            Owner.Timers.Add(new WorldTimer(100, (w, t) =>
             {
                 Client.SendPacket(new QuestObjIdPacket
                 {
@@ -171,8 +164,8 @@ namespace wServer.realm.entities.player
         private void CalculateFame()
         {
             int newFame;
-            if (Experience < 250) newFame = Experience/10000;
-            else newFame = Experience/10000;
+            if (Experience < 200*1000) newFame = Experience/1000;
+            else newFame = 200 + (Experience - 200*1000)/1000;
             if (newFame == Fame) return;
             Fame = newFame;
             int newGoal;
@@ -196,35 +189,9 @@ namespace wServer.realm.entities.player
             UpdateCount++;
         }
 
-        //EXP for next level or EXP goal
-        //OLD EXP FORMULA:
-        //return 50 + (level - 1)*100;
-        private static int GetExpGoal(int level)
-        {
-            var nextlevel = level + 1;
-            if (level == 1) return 100;
-            return (50*nextlevel*nextlevel*nextlevel - 150*nextlevel*nextlevel + 400*nextlevel)/3;
-        }
-
-        //EXP for actual level
-        //OLD EXP FORMULA:
-        //return 50*(level - 1) + (level - 2)*(level - 1)*50;
-        private static int GetLevelExp(int level)
-        {
-            if (level == 1) return 0;
-            return (50*level*level*level - 150*level*level + 400*level)/3;
-        }
-
         private bool CheckLevelUp()
         {
-            if(Experience == ExperienceGoal)
-            {
-                Level++;
-                SaveToCharacter();
-                UpdateCount++;
-            }
-            //if(Experience >= ExperienceGoal)
-            if (Experience >= ExperienceGoal && Level < 351)
+            if (Experience - GetLevelExp(Level) >= ExperienceGoal && Level < 20)
             {
                 Level++;
                 ExperienceGoal = GetExpGoal(Level);
@@ -245,76 +212,12 @@ namespace wServer.realm.entities.player
                 HP = Stats[0] + Boost[0];
                 Mp = Stats[1] + Boost[1];
 
-                SaveToCharacter();
                 UpdateCount++;
 
-                if (Level == 100)
+                if (Level == 20)
                 {
                     foreach (var i in Owner.Players.Values)
-                        i.SendInfo("Congratulations " + Name + "! You achieved level 100.");
-                    XpBoosted = false;
-                    XpBoostTimeLeft = 0;
-                }
-                else if (Level == 200)
-                {
-                    foreach (var i in Owner.Players.Values)
-                        i.SendInfo("Congratulations " + Name + "! You achieved level 200.");
-                    XpBoosted = false;
-                    XpBoostTimeLeft = 0;
-                }
-                else if (Level == 300)
-                {
-                    foreach (var i in Owner.Players.Values)
-                        i.SendInfo("Congratulations " + Name + "! You achieved level 300.");
-                    XpBoosted = false;
-                    XpBoostTimeLeft = 0;
-                }
-                else if (Level == 400)
-                {
-                    foreach (var i in Owner.Players.Values)
-                        i.SendInfo("Congratulations " + Name + "! You achieved level 400.");
-                    XpBoosted = false;
-                    XpBoostTimeLeft = 0;
-                }
-                else if (Level == 500)
-                {
-                    foreach (var i in Owner.Players.Values)
-                        i.SendInfo("Congratulations " + Name + "! You achieved level 500.");
-                    XpBoosted = false;
-                    XpBoostTimeLeft = 0;
-                }
-                else if (Level == 600)
-                {
-                    foreach (var i in Owner.Players.Values)
-                        i.SendInfo("Congratulations " + Name + "! You achieved level 600.");
-                    XpBoosted = false;
-                    XpBoostTimeLeft = 0;
-                }
-                else if (Level == 700)
-                {
-                    foreach (var i in Owner.Players.Values)
-                        i.SendInfo("Congratulations " + Name + "! You achieved level 700.");
-                    XpBoosted = false;
-                    XpBoostTimeLeft = 0;
-                }
-                else if (Level == 800)
-                {
-                    foreach (var i in Owner.Players.Values)
-                        i.SendInfo("Congratulations " + Name + "! You achieved level 800.");
-                    XpBoosted = false;
-                    XpBoostTimeLeft = 0;
-                }
-                else if (Level == 900)
-                {
-                    foreach (var i in Owner.Players.Values)
-                        i.SendInfo("Congratulations " + Name + "! You achieved level 900.");
-                    XpBoosted = false;
-                    XpBoostTimeLeft = 0;
-                }
-                else if (Level == 1000)
-                {
-                    foreach (var i in Owner.Players.Values)
-                        i.SendInfo("Congratulations " + Name + "! You achieved level 1000.");
+                        i.SendInfo(Name + " achieved level 20");
                     XpBoosted = false;
                     XpBoostTimeLeft = 0;
                 }
@@ -327,38 +230,33 @@ namespace wServer.realm.entities.player
 
         public bool EnemyKilled(Enemy enemy, int exp, bool killer)
         {
-            var expm = wServer.logic.BehaviorDb.EXPmultipler;
             if (enemy == Quest)
                 Owner.BroadcastPacket(new NotificationPacket
                 {
                     ObjectId = Id,
                     Color = new ARGB(0xFF00FF00),
-                    Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"World Quest Complete!\"}}",
+                    Text = "{\"key\":\"blank\",\"tokens\":{\"data\":\"Quest Complete!\"}}",
                 }, null);
             if (exp > 0)
             {
                 if(XpBoosted)
-                    Experience += exp * 2 * expm;
-                else if(Client.Account.Rank == 1)
-                    Experience += (exp + exp/2) * expm;
+                    Experience += exp * 2;
                 else
-                    Experience += exp * expm;
+                    Experience += exp;
                 UpdateCount++;
-                foreach (var i in Owner.PlayersCollision.HitTest(X, Y, 15).Where(i => i != this).OfType<Player>())
+                foreach (var i in Owner.PlayersCollision.HitTest(X, Y, 16).Where(i => i != this).OfType<Player>())
                 {
                     try
                     {
-                        i.Experience += i.XpBoosted ? exp * 2 * expm : exp * expm;
+                        i.Experience += i.XpBoosted ? exp * 2 : exp;
                         i.UpdateCount++;
                         i.CheckLevelUp();
                         if (Random.Next(1, 100000) <= 50)
                             Client.GiftCodeReceived("LevelUp");
                     }
-                    catch// (Exception ex)
+                    catch (Exception ex)
                     {
-                        i.Experience += 0;
-                        i.UpdateCount++;
-                        //log.Error(ex);
+                        log.Error(ex);
                     }
                 }
             }

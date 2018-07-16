@@ -1,62 +1,61 @@
-package com.company.assembleegameclient.util {
+﻿package com.company.assembleegameclient.util {
 import flash.display.BitmapData;
 import flash.utils.Dictionary;
 
 public class BloodComposition {
 
-      private static var idDict_:Dictionary = new Dictionary();
+    private static var idDict_:Dictionary = new Dictionary();
+    private static var imageDict_:Dictionary = new Dictionary();
 
-      private static var imageDict_:Dictionary = new Dictionary();
 
-      public function BloodComposition() {
-         super();
-      }
-
-      public static function getBloodComposition(param1:int, param2:BitmapData, param3:Number, param4:uint) : Vector.<uint> {
-         var _local5:Vector.<uint> = idDict_[param1];
-         if(_local5 != null) {
-            return _local5;
-         }
-         _local5 = new Vector.<uint>();
-         var _local6:Vector.<uint> = getColors(param2);
-         var _local7:int = 0;
-         while(_local7 < _local6.length) {
-            if(Math.random() < param3) {
-               _local5.push(param4);
-            } else {
-               _local5.push(_local6[int(_local6.length * Math.random())]);
+    public static function getBloodComposition(_arg_1:int, _arg_2:BitmapData, _arg_3:Number, _arg_4:uint):Vector.<uint> {
+        var _local_5:Vector.<uint> = idDict_[_arg_1];
+        if (_local_5 != null) {
+            return (_local_5);
+        }
+        _local_5 = new Vector.<uint>();
+        var _local_6:Vector.<uint> = getColors(_arg_2);
+        var _local_7:int;
+        while (_local_7 < _local_6.length) {
+            if (Math.random() < _arg_3) {
+                _local_5.push(_arg_4);
             }
-            _local7++;
-         }
-         return _local5;
-      }
-
-      public static function getColors(param1:BitmapData) : Vector.<uint> {
-         var _local2:Vector.<uint> = imageDict_[param1];
-         if(_local2 == null) {
-            _local2 = buildColors(param1);
-            imageDict_[param1] = _local2;
-         }
-         return _local2;
-      }
-
-      private static function buildColors(param1:BitmapData) : Vector.<uint> {
-         var _local4:int = 0;
-         var _local5:uint = 0;
-         var _local2:Vector.<uint> = new Vector.<uint>();
-         var _local3:int = 0;
-         while(_local3 < param1.width) {
-            _local4 = 0;
-            while(_local4 < param1.height) {
-               _local5 = param1.getPixel32(_local3,_local4);
-               if((_local5 & 4278190080) != 0) {
-                  _local2.push(_local5);
-               }
-               _local4++;
+            else {
+                _local_5.push(_local_6[int((_local_6.length * Math.random()))]);
             }
-            _local3++;
-         }
-         return _local2;
-      }
-   }
+            _local_7++;
+        }
+        return (_local_5);
+    }
+
+    public static function getColors(_arg_1:BitmapData):Vector.<uint> {
+        var _local_2:Vector.<uint> = imageDict_[_arg_1];
+        if (_local_2 == null) {
+            _local_2 = buildColors(_arg_1);
+            imageDict_[_arg_1] = _local_2;
+        }
+        return (_local_2);
+    }
+
+    private static function buildColors(_arg_1:BitmapData):Vector.<uint> {
+        var _local_4:int;
+        var _local_5:uint;
+        var _local_2:Vector.<uint> = new Vector.<uint>();
+        var _local_3:int;
+        while (_local_3 < _arg_1.width) {
+            _local_4 = 0;
+            while (_local_4 < _arg_1.height) {
+                _local_5 = _arg_1.getPixel32(_local_3, _local_4);
+                if ((_local_5 & 0xFF000000) != 0) {
+                    _local_2.push(_local_5);
+                }
+                _local_4++;
+            }
+            _local_3++;
+        }
+        return (_local_2);
+    }
+
+
 }
+}//package com.company.assembleegameclient.util

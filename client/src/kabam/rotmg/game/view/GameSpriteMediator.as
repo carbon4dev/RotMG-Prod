@@ -1,41 +1,41 @@
-package kabam.rotmg.game.view
-{
-import robotlegs.bender.bundles.mvcs.Mediator;
-import com.company.assembleegameclient.LOEBUILD_c8d46d341bea4fd5bff866a65ff8aea9.GameSprite;
-import kabam.rotmg.game.signals.SetWorldInteractionSignal;
-import kabam.rotmg.core.signals.InvalidateDataSignal;
-import kabam.rotmg.core.signals.SetScreenWithValidDataSignal;
-import kabam.rotmg.core.signals.SetScreenSignal;
-import kabam.rotmg.game.signals.PlayGameSignal;
-import kabam.rotmg.core.model.PlayerModel;
-import kabam.rotmg.game.signals.GameClosedSignal;
+﻿package kabam.rotmg.game.view {
+import com.company.assembleegameclient.game.GameSprite;
+import com.company.assembleegameclient.game.events.ReconnectEvent;
+import com.company.assembleegameclient.objects.Player;
+
+import flash.utils.getTimer;
+
+import kabam.rotmg.core.StaticInjectorContext;
 import kabam.rotmg.core.model.MapModel;
-import kabam.rotmg.promotions.model.BeginnersPackageModel;
+import kabam.rotmg.core.model.PlayerModel;
+import kabam.rotmg.core.signals.InvalidateDataSignal;
+import kabam.rotmg.core.signals.SetScreenSignal;
+import kabam.rotmg.core.signals.SetScreenWithValidDataSignal;
 import kabam.rotmg.dialogs.control.CloseDialogsSignal;
 import kabam.rotmg.game.logging.LoopMonitor;
-import kabam.rotmg.ui.signals.HUDSetupStarted;
-import kabam.rotmg.ui.signals.UpdateHUDSignal;
-import kabam.rotmg.ui.signals.HUDModelInitialized;
-import kabam.rotmg.core.signals.TrackPageViewSignal;
-import kabam.rotmg.packages.control.BeginnersPackageAvailableSignal;
-import kabam.rotmg.packages.control.PackageAvailableSignal;
-import kabam.rotmg.packages.control.InitPackagesSignal;
-import kabam.rotmg.promotions.signals.ShowBeginnersPackageSignal;
-import kabam.rotmg.packages.services.PackageModel;
-import kabam.rotmg.packages.control.OpenPackageSignal;
-import kabam.rotmg.pets.controller.ShowPetTooltip;
+import kabam.rotmg.game.model.GameInitData;
+import kabam.rotmg.game.signals.GameClosedSignal;
+import kabam.rotmg.game.signals.PlayGameSignal;
+import kabam.rotmg.game.signals.SetWorldInteractionSignal;
+import kabam.rotmg.maploading.signals.HideMapLoadingSignal;
 import kabam.rotmg.maploading.signals.ShowLoadingViewSignal;
 import kabam.rotmg.news.controller.NewsButtonRefreshSignal;
-import flash.utils.getTimer;
-import com.company.assembleegameclient.LOEBUILD_c8d46d341bea4fd5bff866a65ff8aea9.LOEBUILD_16908b0605f2645dfcb4c3a8d248cef3.LOEBUILD_c7f41ff76637f7e98124a836c410d43a;
+import kabam.rotmg.packages.control.BeginnersPackageAvailableSignal;
+import kabam.rotmg.packages.control.InitPackagesSignal;
+import kabam.rotmg.packages.control.OpenPackageSignal;
+import kabam.rotmg.packages.control.PackageAvailableSignal;
 import kabam.rotmg.packages.model.PackageInfo;
-import kabam.rotmg.core.StaticInjectorContext;
-import kabam.rotmg.maploading.signals.HideMapLoadingSignal;
-import kabam.rotmg.game.model.GameInitData;
-import kabam.rotmg.assets.model.Player;
+import kabam.rotmg.packages.services.PackageModel;
+import kabam.rotmg.pets.controller.ShowPetTooltip;
+import kabam.rotmg.promotions.model.BeginnersPackageModel;
+import kabam.rotmg.promotions.signals.ShowBeginnersPackageSignal;
+import kabam.rotmg.ui.signals.HUDModelInitialized;
+import kabam.rotmg.ui.signals.HUDSetupStarted;
+import kabam.rotmg.ui.signals.UpdateHUDSignal;
 
-public class GameSpriteMediator extends Mediator
-{
+import robotlegs.bender.bundles.mvcs.Mediator;
+
+public class GameSpriteMediator extends Mediator {
 
     [Inject]
     public var view:GameSprite;
@@ -68,8 +68,6 @@ public class GameSpriteMediator extends Mediator
     [Inject]
     public var hudModelInitialized:HUDModelInitialized;
     [Inject]
-    public var tracking:TrackPageViewSignal;
-    [Inject]
     public var beginnersPackageAvailable:BeginnersPackageAvailableSignal;
     [Inject]
     public var packageAvailable:PackageAvailableSignal;
@@ -89,21 +87,19 @@ public class GameSpriteMediator extends Mediator
     public var newsButtonRefreshSignal:NewsButtonRefreshSignal;
 
 
-    public static function sleepForMs(_arg1:int):void
-    {
-        var _local2:int = getTimer();
+    public static function sleepForMs(_arg_1:int):void {
+        var _local_2:int = getTimer();
         while (true) {
-            if ((getTimer() - _local2) >= _arg1) break;
+            if ((getTimer() - _local_2) >= _arg_1) break;
         }
     }
 
 
-    override public function initialize():void
-    {
+    override public function initialize():void {
         this.showLoadingViewSignal.dispatch();
         this.view.packageModel = this.packageModel;
         this.setWorldInteraction.add(this.onSetWorldInteraction);
-        this.addViewListener(LOEBUILD_c7f41ff76637f7e98124a836c410d43a.RECONNECT, this.onReconnect);
+        addViewListener(ReconnectEvent.RECONNECT, this.onReconnect);
         this.view.modelInitialized.add(this.onGameSpriteModelInitialized);
         this.view.drawCharacterWindow.add(this.onStatusPanelDraw);
         this.hudModelInitialized.add(this.onHUDModelInitialized);
@@ -113,25 +109,22 @@ public class GameSpriteMediator extends Mediator
         this.view.mapModel = this.mapModel;
         this.view.beginnersPackageModel = this.beginnersPackageModel;
         this.view.connect();
-        this.tracking.dispatch("/gameStarted");
         this.view.showBeginnersPackage = this.showBeginnersPackage;
         this.view.showPackage.add(this.onShowPackage);
         this.newsButtonRefreshSignal.add(this.onNewsButtonRefreshSignal);
     }
 
-    private function onShowPackage():void
-    {
-        var _local1:PackageInfo = this.packageModel.getPriorityPackage();
-        if (_local1){
-            this.openPackageSignal.dispatch(_local1.packageID);
+    private function onShowPackage():void {
+        var _local_1:PackageInfo = this.packageModel.getPriorityPackage();
+        if (_local_1) {
+            this.openPackageSignal.dispatch(_local_1.packageID);
         }
     }
 
-    override public function destroy():void
-    {
+    override public function destroy():void {
         this.view.showPackage.remove(this.onShowPackage);
         this.setWorldInteraction.remove(this.onSetWorldInteraction);
-        removeViewListener(LOEBUILD_c7f41ff76637f7e98124a836c410d43a.RECONNECT, this.onReconnect);
+        removeViewListener(ReconnectEvent.RECONNECT, this.onReconnect);
         this.view.modelInitialized.remove(this.onGameSpriteModelInitialized);
         this.view.drawCharacterWindow.remove(this.onStatusPanelDraw);
         this.hudModelInitialized.remove(this.onHUDModelInitialized);
@@ -143,79 +136,68 @@ public class GameSpriteMediator extends Mediator
         this.view.disconnect();
     }
 
-    private function onMonitor(_arg1:String, _arg2:int):void
-    {
-        this.monitor.recordTime(_arg1, _arg2);
+    private function onMonitor(_arg_1:String, _arg_2:int):void {
+        this.monitor.recordTime(_arg_1, _arg_2);
     }
 
-    public function onSetWorldInteraction(_arg1:Boolean):void
-    {
-        this.view.mui_.setEnablePlayerInput(_arg1);
+    public function onSetWorldInteraction(_arg_1:Boolean):void {
+        this.view.mui_.setEnablePlayerInput(_arg_1);
     }
 
-    private function onBeginner():void
-    {
+    private function onBeginner():void {
         this.view.showBeginnersButtonIfSafe();
     }
 
-    private function onPackage():void
-    {
+    private function onPackage():void {
         this.view.showPackageButtonIfSafe();
     }
 
-    private function onClosed():void
-    {
+    private function onClosed():void {
         this.gameClosed.dispatch();
         this.closeDialogs.dispatch();
-        var _local1:HideMapLoadingSignal = StaticInjectorContext.getInjector().getInstance(HideMapLoadingSignal);
-        _local1.dispatch();
+        var _local_1:HideMapLoadingSignal = StaticInjectorContext.getInjector().getInstance(HideMapLoadingSignal);
+        _local_1.dispatch();
         sleepForMs(100);
     }
 
-    private function onReconnect(_arg1:LOEBUILD_c7f41ff76637f7e98124a836c410d43a):void
-    {
-        if (this.view.isEditor){
+    private function onReconnect(_arg_1:ReconnectEvent):void {
+        if (this.view.isEditor) {
             return;
         }
-        var _local2:GameInitData = new GameInitData();
-        _local2.server = _arg1.server_;
-        _local2.gameId = _arg1.gameId_;
-        _local2.createCharacter = _arg1.createCharacter_;
-        _local2.charId = _arg1.charId_;
-        _local2.keyTime = _arg1.keyTime_;
-        _local2.key = _arg1.key_;
-        _local2.isFromArena = _arg1.isFromArena_;
-        this.playGame.dispatch(_local2);
+        var _local_2:GameInitData = new GameInitData();
+        _local_2.server = _arg_1.server_;
+        _local_2.gameId = _arg_1.gameId_;
+        _local_2.createCharacter = _arg_1.createCharacter_;
+        _local_2.charId = _arg_1.charId_;
+        _local_2.keyTime = _arg_1.keyTime_;
+        _local_2.key = _arg_1.key_;
+        _local_2.isFromArena = _arg_1.isFromArena_;
+        this.playGame.dispatch(_local_2);
     }
 
-    private function onGameSpriteModelInitialized():void
-    {
+    private function onGameSpriteModelInitialized():void {
         this.hudSetupStarted.dispatch(this.view);
         this.beginnersPackageAvailable.add(this.onBeginner);
         this.packageAvailable.add(this.onPackage);
         this.initPackages.dispatch();
     }
 
-    private function onStatusPanelDraw(_arg1:Player):void
-    {
-        this.updateHUDSignal.dispatch(_arg1);
+    private function onStatusPanelDraw(_arg_1:Player):void {
+        this.updateHUDSignal.dispatch(_arg_1);
     }
 
-    private function onHUDModelInitialized():void
-    {
+    private function onHUDModelInitialized():void {
         this.view.hudModelInitialized();
     }
 
-    private function onShowPetTooltip(_arg1:Boolean):void
-    {
-        this.view.showPetToolTip(_arg1);
+    private function onShowPetTooltip(_arg_1:Boolean):void {
+        this.view.showPetToolTip(_arg_1);
     }
 
-    private function onNewsButtonRefreshSignal():void
-    {
+    private function onNewsButtonRefreshSignal():void {
         this.view.refreshNewsUpdateButton();
     }
 
 
 }
-}//package kabam.rotmg.LOEBUILD_c8d46d341bea4fd5bff866a65ff8aea9.LOEBUILD_1bda80f2be4d3658e0baa43fbe7ae8c1
+}//package kabam.rotmg.game.view

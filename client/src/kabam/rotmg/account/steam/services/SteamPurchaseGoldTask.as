@@ -1,4 +1,4 @@
-package kabam.rotmg.account.steam.services {
+﻿package kabam.rotmg.account.steam.services {
 import com.company.assembleegameclient.ui.dialogs.DebugDialog;
 import com.company.assembleegameclient.util.offer.Offer;
 
@@ -17,107 +17,100 @@ import robotlegs.bender.framework.api.ILogger;
 
 public class SteamPurchaseGoldTask extends BaseTask implements PurchaseGoldTask {
 
-      [Inject]
-      public var account:Account;
+    [Inject]
+    public var account:Account;
+    [Inject]
+    public var steam:SteamApi;
+    [Inject]
+    public var offer:Offer;
+    [Inject]
+    public var paymentMethod:String;
+    [Inject]
+    public var openDialog:OpenDialogSignal;
+    [Inject]
+    public var moneyFrameEnableCancelSignal:MoneyFrameEnableCancelSignal;
+    [Inject]
+    public var logger:ILogger;
+    [Inject]
+    public var first:AppEngineClient;
+    [Inject]
+    public var second:AppEngineClient;
+    [Inject]
+    public var requestPlayerCredits:RequestPlayerCreditsSignal;
 
-      [Inject]
-      public var steam:SteamApi;
 
-      [Inject]
-      public var offer:Offer;
+    override protected function startTask():void {
+        this.logger.debug("SteamPurchaseGoldTask startTask");
+        this.steam.paymentAuthorized.addOnce(this.onPaymentAuthorized);
+        this.first.setMaxRetries(2);
+        this.first.complete.addOnce(this.onComplete);
+        this.first.sendRequest("/steamworks/purchaseOffer", {
+            "steamid": this.steam.getSteamId(),
+            "data": this.offer.data_
+        });
+    }
 
-      [Inject]
-      public var paymentMethod:String;
-
-      [Inject]
-      public var openDialog:OpenDialogSignal;
-
-      [Inject]
-      public var moneyFrameEnableCancelSignal:MoneyFrameEnableCancelSignal;
-
-      [Inject]
-      public var logger:ILogger;
-
-      [Inject]
-      public var first:AppEngineClient;
-
-      [Inject]
-      public var second:AppEngineClient;
-
-      [Inject]
-      public var requestPlayerCredits:RequestPlayerCreditsSignal;
-
-      public function SteamPurchaseGoldTask() {
-         super();
-      }
-
-      override protected function startTask() : void {
-         this.logger.debug("SteamPurchaseGoldTask startTask");
-         this.steam.paymentAuthorized.addOnce(this.onPaymentAuthorized);
-         this.first.setMaxRetries(2);
-         this.first.complete.addOnce(this.onComplete);
-         this.first.sendRequest("/steamworks/purchaseOffer",{
-            "steamid":this.steam.getSteamId(),
-            "data":this.offer.data_
-         });
-      }
-
-      private function onComplete(param1:Boolean, param2:*) : void {
-         if(param1) {
+    private function onComplete(_arg_1:Boolean, _arg_2:*):void {
+        if (_arg_1) {
             this.onPurchaseOfferComplete();
-         } else {
-            this.reportError(param2);
-         }
-      }
+        }
+        else {
+            this.reportError(_arg_2);
+        }
+    }
 
-      private function onPurchaseOfferComplete() : void {
-         this.logger.debug("SteamPurchaseGoldTask purchaseOffer confirmed by AppEngine");
-         setTimeout(function():void {
+    private function onPurchaseOfferComplete():void {
+        this.logger.debug("SteamPurchaseGoldTask purchaseOffer confirmed by AppEngine");
+        setTimeout(function ():void {
             moneyFrameEnableCancelSignal.dispatch();
-         },1100);
-      }
+        }, 1100);
+    }
 
-      private function onPaymentAuthorized(param1:uint, param2:String, param3:Boolean) : void {
-         if(param3 == false) {
+    private function onPaymentAuthorized(_arg_1:uint, _arg_2:String, _arg_3:Boolean):void {
+        if (_arg_3 == false) {
             this.logger.debug("SteamPurchaseGoldTask payment canceled by user");
             completeTask(true);
             this.second.setMaxRetries(2);
-            this.second.sendRequest("/steamworks/finalizePurchase",{
-               "appid":param1,
-               "orderid":param2,
-               "authorized":0
+            this.second.sendRequest("/steamworks/finalizePurchase", {
+                "appid": _arg_1,
+                "orderid": _arg_2,
+                "authorized": 0
             });
-         } else {
+        }
+        else {
             this.logger.debug("SteamPurchaseGoldTask payment authorized by Steam");
             this.second.setMaxRetries(2);
             this.second.complete.addOnce(this.onAuthorized);
-            this.second.sendRequest("/steamworks/finalizePurchase",{
-               "appid":param1,
-               "orderid":param2,
-               "authorized":(!!param3?1:0)
+            this.second.sendRequest("/steamworks/finalizePurchase", {
+                "appid": _arg_1,
+                "orderid": _arg_2,
+                "authorized": ((_arg_3) ? 1 : 0)
             });
-         }
-      }
+        }
+    }
 
-      private function onAuthorized(param1:Boolean, param2:*) : void {
-         if(param1) {
+    private function onAuthorized(_arg_1:Boolean, _arg_2:*):void {
+        if (_arg_1) {
             this.onPurchaseFinalizeComplete();
-         } else {
-            this.reportError(param2);
-         }
-      }
+        }
+        else {
+            this.reportError(_arg_2);
+        }
+    }
 
-      private function onPurchaseFinalizeComplete() : void {
-         this.logger.debug("SteamPurchaseGoldTask purchase finalized");
-         this.requestPlayerCredits.dispatch();
-         completeTask(true);
-      }
+    private function onPurchaseFinalizeComplete():void {
+        this.logger.debug("SteamPurchaseGoldTask purchase finalized");
+        this.requestPlayerCredits.dispatch();
+        completeTask(true);
+    }
 
-      private function reportError(param1:String) : void {
-         var _local2:String = "Error: " + param1;
-         this.logger.debug("finalize error {0}",[_local2]);
-         this.openDialog.dispatch(new DebugDialog(_local2));
-         completeTask(false);
-      }
-   }
+    private function reportError(_arg_1:String):void {
+        var _local_2:String = ("Error: " + _arg_1);
+        this.logger.debug("finalize error {0}", [_local_2]);
+        this.openDialog.dispatch(new DebugDialog(_local_2));
+        completeTask(false);
+    }
+
+
 }
+}//package kabam.rotmg.account.steam.services

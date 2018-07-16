@@ -15,11 +15,10 @@ namespace wServer.realm.worlds
         public AbyssofDemons()
         {
             Name = "Abyss of Demons";
-            ClientWorldName = "Abyss of Demons";
+            ClientWorldName = "{dungeons.Abyss_of_Demons}";
             Dungeon = true;
             Background = 0;
             AllowTeleport = true;
-            SetMusic("abyss");
         }
 
         public override bool NeedsPortalKey => true;

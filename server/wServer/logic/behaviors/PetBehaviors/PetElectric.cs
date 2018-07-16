@@ -39,7 +39,7 @@ namespace wServer.logic.behaviors.PetBehaviors
                 foreach (Enemy e in targets)
                 {
                     if (e.HasConditionEffect(ConditionEffectIndex.Invulnerable) || e.HasConditionEffect(ConditionEffectIndex.Invincible) || e.HasConditionEffect(ConditionEffectIndex.Stasis)) continue;
-                    if (Random.Next(0, 110) > level.Level) break;
+                    if (Random.Next(0, 100) > level.Level) break;
 
                     if (e.ObjectDesc == null | !e.ObjectDesc.Enemy) continue;
 
@@ -47,14 +47,14 @@ namespace wServer.logic.behaviors.PetBehaviors
 
                     e.ApplyConditionEffect(new ConditionEffect
                     {
-                        DurationMS = level.Level * 10,
+                        DurationMS = level.Level * 40,
                         Effect = ConditionEffectIndex.Paralyzed
                     });
 
                     e.Owner.BroadcastPacket(new ShowEffectPacket
                     {
                         EffectType = EffectType.ElectricFlashing,
-                        PosA = new Position { X = level.Level * 10},
+                        PosA = new Position { X = level.Level * 40},
                         TargetId = e.Id
                     }, null);
 
@@ -65,11 +65,11 @@ namespace wServer.logic.behaviors.PetBehaviors
                         TargetId = host.Id,
                     }, null);
 
-                    /*e.Damage(null, time, level.Level, true, new ConditionEffect
+                    e.Damage(null, time, level.Level, true, new ConditionEffect
                     {
                         DurationMS = level.Level * 40,
                         Effect = ConditionEffectIndex.Paralyzed
-                    });*/
+                    });
                 }
 
                 cool = getCooldown(host as Pet, level) / host.Manager.TPS;

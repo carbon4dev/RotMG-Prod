@@ -1,18 +1,19 @@
-package kabam.rotmg.appengine.api {
+﻿package kabam.rotmg.appengine.api {
 import org.osflash.signals.OnceSignal;
 
 public interface AppEngineClient {
 
-      function get complete() : OnceSignal;
+    function get complete():OnceSignal;
 
-      function setDataFormat(param1:String) : void;
+    function setDataFormat(_arg_1:String):void;
 
-      function setSendEncrypted(param1:Boolean) : void;
+    function setSendEncrypted(_arg_1:Boolean):void;
 
-      function setMaxRetries(param1:int) : void;
+    function setMaxRetries(_arg_1:int):void;
 
-      function sendRequest(param1:String, param2:Object) : void;
+    function sendRequest(_arg_1:String, _arg_2:Object):void;
 
-      function requestInProgress() : Boolean;
-   }
+    function requestInProgress():Boolean;
+
 }
+}//package kabam.rotmg.appengine.api

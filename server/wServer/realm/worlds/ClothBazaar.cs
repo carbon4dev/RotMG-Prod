@@ -6,11 +6,10 @@
         {
             Id = MARKET;
             Name = "Cloth Bazaar";
-            ClientWorldName = "Cloth Bazaar";
+            ClientWorldName = "nexus.Cloth_Bazaar";
             Background = 2;
             AllowTeleport = false;
             Difficulty = 0;
-            SetMusic("cloothbazaar");
         }
 
         protected override void Init()

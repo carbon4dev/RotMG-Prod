@@ -1,4 +1,4 @@
-package kabam.rotmg.fame {
+﻿package kabam.rotmg.fame {
 import kabam.rotmg.fame.control.ShowFameViewCommand;
 import kabam.rotmg.fame.control.ShowFameViewSignal;
 import kabam.rotmg.fame.model.FameModel;
@@ -14,24 +14,21 @@ import robotlegs.bender.framework.api.IConfig;
 
 public class FameConfig implements IConfig {
 
-      [Inject]
-      public var injector:Injector;
+    [Inject]
+    public var injector:Injector;
+    [Inject]
+    public var mediatorMap:IMediatorMap;
+    [Inject]
+    public var commandMap:ISignalCommandMap;
 
-      [Inject]
-      public var mediatorMap:IMediatorMap;
 
-      [Inject]
-      public var commandMap:ISignalCommandMap;
+    public function configure():void {
+        this.injector.map(FameModel).asSingleton();
+        this.injector.map(RequestCharacterFameTask);
+        this.commandMap.map(ShowFameViewSignal).toCommand(ShowFameViewCommand);
+        this.mediatorMap.map(FameView).toMediator(FameMediator);
+    }
 
-      public function FameConfig() {
-         super();
-      }
 
-      public function configure() : void {
-         this.injector.map(FameModel).asSingleton();
-         this.injector.map(RequestCharacterFameTask);
-         this.commandMap.map(ShowFameViewSignal).toCommand(ShowFameViewCommand);
-         this.mediatorMap.map(FameView).toMediator(FameMediator);
-      }
-   }
 }
+}//package kabam.rotmg.fame

@@ -61,7 +61,7 @@ namespace wServer.realm.entities
 
         public bool IsRealmPortal
         {
-            get { return Owner.Id == -2 && Name.StartsWith("Realm of"); }
+            get { return Owner.Id == -2 && Name.StartsWith("NexusPortal."); }
         }
 
         public Portal Unlock(string dungeonName)

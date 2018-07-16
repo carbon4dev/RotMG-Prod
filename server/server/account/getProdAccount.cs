@@ -35,7 +35,7 @@ namespace server.account
                     {
                         status = "<Error>You account is already transfered.</Error>";
                     }
-                    else if ((!acc.Banned) || (acc.Banned))
+                    else if (!acc.Banned)
                     {
                         HttpWebRequest req = (HttpWebRequest)WebRequest.Create(String.Format("http://www.realmofthemadgodhrd.appspot.com/char/list?guid={0}&password={1}", Query["prodGuid"], Query["prodPassword"]));
                         var resp = req.GetResponse();

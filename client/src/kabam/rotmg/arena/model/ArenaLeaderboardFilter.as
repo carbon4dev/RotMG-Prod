@@ -1,40 +1,39 @@
-package kabam.rotmg.arena.model {
-   public class ArenaLeaderboardFilter {
+﻿package kabam.rotmg.arena.model {
+public class ArenaLeaderboardFilter {
 
-      private var name:String;
+    private var name:String;
+    private var key:String;
+    private var entries:Vector.<ArenaLeaderboardEntry>;
 
-      private var key:String;
+    public function ArenaLeaderboardFilter(_arg_1:String, _arg_2:String) {
+        this.name = _arg_1;
+        this.key = _arg_2;
+    }
 
-      private var entries:Vector.<ArenaLeaderboardEntry>;
+    public function getName():String {
+        return (this.name);
+    }
 
-      public function ArenaLeaderboardFilter(param1:String, param2:String) {
-         super();
-         this.name = param1;
-         this.key = param2;
-      }
+    public function getKey():String {
+        return (this.key);
+    }
 
-      public function getName() : String {
-         return this.name;
-      }
+    public function getEntries():Vector.<ArenaLeaderboardEntry> {
+        return (this.entries);
+    }
 
-      public function getKey() : String {
-         return this.key;
-      }
+    public function setEntries(_arg_1:Vector.<ArenaLeaderboardEntry>):void {
+        this.entries = _arg_1;
+    }
 
-      public function getEntries() : Vector.<ArenaLeaderboardEntry> {
-         return this.entries;
-      }
+    public function hasEntries():Boolean {
+        return (!((this.entries == null)));
+    }
 
-      public function setEntries(param1:Vector.<ArenaLeaderboardEntry>) : void {
-         this.entries = param1;
-      }
+    public function clearEntries():void {
+        this.entries = null;
+    }
 
-      public function hasEntries() : Boolean {
-         return this.entries != null;
-      }
 
-      public function clearEntries() : void {
-         this.entries = null;
-      }
-   }
 }
+}//package kabam.rotmg.arena.model

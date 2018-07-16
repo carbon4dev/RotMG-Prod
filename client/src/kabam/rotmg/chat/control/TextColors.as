@@ -1,17 +1,15 @@
-package kabam.rotmg.chat.control {
-   public class TextColors {
+﻿package kabam.rotmg.chat.control {
+public class TextColors {
 
-      public var back:uint;
+    public var back:uint;
+    public var outline:uint;
+    public var text:uint;
 
-      public var outline:uint;
+    public function TextColors(_arg_1:uint, _arg_2:uint, _arg_3:uint) {
+        this.back = _arg_1;
+        this.outline = _arg_2;
+        this.text = _arg_3;
+    }
 
-      public var text:uint;
-
-      public function TextColors(param1:uint, param2:uint, param3:uint) {
-         super();
-         this.back = param1;
-         this.outline = param2;
-         this.text = param3;
-      }
-   }
 }
+}//package kabam.rotmg.chat.control

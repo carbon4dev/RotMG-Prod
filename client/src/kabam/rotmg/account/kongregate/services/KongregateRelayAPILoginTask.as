@@ -1,4 +1,4 @@
-package kabam.rotmg.account.kongregate.services {
+﻿package kabam.rotmg.account.kongregate.services {
 import kabam.lib.tasks.BaseTask;
 import kabam.rotmg.account.core.Account;
 import kabam.rotmg.account.core.services.RelayLoginTask;
@@ -9,52 +9,50 @@ import kabam.rotmg.appengine.api.AppEngineClient;
 
 public class KongregateRelayAPILoginTask extends BaseTask implements RelayLoginTask {
 
-      public static const ALREADY_REGISTERED:String = "Kongregate account already registered";
+    public static const ALREADY_REGISTERED:String = "Kongregate account already registered";
 
-      [Inject]
-      public var account:Account;
+    [Inject]
+    public var account:Account;
+    [Inject]
+    public var api:KongregateApi;
+    [Inject]
+    public var data:AccountData;
+    [Inject]
+    public var alreadyRegistered:KongregateAlreadyRegisteredSignal;
+    [Inject]
+    public var client:AppEngineClient;
 
-      [Inject]
-      public var api:KongregateApi;
 
-      [Inject]
-      public var data:AccountData;
+    override protected function startTask():void {
+        this.client.setMaxRetries(2);
+        this.client.complete.addOnce(this.onComplete);
+        this.client.sendRequest("/kongregate/internalRegister", this.makeDataPacket());
+    }
 
-      [Inject]
-      public var alreadyRegistered:KongregateAlreadyRegisteredSignal;
+    private function makeDataPacket():Object {
+        var _local_1:Object = this.api.getAuthentication();
+        _local_1.guid = this.account.getUserId();
+        return (_local_1);
+    }
 
-      [Inject]
-      public var client:AppEngineClient;
+    private function onComplete(_arg_1:Boolean, _arg_2:*):void {
+        if (_arg_1) {
+            this.onInternalRegisterDone(_arg_2);
+        }
+        else {
+            if (_arg_2 == ALREADY_REGISTERED) {
+                this.alreadyRegistered.dispatch(this.data);
+            }
+        }
+        completeTask(_arg_1, _arg_2);
+    }
 
-      public function KongregateRelayAPILoginTask() {
-         super();
-      }
+    private function onInternalRegisterDone(_arg_1:String):void {
+        var _local_2:XML = new XML(_arg_1);
+        this.account.updateUser(_local_2.GUID, _local_2.Secret);
+        this.account.setPlatformToken(_local_2.PlatformToken);
+    }
 
-      override protected function startTask() : void {
-         this.client.setMaxRetries(2);
-         this.client.complete.addOnce(this.onComplete);
-         this.client.sendRequest("/kongregate/internalRegister",this.makeDataPacket());
-      }
 
-      private function makeDataPacket() : Object {
-         var _local1:Object = this.api.getAuthentication();
-         _local1.guid = this.account.getUserId();
-         return _local1;
-      }
-
-      private function onComplete(param1:Boolean, param2:*) : void {
-         if(param1) {
-            this.onInternalRegisterDone(param2);
-         } else if(param2 == ALREADY_REGISTERED) {
-            this.alreadyRegistered.dispatch(this.data);
-         }
-         completeTask(param1,param2);
-      }
-
-      private function onInternalRegisterDone(param1:String) : void {
-         var _local2:XML = new XML(param1);
-         this.account.updateUser(_local2.GUID,_local2.Secret);
-         this.account.setPlatformToken(_local2.PlatformToken);
-      }
-   }
 }
+}//package kabam.rotmg.account.kongregate.services

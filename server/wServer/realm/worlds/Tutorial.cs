@@ -14,9 +14,8 @@ namespace wServer.realm.worlds
         {
             Id = TUT_ID;
             Name = "Tutorial";
-            ClientWorldName = "Tutorial";
+            ClientWorldName = "server.tutorial";
             Background = 0;
-            Dungeon = true;
             this.isLimbo = isLimbo;
         }
 

@@ -1,37 +1,38 @@
-package com.company.assembleegameclient.ui.options {
-import com.company.assembleegameclient.LOEBUILD_166e64f6c3677d0c513901242a3e702d.LOEBUILD_3225a10b07f1580f10dee4abc3779e6c;
+﻿package com.company.assembleegameclient.ui.options {
+import com.company.assembleegameclient.parameters.Parameters;
 import com.company.util.MoreColorUtil;
 
 import flash.events.Event;
 
 public class KeyMapper extends BaseOption {
 
-      private var keyCodeBox_:KeyCodeBox;
+    private var keyCodeBox_:KeyCodeBox;
+    private var disabled_:Boolean;
 
-      private var disabled_:Boolean;
+    public function KeyMapper(_arg_1:String, _arg_2:String, _arg_3:String, _arg_4:Boolean = false) {
+        super(_arg_1, _arg_2, _arg_3);
+        this.keyCodeBox_ = new KeyCodeBox(Parameters.data_[paramName_]);
+        this.keyCodeBox_.addEventListener(Event.CHANGE, this.onChange);
+        addChild(this.keyCodeBox_);
+        this.setDisabled(_arg_4);
+    }
 
-      public function KeyMapper(param1:String, param2:String, param3:String, param4:Boolean = false) {
-         super(param1,param2,param3);
-         this.keyCodeBox_ = new KeyCodeBox(LOEBUILD_3225a10b07f1580f10dee4abc3779e6c.data_[paramName_]);
-         this.keyCodeBox_.addEventListener(Event.CHANGE,this.onChange);
-         addChild(this.keyCodeBox_);
-         this.setDisabled(param4);
-      }
+    public function setDisabled(_arg_1:Boolean):void {
+        this.disabled_ = _arg_1;
+        transform.colorTransform = ((this.disabled_) ? MoreColorUtil.darkCT : MoreColorUtil.identity);
+        mouseEnabled = !(this.disabled_);
+        mouseChildren = !(this.disabled_);
+    }
 
-      public function setDisabled(param1:Boolean) : void {
-         this.disabled_ = param1;
-         transform.colorTransform = !!this.disabled_?MoreColorUtil.darkCT:MoreColorUtil.identity;
-         mouseEnabled = !this.disabled_;
-         mouseChildren = !this.disabled_;
-      }
+    override public function refresh():void {
+        this.keyCodeBox_.setKeyCode(Parameters.data_[paramName_]);
+    }
 
-      override public function refresh() : void {
-         this.keyCodeBox_.setKeyCode(LOEBUILD_3225a10b07f1580f10dee4abc3779e6c.data_[paramName_]);
-      }
+    private function onChange(_arg_1:Event):void {
+        Parameters.setKey(paramName_, this.keyCodeBox_.value());
+        Parameters.save();
+    }
 
-      private function onChange(param1:Event) : void {
-         LOEBUILD_3225a10b07f1580f10dee4abc3779e6c.setKey(paramName_,this.keyCodeBox_.value());
-         LOEBUILD_3225a10b07f1580f10dee4abc3779e6c.save();
-      }
-   }
+
 }
+}//package com.company.assembleegameclient.ui.options

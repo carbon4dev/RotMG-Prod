@@ -61,20 +61,20 @@ namespace wServer.logic.behaviors.PetBehaviors
                         host.Move(player.X, player.Y);
                         host.UpdateCount++;
                     }
-                    else if (vect.Length > 3)
+                    else if (vect.Length > 1)
                     {
                         var dist = host.GetSpeed(0.5f) * (time.thisTickTimes / 1000f);
-                        if (vect.Length > 5)
+                        if (vect.Length > 2)
                             dist = host.GetSpeed(0.5f + ((float)player.Stats[4] / 100)) * (time.thisTickTimes / 1000f);
-                        else if(vect.Length > 6.5)
+                        else if(vect.Length > 3.5)
                             dist = host.GetSpeed(0.5f + (player.Stats[4] + (float)player.Boost[4] / 100)) * (time.thisTickTimes / 1000f);
-                        else if (vect.Length > 8)
+                        else if (vect.Length > 5)
                             dist = host.GetSpeed(1.0f + (player.Stats[4] + (float)player.Boost[4] / 100)) * (time.thisTickTimes / 1000f);
-                        else if (vect.Length > 9)
+                        else if (vect.Length > 6)
                             dist = host.GetSpeed(1.35f + (player.Stats[4] + (float)player.Boost[4] / 100)) * (time.thisTickTimes / 1000f);
-                        else if (vect.Length > 10)
+                        else if (vect.Length > 7)
                             dist = host.GetSpeed(1.5f + (player.Stats[4] + (float)player.Boost[4] / 100)) * (time.thisTickTimes / 1000f);
-                        else if (vect.Length > 15)
+                        else if (vect.Length > 10)
                             dist = host.GetSpeed(2f + (player.Stats[4] + (float)player.Boost[4] / 100)) * (time.thisTickTimes / 1000f);
 
                         Status = CycleStatus.InProgress;

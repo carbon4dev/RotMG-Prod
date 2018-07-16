@@ -56,16 +56,16 @@ namespace wServer.networking.handlers
                     switch (client.Account.PetYardType)
                     {
                         case 1:
-                            if (!TryDeduct(packet.Currency, client.Player, 0)) return;
+                            if (!TryDeduct(packet.Currency, client.Player, 500)) return;
                             break;
                         case 2:
-                            if (!TryDeduct(packet.Currency, client.Player, 0)) return;
+                            if (!TryDeduct(packet.Currency, client.Player, 2000)) return;
                             break;
                         case 3:
-                            if (!TryDeduct(packet.Currency, client.Player, 0)) return;
+                            if (!TryDeduct(packet.Currency, client.Player, 25000)) return;
                             break;
                         case 4:
-                            if (!TryDeduct(packet.Currency, client.Player, 0)) return;
+                            if (!TryDeduct(packet.Currency, client.Player, 50000)) return;
                             break;
                     }
                 }
@@ -75,16 +75,16 @@ namespace wServer.networking.handlers
                     switch (client.Account.PetYardType)
                     {
                         case 1:
-                            if (!TryDeduct(packet.Currency, client.Player, 0)) return;
+                            if (!TryDeduct(packet.Currency, client.Player, 150)) return;
                             break;
                         case 2:
-                            if (!TryDeduct(packet.Currency, client.Player, 0)) return;
+                            if (!TryDeduct(packet.Currency, client.Player, 400)) return;
                             break;
                         case 3:
-                            if (!TryDeduct(packet.Currency, client.Player, 0)) return;
+                            if (!TryDeduct(packet.Currency, client.Player, 1200)) return;
                             break;
                         case 4:
-                            if (!TryDeduct(packet.Currency, client.Player, 0)) return;
+                            if (!TryDeduct(packet.Currency, client.Player, 2000)) return;
                             break;
                     }
                 }
@@ -154,80 +154,21 @@ namespace wServer.networking.handlers
                             throw new Exception("Invalid pet rarity");
                     }
                 }
-                
-                client.Player.SendInfo("Purchase successful!");
-                //client.SendPacket(new BuyResultPacket
-                //{
-                //    Result = 0,
-                //    Message = "{\"key\":\"server.buy_success\"}"
-                //});
+
+                client.SendPacket(new BuyResultPacket
+                {
+                    Result = 0,
+                    Message = "{\"key\":\"server.buy_success\"}"
+                });
                 IFeedable tofeed = client.Player.Inventory[packet.ObjectSlot.SlotId];
                 client.Player.Inventory[packet.ObjectSlot.SlotId] = null;
                 pet.Feed(tofeed);
-                client.Player.SaveToCharacter();
-                client.Save();
                 client.Player.UpdateCount++;
             }
-            catch// (Exception ex)
+            catch (Exception ex)
             {
-                Pet pet = (client.Player.Owner as PetYard).FindPetById(packet.PetId1);
-
-                if (packet.Currency == CurrencyType.Fame)
-                {
-                    switch (pet.PetRarity)
-                  	{
-                  		case Rarity.Common:
-                            if (!TryDeduct(packet.Currency, client.Player, 10)) return;
-                            break;
-                        case Rarity.Uncommon:
-                            if (!TryDeduct(packet.Currency, client.Player, 30)) return;
-                            break;
-                        case Rarity.Rare:
-                            if (!TryDeduct(packet.Currency, client.Player, 100)) return;
-                            break;
-                        case Rarity.Legendary:
-                            if (!TryDeduct(packet.Currency, client.Player, 350)) return;
-                            break;
-                        case Rarity.Divine:
-                            if (!TryDeduct(packet.Currency, client.Player, 1000)) return;
-                            break;
-                        default:
-                            throw new Exception("Invalid pet rarity");
-                  	}
-                }
-
-                if (packet.Currency == CurrencyType.Gold)
-                {
-                    switch (pet.PetRarity)
-                    {
-                        case Rarity.Common:
-                            if (!TryDeduct(packet.Currency, client.Player, 5)) return;
-                            break;
-                        case Rarity.Uncommon:
-                            if (!TryDeduct(packet.Currency, client.Player, 12)) return;
-                            break;
-                        case Rarity.Rare:
-                            if (!TryDeduct(packet.Currency, client.Player, 30)) return;
-                            break;
-                        case Rarity.Legendary:
-                            if (!TryDeduct(packet.Currency, client.Player, 60)) return;
-                            break;
-                        case Rarity.Divine:
-                            if (!TryDeduct(packet.Currency, client.Player, 150)) return;
-                            break;
-                        default:
-                            throw new Exception("Invalid pet rarity");
-                    }
-                }
-                IFeedable tofeed = client.Player.Inventory[packet.ObjectSlot.SlotId];
-                client.Player.Inventory[packet.ObjectSlot.SlotId] = null;
-                pet.Feed(tofeed);
-                client.Player.SaveToCharacter();
-                client.Save();
-                client.Player.UpdateCount++;
-                //log.Error(ex);
-                //client.Player.SendError("Internal server error: " + ex.Message);
-                //client.Player.SendInfo("Server Error #173 - PetYardCommandHandler.cs. Contact LoE Team.");
+                log.Error(ex);
+                client.Player.SendError("Internal server error: " + ex.Message);
             }
         }
 
@@ -283,13 +224,12 @@ namespace wServer.networking.handlers
                         throw new Exception("Invalid pet rarity");
                 }
             }
-            
-            client.Player.SendInfo("Purchase successful!");
-            //client.SendPacket(new BuyResultPacket
-            //{
-            //    Result = 0,
-            //    Message = "{\"key\":\"server.buy_success\"}"
-            //});
+
+            client.SendPacket(new BuyResultPacket
+            {
+                Result = 0,
+                Message = "{\"key\":\"server.buy_success\"}"
+            });
 
             if (AbilityUnlock(pet1, pet2))
             {
@@ -376,7 +316,7 @@ namespace wServer.networking.handlers
             int l2 = pet2.FirstPetLevel.Level == 1 ? 1 : pet2.FirstPetLevel.Level / 2;
             int level = l1 + l2 + 20;
 
-            if (level > 125) level = 125; 
+            if (level > 100) level = 100;
 
             client.Manager.Database.DoActionAsync(db =>
             {

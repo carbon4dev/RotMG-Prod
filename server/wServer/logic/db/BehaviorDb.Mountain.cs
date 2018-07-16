@@ -11,7 +11,29 @@ namespace wServer.logic
     partial class BehaviorDb
     {
         private _ Mountain = () => Behav()
-        
+            .Init("White Demon",
+                new State(
+                    new Prioritize(
+                        new StayAbove(1, 200),
+                        new Follow(1, range: 7),
+                        new Wander(0.4)
+                        ),
+                    new Shoot(10, 3, 20, predictive: 1, coolDown: 500)
+                    ),
+                new TierLoot(6, ItemType.Weapon, 0.04),
+                new TierLoot(7, ItemType.Weapon, 0.02),
+                new TierLoot(8, ItemType.Weapon, 0.01),
+                new TierLoot(7, ItemType.Armor, 0.04),
+                new TierLoot(8, ItemType.Armor, 0.02),
+                new TierLoot(9, ItemType.Armor, 0.01),
+                new TierLoot(3, ItemType.Ring, 0.015),
+                new TierLoot(4, ItemType.Ring, 0.005),
+                new Threshold(0.18,
+                    new ItemLoot("Potion of Attack", 0.01),
+                    new EggLoot(EggRarity.Common, 0.1),
+                    new EggLoot(EggRarity.Uncommon, 0.05)
+                    )
+            )
             .Init("Arena Horseman Anchor",
             new State(
                 new ConditionalEffect(ConditionEffectIndex.Invincible)
@@ -46,44 +68,8 @@ namespace wServer.logic
                         new Shoot(15, 3, shootAngle: 25, projectileIndex: 0, coolDown: 1000),
                         new Shoot(15, projectileIndex: 1, coolDown: 1000)
                     ),
-                    //new TransformOnDeath("Ghost of Skuld", min: 1, max: 1, probability: 0.15, returnToSpawn: true)
-                    new DropPortalOnDeath("Haunted Cemetery Portal", 69, 2, PortalDespawnTimeSec: 90)
-                ),
-                new Threshold(1,
-                    new TierLoot(11, ItemType.Armor, normalloot/100),
-                    new TierLoot(10, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Rare, eggbag/150),
-                    new ItemLoot("Potion of Attack", glandpot)
-                    )
-            )
-            .Init("White Demon",
-                new State(
-                    new Prioritize(
-                        new StayAbove(1, 200),
-                        new Follow(1, range: 7),
-                        new Wander(0.4)
-                        ),
-                    new Shoot(10, 3, 20, predictive: 1, coolDown: 500),
-                    new DropPortalOnDeath("Ice Cave Portal", 1)
-                    ),
-                new Threshold(1,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(8, ItemType.Weapon, 0.01),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(9, ItemType.Armor, 0.01),
-                    new TierLoot(3, ItemType.Ring, 0.015),
-                    new TierLoot(4, ItemType.Ring, 0.005),
-                    new TierLoot(11, ItemType.Armor, normalloot/100),
-                    new TierLoot(10, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Rare, eggbag/150),
-                    new TierLoot(10, ItemType.Armor, normalloot/100),
-                    new TierLoot(9, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Common, eggbag/35),
-                    new EggLoot(EggRarity.Uncommon, eggbag/145),
-                    new ItemLoot("Potion of Attack", glandpot)
-                    )
+                    new DropPortalOnDeath("Haunted Cemetery Portal", 40)
+                )
             )
             .Init("Sprite God",
                 new State(
@@ -95,23 +81,18 @@ namespace wServer.logic
                     new Shoot(10, projectileIndex: 1, predictive: 1),
                     new Spawn("Sprite Child", maxChildren: 5)
                     ),
-                new Threshold(1,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(8, ItemType.Weapon, 0.01),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(9, ItemType.Armor, 0.01),
-                    new TierLoot(4, ItemType.Ring, 0.02),
-                    new TierLoot(4, ItemType.Ability, 0.02),
-                    new TierLoot(11, ItemType.Armor, normalloot/100),
-                    new TierLoot(10, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Rare, eggbag/150),
-                    new TierLoot(10, ItemType.Armor, normalloot),
-                    new TierLoot(9, ItemType.Weapon, normalloot),
-                    new EggLoot(EggRarity.Common, eggbag/35),
-                    new EggLoot(EggRarity.Uncommon, eggbag/145),
-                    new ItemLoot("Potion of Attack", glandpot)
+                new TierLoot(6, ItemType.Weapon, 0.04),
+                new TierLoot(7, ItemType.Weapon, 0.02),
+                new TierLoot(8, ItemType.Weapon, 0.01),
+                new TierLoot(7, ItemType.Armor, 0.04),
+                new TierLoot(8, ItemType.Armor, 0.02),
+                new TierLoot(9, ItemType.Armor, 0.01),
+                new TierLoot(4, ItemType.Ring, 0.02),
+                new TierLoot(4, ItemType.Ability, 0.02),
+                new Threshold(0.18,
+                    new ItemLoot("Potion of Attack", 0.015),
+                    new EggLoot(EggRarity.Common, 0.1),
+                    new EggLoot(EggRarity.Uncommon, 0.05)
                     )
             )
             .Init("Sprite Child",
@@ -133,26 +114,21 @@ namespace wServer.logic
                         ),
                     new Shoot(12, 5, 10, coolDown: 1000),
                     new Grenade(4, 150, 8, coolDown: 3000),
-                    new DropPortalOnDeath("Abyss of Demons Portal", 15)
+                    new DropPortalOnDeath("Abyss of Demons Portal", 20)
                     ),
-                new Threshold(1,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(8, ItemType.Weapon, 0.01),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(9, ItemType.Armor, 0.01),
-                    new TierLoot(3, ItemType.Ring, 0.015),
-                    new TierLoot(4, ItemType.Ring, 0.005),
-                    new TierLoot(4, ItemType.Ability, 0.02),
-                    new TierLoot(11, ItemType.Armor, normalloot/100),
-                    new TierLoot(10, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Rare, eggbag/150),
-                    new TierLoot(10, ItemType.Armor, normalloot/100),
-                    new TierLoot(9, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Common, eggbag/35),
-                    new EggLoot(EggRarity.Uncommon, eggbag/145),
-                    new ItemLoot("Potion of Speed", glandpot)
+                new TierLoot(6, ItemType.Weapon, 0.04),
+                new TierLoot(7, ItemType.Weapon, 0.02),
+                new TierLoot(8, ItemType.Weapon, 0.01),
+                new TierLoot(7, ItemType.Armor, 0.04),
+                new TierLoot(8, ItemType.Armor, 0.02),
+                new TierLoot(9, ItemType.Armor, 0.01),
+                new TierLoot(3, ItemType.Ring, 0.015),
+                new TierLoot(4, ItemType.Ring, 0.005),
+                new TierLoot(4, ItemType.Ability, 0.02),
+                new Threshold(0.18,
+                    new ItemLoot("Potion of Speed", 0.01),
+                    new EggLoot(EggRarity.Common, 0.1),
+                    new EggLoot(EggRarity.Uncommon, 0.05)
                     )
             )
             .Init("Ent God",
@@ -163,23 +139,19 @@ namespace wServer.logic
                         new Wander(0.4)
                         ),
                     new Shoot(12, 5, 10, predictive: 1, coolDown: 1250)
+                    
                     ),
-                new Threshold(1,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(8, ItemType.Weapon, 0.01),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(9, ItemType.Armor, 0.01),
-                    new TierLoot(4, ItemType.Ability, 0.02),
-                    new TierLoot(11, ItemType.Armor, normalloot/100),
-                    new TierLoot(10, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Rare, eggbag/150),
-                    new TierLoot(10, ItemType.Armor, normalloot/100),
-                    new TierLoot(9, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Common, eggbag/35),
-                    new EggLoot(EggRarity.Uncommon, eggbag/145),
-                    new ItemLoot("Potion of Defense", glandpot)
+                new TierLoot(6, ItemType.Weapon, 0.04),
+                new TierLoot(7, ItemType.Weapon, 0.02),
+                new TierLoot(8, ItemType.Weapon, 0.01),
+                new TierLoot(7, ItemType.Armor, 0.04),
+                new TierLoot(8, ItemType.Armor, 0.02),
+                new TierLoot(9, ItemType.Armor, 0.01),
+                new TierLoot(4, ItemType.Ability, 0.02),
+                new Threshold(0.18,
+                    new ItemLoot("Potion of Defense", 0.015),
+                    new EggLoot(EggRarity.Common, 0.1),
+                    new EggLoot(EggRarity.Uncommon, 0.05)
                     )
             )
             .Init("Lucky Ent God",
@@ -193,22 +165,17 @@ namespace wServer.logic
                     new Shoot(12, 5, 10, predictive: 1, coolDown: 1250)
                     
                     ),
-                new Threshold(1,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(8, ItemType.Weapon, 0.01),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(9, ItemType.Armor, 0.01),
-                    new TierLoot(4, ItemType.Ability, 0.02),
-                    new TierLoot(11, ItemType.Armor, normalloot/100),
-                    new TierLoot(10, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Rare, eggbag/150),
-                    new TierLoot(10, ItemType.Armor, normalloot/100),
-                    new TierLoot(9, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Common, eggbag/35),
-                    new EggLoot(EggRarity.Uncommon, eggbag/145),
-                    new ItemLoot("Potion of Defense", glandpot)
+                new TierLoot(6, ItemType.Weapon, 0.04),
+                new TierLoot(7, ItemType.Weapon, 0.02),
+                new TierLoot(8, ItemType.Weapon, 0.01),
+                new TierLoot(7, ItemType.Armor, 0.04),
+                new TierLoot(8, ItemType.Armor, 0.02),
+                new TierLoot(9, ItemType.Armor, 0.01),
+                new TierLoot(4, ItemType.Ability, 0.02),
+                new Threshold(0.18,
+                    new ItemLoot("Potion of Defense", 0.015),
+                    new EggLoot(EggRarity.Common, 0.1),
+                    new EggLoot(EggRarity.Uncommon, 0.05)
                     )
             )
             .Init("Beholder",
@@ -216,30 +183,24 @@ namespace wServer.logic
                     new Prioritize(
                         new StayAbove(1, 200),
                         new Follow(1, range: 7),
-                        new Wander(0.2)
+                        new Wander(0.4)
                         ),
-                    new Shoot(radius: 3, count: 9, projectileIndex: 0, fixedAngle: 0, coolDown: 5000, coolDownOffset: 15000),
-                    new Shoot(radius: 5, count: 18, projectileIndex: 1, fixedAngle: 0, coolDown: 10000, coolDownOffset: 10000),
                     new Shoot(12, projectileIndex: 0, count: 5, shootAngle: 72, predictive: 0.5, coolDown: 750),
                     new Shoot(10, projectileIndex: 1, predictive: 1)
+                    
                     ),
-                new Threshold(1,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(8, ItemType.Weapon, 0.01),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(9, ItemType.Armor, 0.01),
-                    new TierLoot(3, ItemType.Ring, 0.015),
-                    new TierLoot(4, ItemType.Ring, 0.005),
-                    new TierLoot(11, ItemType.Armor, normalloot/100),
-                    new TierLoot(10, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Rare, eggbag/150),
-                    new TierLoot(10, ItemType.Armor, normalloot/100),
-                    new TierLoot(9, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Common, eggbag/35),
-                    new EggLoot(EggRarity.Uncommon, eggbag/145),
-                    new ItemLoot("Potion of Defense", glandpot)
+                new TierLoot(6, ItemType.Weapon, 0.04),
+                new TierLoot(7, ItemType.Weapon, 0.02),
+                new TierLoot(8, ItemType.Weapon, 0.01),
+                new TierLoot(7, ItemType.Armor, 0.04),
+                new TierLoot(8, ItemType.Armor, 0.02),
+                new TierLoot(9, ItemType.Armor, 0.01),
+                new TierLoot(3, ItemType.Ring, 0.015),
+                new TierLoot(4, ItemType.Ring, 0.005),
+                new Threshold(0.18,
+                    new ItemLoot("Potion of Defense", 0.01),
+                    new EggLoot(EggRarity.Common, 0.1),
+                    new EggLoot(EggRarity.Uncommon, 0.05)
                     )
             )
             .Init("Flying Brain",
@@ -250,24 +211,19 @@ namespace wServer.logic
                         new Wander(0.4)
                         ),
                     new Shoot(12, 5, 72, coolDown: 500),
-                    new DropPortalOnDeath("Mad Lab Portal", 9)
+                    new DropPortalOnDeath("Mad Lab Portal", 20)
                     ),
-                new Threshold(1,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(3, ItemType.Ring, 0.015),
-                    new TierLoot(4, ItemType.Ring, 0.005),
-                    new TierLoot(4, ItemType.Ability, 0.02),
-                    new TierLoot(11, ItemType.Armor, normalloot/100),
-                    new TierLoot(10, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Rare, eggbag/150),
-                    new TierLoot(10, ItemType.Armor, normalloot/100),
-                    new TierLoot(9, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Common, eggbag/35),
-                    new EggLoot(EggRarity.Uncommon, eggbag/145),
-                    new ItemLoot("Potion of Attack", glandpot)
+                new TierLoot(6, ItemType.Weapon, 0.04),
+                new TierLoot(7, ItemType.Weapon, 0.02),
+                new TierLoot(7, ItemType.Armor, 0.04),
+                new TierLoot(8, ItemType.Armor, 0.02),
+                new TierLoot(3, ItemType.Ring, 0.015),
+                new TierLoot(4, ItemType.Ring, 0.005),
+                new TierLoot(4, ItemType.Ability, 0.02),
+                new Threshold(0.18,
+                    new ItemLoot("Potion of Attack", 0.015),
+                    new EggLoot(EggRarity.Common, 0.1),
+                    new EggLoot(EggRarity.Uncommon, 0.05)
                     )
             )
             .Init("Slime God",
@@ -280,22 +236,17 @@ namespace wServer.logic
                     new Shoot(12, projectileIndex: 0, count: 5, shootAngle: 10, predictive: 1, coolDown: 1000),
                     new Shoot(10, projectileIndex: 1, predictive: 1, coolDown: 650)
                     ),
-                new Threshold(1,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(8, ItemType.Weapon, 0.01),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(9, ItemType.Armor, 0.01),
-                    new TierLoot(4, ItemType.Ability, 0.02),
-                    new TierLoot(11, ItemType.Armor, normalloot/100),
-                    new TierLoot(10, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Rare, eggbag/150),
-                    new TierLoot(10, ItemType.Armor, normalloot/100),
-                    new TierLoot(9, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Common, eggbag/35),
-                    new EggLoot(EggRarity.Uncommon, eggbag/145),
-                    new ItemLoot("Potion of Defense", glandpot)
+                new TierLoot(6, ItemType.Weapon, 0.04),
+                new TierLoot(7, ItemType.Weapon, 0.02),
+                new TierLoot(8, ItemType.Weapon, 0.01),
+                new TierLoot(7, ItemType.Armor, 0.04),
+                new TierLoot(8, ItemType.Armor, 0.02),
+                new TierLoot(9, ItemType.Armor, 0.01),
+                new TierLoot(4, ItemType.Ability, 0.02),
+                new Threshold(0.18,
+                    new ItemLoot("Potion of Defense", 0.015),
+                    new EggLoot(EggRarity.Common, 0.1),
+                    new EggLoot(EggRarity.Uncommon, 0.05)
                     )
             )
             .Init("Ghost God",
@@ -306,24 +257,19 @@ namespace wServer.logic
                         new Wander(0.4)
                         ),
                     new Shoot(12, 7, 25, predictive: 0.5, coolDown: 900),
-                    new DropPortalOnDeath("Undead Lair Portal", 15)
+                    new DropPortalOnDeath("Undead Lair Portal", 20)
                     ),
-                new Threshold(1,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(3, ItemType.Ring, 0.015),
-                    new TierLoot(4, ItemType.Ring, 0.005),
-                    new TierLoot(4, ItemType.Ability, 0.02),
-                    new TierLoot(11, ItemType.Armor, normalloot/100),
-                    new TierLoot(10, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Rare, eggbag/150),
-                    new TierLoot(10, ItemType.Armor, normalloot/100),
-                    new TierLoot(9, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Common, eggbag/35),
-                    new EggLoot(EggRarity.Uncommon, eggbag/145),
-                    new ItemLoot("Potion of Speed", glandpot)
+                new TierLoot(6, ItemType.Weapon, 0.04),
+                new TierLoot(7, ItemType.Weapon, 0.02),
+                new TierLoot(7, ItemType.Armor, 0.04),
+                new TierLoot(8, ItemType.Armor, 0.02),
+                new TierLoot(3, ItemType.Ring, 0.015),
+                new TierLoot(4, ItemType.Ring, 0.005),
+                new TierLoot(4, ItemType.Ability, 0.02),
+                new Threshold(0.18,
+                    new ItemLoot("Potion of Speed", 0.015),
+                    new EggLoot(EggRarity.Common, 0.1),
+                    new EggLoot(EggRarity.Uncommon, 0.05)
                     )
             )
             .Init("Rock Bot",
@@ -341,20 +287,15 @@ namespace wServer.logic
                         new TimedTransition(10000, "Waiting")
                         )
                     ),
-                new Threshold(1,
-                    new TierLoot(11, ItemType.Armor, normalloot/100),
-                    new TierLoot(10, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Rare, eggbag/150),
-                    new TierLoot(5, ItemType.Weapon, 0.16),
-                    new TierLoot(6, ItemType.Weapon, 0.08),
-                    new TierLoot(7, ItemType.Weapon, 0.04),
-                    new TierLoot(5, ItemType.Armor, 0.16),
-                    new TierLoot(6, ItemType.Armor, 0.08),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(3, ItemType.Ring, 0.05),
-                    new TierLoot(3, ItemType.Ability, 0.1),
-                    new ItemLoot("Purple Drake Egg", 0.01)
-                    )
+                new TierLoot(5, ItemType.Weapon, 0.16),
+                new TierLoot(6, ItemType.Weapon, 0.08),
+                new TierLoot(7, ItemType.Weapon, 0.04),
+                new TierLoot(5, ItemType.Armor, 0.16),
+                new TierLoot(6, ItemType.Armor, 0.08),
+                new TierLoot(7, ItemType.Armor, 0.04),
+                new TierLoot(3, ItemType.Ring, 0.05),
+                new TierLoot(3, ItemType.Ability, 0.1),
+                new ItemLoot("Purple Drake Egg", 0.01)
             )
             .Init("Paper Bot",
                 new State(
@@ -376,18 +317,10 @@ namespace wServer.logic
                         new Decay(0)
                         )
                     ),
-                new Threshold(1,
-                    new TierLoot(6, ItemType.Weapon, 0.01),
-                    new ItemLoot("Health Potion", 0.04),
-                    new ItemLoot("Magic Potion", 0.01),
-                    new EggLoot(EggRarity.Rare, eggbag/150),
-                    new TierLoot(11, ItemType.Armor, normalloot/100),
-                    new TierLoot(10, ItemType.Weapon, normalloot/100),
-                    new TierLoot(10, ItemType.Armor, normalloot/100),
-                    new TierLoot(9, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Common, eggbag/35),
-                    new EggLoot(EggRarity.Uncommon, eggbag/145)
-                    )
+                new TierLoot(6, ItemType.Weapon, 0.01),
+                new ItemLoot("Health Potion", 0.04),
+                new ItemLoot("Magic Potion", 0.01),
+                new ItemLoot("Tincture of Life", 0.01)
             )
             .Init("Steel Bot",
                 new State(
@@ -410,14 +343,9 @@ namespace wServer.logic
                         new Decay(0)
                         )
                     ),
-                new Threshold(1,
-                    new EggLoot(EggRarity.Rare, eggbag/150),
-                    new TierLoot(11, ItemType.Armor, normalloot/100),
-                    new TierLoot(10, ItemType.Weapon, normalloot/100),
-                    new TierLoot(6, ItemType.Weapon, 0.01),
-                    new ItemLoot("Health Potion", 0.04),
-                    new ItemLoot("Magic Potion", 0.01)
-                    )
+                new TierLoot(6, ItemType.Weapon, 0.01),
+                new ItemLoot("Health Potion", 0.04),
+                new ItemLoot("Magic Potion", 0.01)
             )
             .Init("Djinn",
                 new State(
@@ -474,22 +402,17 @@ namespace wServer.logic
                         new Suicide()
                         )
                     ),
-                new Threshold(1,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(3, ItemType.Ring, 0.015),
-                    new TierLoot(4, ItemType.Ring, 0.005),
-                    new TierLoot(4, ItemType.Ability, 0.02),
-                    new EggLoot(EggRarity.Rare, eggbag/150),
-                    new TierLoot(11, ItemType.Armor, normalloot/100),
-                    new TierLoot(10, ItemType.Weapon, normalloot/100),
-                    new TierLoot(10, ItemType.Armor, normalloot/100),
-                    new TierLoot(9, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Common, eggbag/35),
-                    new EggLoot(EggRarity.Uncommon, eggbag/145),
-                    new ItemLoot("Potion of Speed", glandpot)
+                new TierLoot(6, ItemType.Weapon, 0.04),
+                new TierLoot(7, ItemType.Weapon, 0.02),
+                new TierLoot(7, ItemType.Armor, 0.04),
+                new TierLoot(8, ItemType.Armor, 0.02),
+                new TierLoot(3, ItemType.Ring, 0.015),
+                new TierLoot(4, ItemType.Ring, 0.005),
+                new TierLoot(4, ItemType.Ability, 0.02),
+                new Threshold(0.18,
+                    new ItemLoot("Potion of Speed", 0.015),
+                    new EggLoot(EggRarity.Common, 0.1),
+                    new EggLoot(EggRarity.Uncommon, 0.05)
                     )
             )
             .Init("Lucky Djinn",
@@ -548,22 +471,17 @@ namespace wServer.logic
                         new Suicide()
                         )
                     ),
-                new Threshold(1,
-                    new TierLoot(6, ItemType.Weapon, 0.04),
-                    new TierLoot(7, ItemType.Weapon, 0.02),
-                    new TierLoot(7, ItemType.Armor, 0.04),
-                    new TierLoot(8, ItemType.Armor, 0.02),
-                    new TierLoot(3, ItemType.Ring, 0.015),
-                    new TierLoot(4, ItemType.Ring, 0.005),
-                    new TierLoot(4, ItemType.Ability, 0.02),
-                    new EggLoot(EggRarity.Rare, eggbag/150),
-                    new TierLoot(11, ItemType.Armor, normalloot/100),
-                    new TierLoot(10, ItemType.Weapon, normalloot/100),
-                    new TierLoot(10, ItemType.Armor, normalloot/100),
-                    new TierLoot(9, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Common, eggbag/35),
-                    new EggLoot(EggRarity.Uncommon, eggbag/145),
-                    new ItemLoot("Potion of Speed", glandpot)
+                new TierLoot(6, ItemType.Weapon, 0.04),
+                new TierLoot(7, ItemType.Weapon, 0.02),
+                new TierLoot(7, ItemType.Armor, 0.04),
+                new TierLoot(8, ItemType.Armor, 0.02),
+                new TierLoot(3, ItemType.Ring, 0.015),
+                new TierLoot(4, ItemType.Ring, 0.005),
+                new TierLoot(4, ItemType.Ability, 0.02),
+                new Threshold(0.18,
+                    new ItemLoot("Potion of Speed", 0.015),
+                    new EggLoot(EggRarity.Common, 0.1),
+                    new EggLoot(EggRarity.Uncommon, 0.05)
                     )
             )
             .Init("Leviathan",
@@ -621,22 +539,11 @@ namespace wServer.logic
                         new Shoot(11, 2, 15, defaultAngle: 0, angleOffset: 10, projectileIndex: 1, predictive: 1,
                             coolDown: 900, coolDownOffset: 600),
                         new TimedTransition(4500, "pattern walk")
-                        ),
-                    new DropPortalOnDeath("Puppet Theatre Portal", 8)
+                        )
                     ),
-                new Threshold(1,
-                    new TierLoot(6, ItemType.Weapon, 0.01),
-                    new ItemLoot("Health Potion", 0.04),
-                    new ItemLoot("Magic Potion", 0.01),
-                    new EggLoot(EggRarity.Rare, eggbag/150),
-                    new TierLoot(11, ItemType.Armor, normalloot/100),
-                    new TierLoot(10, ItemType.Weapon, normalloot/100),
-                    new TierLoot(10, ItemType.Armor, normalloot/100),
-                    new TierLoot(9, ItemType.Weapon, normalloot/100),
-                    new EggLoot(EggRarity.Common, eggbag/35),
-                    new EggLoot(EggRarity.Uncommon, eggbag/145),
-                    new ItemLoot("Potion of Defense", glandpot)
-                    )
+                new TierLoot(6, ItemType.Weapon, 0.01),
+                new ItemLoot("Health Potion", 0.04),
+                new ItemLoot("Magic Potion", 0.01)
             )
             ;
     }

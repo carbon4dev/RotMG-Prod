@@ -1,4 +1,4 @@
-package kabam.rotmg.pets.view.components {
+﻿package kabam.rotmg.pets.view.components {
 import flash.display.Sprite;
 
 import kabam.rotmg.pets.data.PetSlotsState;
@@ -11,97 +11,96 @@ import org.osflash.signals.Signal;
 
 public class PetFeeder extends Sprite {
 
-      public const openPetPicker:Signal = new Signal();
+    public const openPetPicker:Signal = new Signal();
+    public const acceptableMatch:Signal = new Signal(Boolean, PetVO);
+    public const petLoaded:Signal = new Signal(PetVO);
 
-      public const acceptableMatch:Signal = new Signal(Boolean,PetVO);
+    private var leftSlot:PetFeedFuseSlot;
+    private var arrow:FeedFuseArrow;
+    private var rightSlot:FoodFeedFuseSlot;
+    private var state:PetSlotsState;
 
-      public const petLoaded:Signal = new Signal(PetVO);
+    public function PetFeeder() {
+        this.leftSlot = new PetFeedFuseSlot();
+        this.arrow = PetsViewAssetFactory.returnPetFeederArrow();
+        this.rightSlot = PetsViewAssetFactory.returnPetFeederRightSlot();
+        super();
+        addChild(this.leftSlot);
+        addChild(this.arrow);
+        addChild(this.rightSlot);
+        this.leftSlot.openPetPicker.addOnce(this.onOpenPetPicker);
+        this.rightSlot.foodLoaded.add(this.onFoodLoaded);
+        this.rightSlot.foodUnloaded.add(this.onFoodUnloaded);
+    }
 
-      private var leftSlot:PetFeedFuseSlot;
+    public function initialize(_arg_1:PetSlotsState):void {
+        this.state = _arg_1;
+        this.setPet(this.state.leftSlotPetVO);
+        this.update();
+    }
 
-      private var arrow:FeedFuseArrow;
+    public function setPet(_arg_1:PetVO):void {
+        this.leftSlot.setPet(_arg_1);
+        if (_arg_1) {
+            this.petLoaded.dispatch(_arg_1);
+        }
+    }
 
-      private var rightSlot:FoodFeedFuseSlot;
+    public function clearFood():void {
+        this.state.rightSlotItemId = -1;
+        this.state.rightSlotOwnerId = -1;
+        this.state.rightSlotId = -1;
+        this.rightSlot.clearItem();
+        this.update();
+    }
 
-      private var state:PetSlotsState;
+    private function onFoodUnloaded():void {
+        this.state.rightSlotItemId = -1;
+        this.state.rightSlotOwnerId = -1;
+        this.state.rightSlotId = -1;
+        this.update();
+    }
 
-      public function PetFeeder() {
-         this.leftSlot = new PetFeedFuseSlot();
-         this.arrow = PetsViewAssetFactory.returnPetFeederArrow();
-         this.rightSlot = PetsViewAssetFactory.returnPetFeederRightSlot();
-         super();
-         addChild(this.leftSlot);
-         addChild(this.arrow);
-         addChild(this.rightSlot);
-         this.leftSlot.openPetPicker.addOnce(this.onOpenPetPicker);
-         this.rightSlot.foodLoaded.add(this.onFoodLoaded);
-         this.rightSlot.foodUnloaded.add(this.onFoodUnloaded);
-      }
+    private function onFoodLoaded(_arg_1:int):void {
+        this.state.rightSlotItemId = _arg_1;
+        this.update();
+    }
 
-      public function initialize(param1:PetSlotsState) : void {
-         this.state = param1;
-         this.setPet(this.state.leftSlotPetVO);
-         this.update();
-      }
+    private function update():void {
+        this.updateHighlights();
+        this.acceptableMatch.dispatch(this.state.isAcceptableFeedState(), this.state.leftSlotPetVO);
+    }
 
-      public function setPet(param1:PetVO) : void {
-         this.leftSlot.setPet(param1);
-         if(param1) {
-            this.petLoaded.dispatch(param1);
-         }
-      }
+    private function onOpenPetPicker():void {
+        this.openPetPicker.dispatch();
+    }
 
-      public function clearFood() : void {
-         this.state.rightSlotItemId = -1;
-         this.state.rightSlotOwnerId = -1;
-         this.state.rightSlotId = -1;
-         this.rightSlot.clearItem();
-         this.update();
-      }
-
-      private function onFoodUnloaded() : void {
-         this.state.rightSlotItemId = -1;
-         this.state.rightSlotOwnerId = -1;
-         this.state.rightSlotId = -1;
-         this.update();
-      }
-
-      private function onFoodLoaded(param1:int) : void {
-         this.state.rightSlotItemId = param1;
-         this.update();
-      }
-
-      private function update() : void {
-         this.updateHighlights();
-         this.acceptableMatch.dispatch(this.state.isAcceptableFeedState(),this.state.leftSlotPetVO);
-      }
-
-      private function onOpenPetPicker() : void {
-         this.openPetPicker.dispatch();
-      }
-
-      public function updateHighlights() : void {
-         if(this.state.isAcceptableFeedState()) {
+    public function updateHighlights():void {
+        if (this.state.isAcceptableFeedState()) {
             this.arrow.highlight(true);
             this.rightSlot.highlight(true);
             this.leftSlot.highlight(true);
-         } else {
-            this.rightSlot.highlight(this.state.rightSlotItemId == -1);
-            this.leftSlot.highlight(this.state.leftSlotPetVO == null);
+        }
+        else {
+            this.rightSlot.highlight((this.state.rightSlotItemId == -1));
+            this.leftSlot.highlight((this.state.leftSlotPetVO == null));
             this.arrow.highlight(false);
-         }
-      }
+        }
+    }
 
-      public function setProcessing(param1:Boolean) : void {
-         this.rightSlot.setProcessing(param1);
-         this.leftSlot.setProcessing(param1);
-         if(param1) {
+    public function setProcessing(_arg_1:Boolean):void {
+        this.rightSlot.setProcessing(_arg_1);
+        this.leftSlot.setProcessing(_arg_1);
+        if (_arg_1) {
             this.arrow.highlight(false);
             this.rightSlot.highlight(false);
             this.leftSlot.highlight(false);
-         } else {
+        }
+        else {
             this.update();
-         }
-      }
-   }
+        }
+    }
+
+
 }
+}//package kabam.rotmg.pets.view.components

@@ -1,17 +1,9 @@
-// Decompiled by AS3 Sorcerer 1.40
-// http://www.as3sorcerer.com/
+﻿package kabam.lib.net.api {
+import kabam.lib.net.impl.Message;
 
-//kabam.lib.net.api.MessageProvider
+public interface MessageProvider {
 
-package kabam.lib.net.api
-{
-    import kabam.lib.net.impl.Message;
+    function require(_arg_1:int):Message;
 
-    public interface MessageProvider 
-    {
-
-        function require(_arg1:int):Message;
-
-    }
+}
 }//package kabam.lib.net.api
-

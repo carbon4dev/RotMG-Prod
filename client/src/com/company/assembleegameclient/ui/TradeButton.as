@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.ui {
+﻿package com.company.assembleegameclient.ui {
 import com.company.util.GraphicsUtil;
 
 import flash.display.CapsStyle;
@@ -21,170 +21,162 @@ import kabam.rotmg.text.view.stringBuilder.LineBuilder;
 
 public class TradeButton extends BackgroundFilledText {
 
-      private static const WAIT_TIME:int = 2999;
+    private static const WAIT_TIME:int = 2999;
+    private static const COUNTDOWN_STATE:int = 0;
+    private static const NORMAL_STATE:int = 1;
+    private static const WAITING_STATE:int = 2;
+    private static const DISABLED_STATE:int = 3;
 
-      private static const COUNTDOWN_STATE:int = 0;
+    public var statusBar_:Sprite;
+    public var barMask_:Shape;
+    public var myText:StaticTextDisplay;
+    public var h_:int;
+    private var state_:int;
+    private var lastResetTime_:int;
+    private var barGraphicsData_:Vector.<IGraphicsData>;
+    private var outlineGraphicsData_:Vector.<IGraphicsData>;
 
-      private static const NORMAL_STATE:int = 1;
+    public function TradeButton(_arg_1:int, _arg_2:int = 0) {
+        super(_arg_2);
+        this.makeGraphics();
+        this.lastResetTime_ = getTimer();
+        this.myText = new StaticTextDisplay();
+        this.myText.setAutoSize(TextFieldAutoSize.CENTER).setVerticalAlign(TextFieldDisplayConcrete.MIDDLE);
+        this.myText.setSize(_arg_1).setColor(0x363636).setBold(true);
+        this.myText.setStringBuilder(new LineBuilder().setParams(TextKey.PLAYERMENU_TRADE));
+        w_ = (((_arg_2) != 0) ? _arg_2 : (this.myText.width + 12));
+        this.h_ = (this.myText.height + 8);
+        this.myText.x = (w_ / 2);
+        this.myText.y = (this.h_ / 2);
+        GraphicsUtil.clearPath(path_);
+        GraphicsUtil.drawCutEdgeRect(0, 0, w_, (this.myText.height + 8), 4, [1, 1, 1, 1], path_);
+        this.statusBar_ = this.newStatusBar();
+        addChild(this.statusBar_);
+        addChild(this.myText);
+        this.draw();
+        addEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
+        addEventListener(Event.REMOVED_FROM_STAGE, this.onRemovedFromStage);
+        addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
+        addEventListener(MouseEvent.ROLL_OUT, this.onRollOut);
+        addEventListener(MouseEvent.CLICK, this.onClick);
+    }
 
-      private static const WAITING_STATE:int = 2;
+    private function makeGraphics():void {
+        var _local_1:GraphicsSolidFill = new GraphicsSolidFill(0xBFBFBF, 1);
+        this.barGraphicsData_ = new <IGraphicsData>[_local_1, path_, GraphicsUtil.END_FILL];
+        var _local_2:GraphicsSolidFill = new GraphicsSolidFill(0xFFFFFF, 1);
+        var _local_3:GraphicsStroke = new GraphicsStroke(2, false, LineScaleMode.NORMAL, CapsStyle.NONE, JointStyle.ROUND, 3, _local_2);
+        this.outlineGraphicsData_ = new <IGraphicsData>[_local_3, path_, GraphicsUtil.END_STROKE];
+    }
 
-      private static const DISABLED_STATE:int = 3;
+    public function reset():void {
+        this.lastResetTime_ = getTimer();
+        this.state_ = COUNTDOWN_STATE;
+        this.setEnabled(false);
+        this.setText(TextKey.PLAYERMENU_TRADE);
+    }
 
-      public var statusBar_:Sprite;
+    public function disable():void {
+        this.state_ = DISABLED_STATE;
+        this.setEnabled(false);
+        this.setText(TextKey.PLAYERMENU_TRADE);
+    }
 
-      public var barMask_:Shape;
+    private function setText(_arg_1:String):void {
+        this.myText.setStringBuilder(new LineBuilder().setParams(_arg_1));
+    }
 
-      public var myText:StaticTextDisplay;
-
-      public var h_:int;
-
-      private var state_:int;
-
-      private var lastResetTime_:int;
-
-      private var barGraphicsData_:Vector.<IGraphicsData>;
-
-      private var outlineGraphicsData_:Vector.<IGraphicsData>;
-
-      public function TradeButton(param1:int, param2:int = 0) {
-         super(param2);
-         this.makeGraphics();
-         this.lastResetTime_ = getTimer();
-         this.myText = new StaticTextDisplay();
-         this.myText.setAutoSize(TextFieldAutoSize.CENTER).setVerticalAlign(TextFieldDisplayConcrete.MIDDLE);
-         this.myText.setSize(param1).setColor(3552822).setBold(true);
-         this.myText.setStringBuilder(new LineBuilder().setParams(TextKey.PLAYERMENU_TRADE));
-         w_ = param2 != 0?int(param2):int(this.myText.width + 12);
-         this.h_ = this.myText.height + 8;
-         this.myText.x = w_ / 2;
-         this.myText.y = this.h_ / 2;
-         GraphicsUtil.clearPath(path_);
-         GraphicsUtil.drawCutEdgeRect(0,0,w_,this.myText.height + 8,4,[1,1,1,1],path_);
-         this.statusBar_ = this.newStatusBar();
-         addChild(this.statusBar_);
-         addChild(this.myText);
-         this.draw();
-         addEventListener(Event.ADDED_TO_STAGE,this.onAddedToStage);
-         addEventListener(Event.REMOVED_FROM_STAGE,this.onRemovedFromStage);
-         addEventListener(MouseEvent.MOUSE_OVER,this.onMouseOver);
-         addEventListener(MouseEvent.ROLL_OUT,this.onRollOut);
-         addEventListener(MouseEvent.CLICK,this.onClick);
-      }
-
-      private function makeGraphics() : void {
-         var _local1:GraphicsSolidFill = new GraphicsSolidFill(12566463,1);
-         this.barGraphicsData_ = new <IGraphicsData>[_local1,path_,GraphicsUtil.END_FILL];
-         var _local2:GraphicsSolidFill = new GraphicsSolidFill(16777215,1);
-         var _local3:GraphicsStroke = new GraphicsStroke(2,false,LineScaleMode.NORMAL,CapsStyle.NONE,JointStyle.ROUND,3,_local2);
-         this.outlineGraphicsData_ = new <IGraphicsData>[_local3,path_,GraphicsUtil.END_STROKE];
-      }
-
-      public function reset() : void {
-         this.lastResetTime_ = getTimer();
-         this.state_ = COUNTDOWN_STATE;
-         this.setEnabled(false);
-         this.setText(TextKey.PLAYERMENU_TRADE);
-      }
-
-      public function disable() : void {
-         this.state_ = DISABLED_STATE;
-         this.setEnabled(false);
-         this.setText(TextKey.PLAYERMENU_TRADE);
-      }
-
-      private function setText(param1:String) : void {
-         this.myText.setStringBuilder(new LineBuilder().setParams(param1));
-      }
-
-      private function setEnabled(param1:Boolean) : void {
-         if(param1 == mouseEnabled) {
+    private function setEnabled(_arg_1:Boolean):void {
+        if (_arg_1 == mouseEnabled) {
             return;
-         }
-         mouseEnabled = param1;
-         mouseChildren = param1;
-         graphicsData_[0] = !!param1?enabledFill_:disabledFill_;
-         this.draw();
-      }
+        }
+        mouseEnabled = _arg_1;
+        mouseChildren = _arg_1;
+        graphicsData_[0] = ((_arg_1) ? enabledFill_ : disabledFill_);
+        this.draw();
+    }
 
-      private function onAddedToStage(param1:Event) : void {
-         addEventListener(Event.ENTER_FRAME,this.onEnterFrame);
-         this.reset();
-         this.draw();
-      }
+    private function onAddedToStage(_arg_1:Event):void {
+        addEventListener(Event.ENTER_FRAME, this.onEnterFrame);
+        this.reset();
+        this.draw();
+    }
 
-      private function onRemovedFromStage(param1:Event) : void {
-         removeEventListener(Event.ENTER_FRAME,this.onEnterFrame);
-      }
+    private function onRemovedFromStage(_arg_1:Event):void {
+        removeEventListener(Event.ENTER_FRAME, this.onEnterFrame);
+    }
 
-      private function onEnterFrame(param1:Event) : void {
-         this.draw();
-      }
+    private function onEnterFrame(_arg_1:Event):void {
+        this.draw();
+    }
 
-      private function onMouseOver(param1:MouseEvent) : void {
-         enabledFill_.color = 16768133;
-         this.draw();
-      }
+    private function onMouseOver(_arg_1:MouseEvent):void {
+        enabledFill_.color = 16768133;
+        this.draw();
+    }
 
-      private function onRollOut(param1:MouseEvent) : void {
-         enabledFill_.color = 16777215;
-         this.draw();
-      }
+    private function onRollOut(_arg_1:MouseEvent):void {
+        enabledFill_.color = 0xFFFFFF;
+        this.draw();
+    }
 
-      private function onClick(param1:MouseEvent) : void {
-         this.state_ = WAITING_STATE;
-         this.setEnabled(false);
-         this.setText(TextKey.PLAYERMENU_WAITING);
-      }
+    private function onClick(_arg_1:MouseEvent):void {
+        this.state_ = WAITING_STATE;
+        this.setEnabled(false);
+        this.setText(TextKey.PLAYERMENU_WAITING);
+    }
 
-      private function newStatusBar() : Sprite {
-         var _local1:Sprite = new Sprite();
-         var _local2:Sprite = new Sprite();
-         var _local3:Shape = new Shape();
-         _local3.graphics.clear();
-         _local3.graphics.drawGraphicsData(this.barGraphicsData_);
-         _local2.addChild(_local3);
-         this.barMask_ = new Shape();
-         _local2.addChild(this.barMask_);
-         _local2.mask = this.barMask_;
-         _local1.addChild(_local2);
-         var _local4:Shape = new Shape();
-         _local4.graphics.clear();
-         _local4.graphics.drawGraphicsData(this.outlineGraphicsData_);
-         _local1.addChild(_local4);
-         return _local1;
-      }
+    private function newStatusBar():Sprite {
+        var _local_1:Sprite = new Sprite();
+        var _local_2:Sprite = new Sprite();
+        var _local_3:Shape = new Shape();
+        _local_3.graphics.clear();
+        _local_3.graphics.drawGraphicsData(this.barGraphicsData_);
+        _local_2.addChild(_local_3);
+        this.barMask_ = new Shape();
+        _local_2.addChild(this.barMask_);
+        _local_2.mask = this.barMask_;
+        _local_1.addChild(_local_2);
+        var _local_4:Shape = new Shape();
+        _local_4.graphics.clear();
+        _local_4.graphics.drawGraphicsData(this.outlineGraphicsData_);
+        _local_1.addChild(_local_4);
+        return (_local_1);
+    }
 
-      private function drawCountDown(param1:Number) : void {
-         this.barMask_.graphics.clear();
-         this.barMask_.graphics.beginFill(12566463);
-         this.barMask_.graphics.drawRect(0,0,w_ * param1,this.h_);
-         this.barMask_.graphics.endFill();
-      }
+    private function drawCountDown(_arg_1:Number):void {
+        this.barMask_.graphics.clear();
+        this.barMask_.graphics.beginFill(0xBFBFBF);
+        this.barMask_.graphics.drawRect(0, 0, (w_ * _arg_1), this.h_);
+        this.barMask_.graphics.endFill();
+    }
 
-      private function draw() : void {
-         var _local1:int = 0;
-         var _local2:Number = NaN;
-         _local1 = getTimer();
-         if(this.state_ == COUNTDOWN_STATE) {
-            if(_local1 - this.lastResetTime_ >= WAIT_TIME) {
-               this.state_ = NORMAL_STATE;
-               this.setEnabled(true);
+    private function draw():void {
+        var _local_1:int;
+        var _local_2:Number;
+        _local_1 = getTimer();
+        if (this.state_ == COUNTDOWN_STATE) {
+            if ((_local_1 - this.lastResetTime_) >= WAIT_TIME) {
+                this.state_ = NORMAL_STATE;
+                this.setEnabled(true);
             }
-         }
-         switch(this.state_) {
+        }
+        switch (this.state_) {
             case COUNTDOWN_STATE:
-               this.statusBar_.visible = true;
-               _local2 = (_local1 - this.lastResetTime_) / WAIT_TIME;
-               this.drawCountDown(_local2);
-               break;
+                this.statusBar_.visible = true;
+                _local_2 = ((_local_1 - this.lastResetTime_) / WAIT_TIME);
+                this.drawCountDown(_local_2);
+                break;
             case DISABLED_STATE:
             case NORMAL_STATE:
             case WAITING_STATE:
-               this.statusBar_.visible = false;
-         }
-         graphics.clear();
-         graphics.drawGraphicsData(graphicsData_);
-      }
-   }
+                this.statusBar_.visible = false;
+                break;
+        }
+        graphics.clear();
+        graphics.drawGraphicsData(graphicsData_);
+    }
+
+
 }
+}//package com.company.assembleegameclient.ui

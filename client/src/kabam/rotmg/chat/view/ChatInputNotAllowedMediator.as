@@ -1,4 +1,4 @@
-package kabam.rotmg.chat.view {
+﻿package kabam.rotmg.chat.view {
 import flash.events.MouseEvent;
 
 import kabam.rotmg.account.core.signals.OpenAccountInfoSignal;
@@ -10,45 +10,41 @@ import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class ChatInputNotAllowedMediator extends Mediator {
 
-      [Inject]
-      public var view:ChatInputNotAllowed;
+    [Inject]
+    public var view:ChatInputNotAllowed;
+    [Inject]
+    public var model:ChatModel;
+    [Inject]
+    public var openAccountManagement:OpenAccountInfoSignal;
+    [Inject]
+    public var hudModel:HUDModel;
+    [Inject]
+    public var hudModelInitialized:HUDModelInitialized;
 
-      [Inject]
-      public var model:ChatModel;
 
-      [Inject]
-      public var openAccountManagement:OpenAccountInfoSignal;
+    override public function initialize():void {
+        this.view.setup(this.model);
+        this.hudModelInitialized.add(this.onHUDModelInitialized);
+    }
 
-      [Inject]
-      public var hudModel:HUDModel;
-
-      [Inject]
-      public var hudModelInitialized:HUDModelInitialized;
-
-      public function ChatInputNotAllowedMediator() {
-         super();
-      }
-
-      override public function initialize() : void {
-         this.view.setup(this.model);
-         this.hudModelInitialized.add(this.onHUDModelInitialized);
-      }
-
-      private function onHUDModelInitialized() : void {
-         if(Boolean(this.hudModel.gameSprite) && Boolean(this.hudModel.gameSprite.evalIsNotInCombatMapArea())) {
-            this.view.addEventListener(MouseEvent.CLICK,this.onClick);
-         } else {
+    private function onHUDModelInitialized():void {
+        if (((this.hudModel.gameSprite) && (this.hudModel.gameSprite.evalIsNotInCombatMapArea()))) {
+            this.view.addEventListener(MouseEvent.CLICK, this.onClick);
+        }
+        else {
             this.view.mouseEnabled = false;
             this.view.mouseChildren = false;
-         }
-      }
+        }
+    }
 
-      override public function destroy() : void {
-         this.view.removeEventListener(MouseEvent.CLICK,this.onClick);
-      }
+    override public function destroy():void {
+        this.view.removeEventListener(MouseEvent.CLICK, this.onClick);
+    }
 
-      private function onClick(param1:MouseEvent) : void {
-         this.openAccountManagement.dispatch();
-      }
-   }
+    private function onClick(_arg_1:MouseEvent):void {
+        this.openAccountManagement.dispatch();
+    }
+
+
 }
+}//package kabam.rotmg.chat.view

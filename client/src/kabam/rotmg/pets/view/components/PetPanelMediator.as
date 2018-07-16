@@ -1,4 +1,4 @@
-package kabam.rotmg.pets.view.components {
+﻿package kabam.rotmg.pets.view.components {
 import com.company.assembleegameclient.ui.tooltip.ToolTip;
 
 import flash.events.MouseEvent;
@@ -21,81 +21,73 @@ import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class PetPanelMediator extends Mediator {
 
-      [Inject]
-      public var view:PetPanel;
+    [Inject]
+    public var view:PetPanel;
+    [Inject]
+    public var petModel:PetsModel;
+    [Inject]
+    public var showPetTooltip:ShowPetTooltip;
+    [Inject]
+    public var showToolTip:ShowTooltipSignal;
+    [Inject]
+    public var deactivatePet:DeactivatePet;
+    [Inject]
+    public var activatePet:ActivatePet;
+    [Inject]
+    public var notifyActivePetUpdated:NotifyActivePetUpdated;
+    [Inject]
+    public var openDialog:OpenDialogSignal;
+    [Inject]
+    public var injector:Injector;
 
-      [Inject]
-      public var petModel:PetsModel;
 
-      [Inject]
-      public var showPetTooltip:ShowPetTooltip;
+    override public function initialize():void {
+        this.view.setState(this.returnButtonState());
+        this.view.addToolTip.add(this.onAddToolTip);
+        this.view.followButton.addEventListener(MouseEvent.CLICK, this.onButtonClick);
+        this.view.releaseButton.addEventListener(MouseEvent.CLICK, this.onReleaseClick);
+        this.view.unFollowButton.addEventListener(MouseEvent.CLICK, this.onButtonClick);
+        this.notifyActivePetUpdated.add(this.onNotifyActivePetUpdated);
+    }
 
-      [Inject]
-      public var showToolTip:ShowTooltipSignal;
+    override public function destroy():void {
+        this.view.releaseButton.removeEventListener(MouseEvent.CLICK, this.onReleaseClick);
+    }
 
-      [Inject]
-      public var deactivatePet:DeactivatePet;
+    private function onReleaseClick(_arg_1:MouseEvent):void {
+        this.injector.map(PetVO).toValue(this.view.petVO);
+        this.openDialog.dispatch(this.injector.getInstance(ConfirmReleaseDialog));
+    }
 
-      [Inject]
-      public var activatePet:ActivatePet;
+    private function onNotifyActivePetUpdated():void {
+        var _local_1:PetVO = this.petModel.getActivePet();
+        this.view.toggleButtons(!(_local_1));
+    }
 
-      [Inject]
-      public var notifyActivePetUpdated:NotifyActivePetUpdated;
+    private function returnButtonState():uint {
+        if (this.isPanelPetSameAsActivePet()) {
+            return (PetsConstants.FOLLOWING);
+        }
+        return (PetsConstants.INTERACTING);
+    }
 
-      [Inject]
-      public var openDialog:OpenDialogSignal;
-
-      [Inject]
-      public var injector:Injector;
-
-      public function PetPanelMediator() {
-         super();
-      }
-
-      override public function initialize() : void {
-         this.view.setState(this.returnButtonState());
-         this.view.addToolTip.add(this.onAddToolTip);
-         this.view.followButton.addEventListener(MouseEvent.CLICK,this.onButtonClick);
-         this.view.releaseButton.addEventListener(MouseEvent.CLICK,this.onReleaseClick);
-         this.view.unFollowButton.addEventListener(MouseEvent.CLICK,this.onButtonClick);
-         this.notifyActivePetUpdated.add(this.onNotifyActivePetUpdated);
-      }
-
-      override public function destroy() : void {
-         this.view.releaseButton.removeEventListener(MouseEvent.CLICK,this.onReleaseClick);
-      }
-
-      private function onReleaseClick(param1:MouseEvent) : void {
-         this.injector.map(PetVO).toValue(this.view.petVO);
-         this.openDialog.dispatch(this.injector.getInstance(ConfirmReleaseDialog));
-      }
-
-      private function onNotifyActivePetUpdated() : void {
-         var _local1:PetVO = this.petModel.getActivePet();
-         this.view.toggleButtons(!_local1);
-      }
-
-      private function returnButtonState() : uint {
-         if(this.isPanelPetSameAsActivePet()) {
-            return PetsConstants.FOLLOWING;
-         }
-         return PetsConstants.INTERACTING;
-      }
-
-      protected function onButtonClick(param1:MouseEvent) : void {
-         if(this.isPanelPetSameAsActivePet()) {
+    protected function onButtonClick(_arg_1:MouseEvent):void {
+        if (this.isPanelPetSameAsActivePet()) {
             this.deactivatePet.dispatch(this.view.petVO.getID());
-         } else {
+        }
+        else {
             this.activatePet.dispatch(this.view.petVO.getID());
-         }
-      }
+        }
+    }
 
-      private function onAddToolTip(param1:ToolTip) : void {
-         this.showToolTip.dispatch(param1);
-      }
+    private function onAddToolTip(_arg_1:ToolTip):void {
+        this.showToolTip.dispatch(_arg_1);
+    }
 
-      private function isPanelPetSameAsActivePet() : Boolean {
-         return !!this.petModel.getActivePet()?this.petModel.getActivePet().getID() == this.view.petVO.getID():false;
-      }
-   }
+    private function isPanelPetSameAsActivePet():Boolean {
+        return (((this.petModel.getActivePet()) ? (this.petModel.getActivePet().getID() == this.view.petVO.getID()) : false));
+    }
+
+
 }
+}//package kabam.rotmg.pets.view.components

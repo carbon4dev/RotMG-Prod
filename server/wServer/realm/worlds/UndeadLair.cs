@@ -11,18 +11,15 @@ namespace wServer.realm.worlds
         public UndeadLair()
         {
             Name = "Undead Lair";
-            ClientWorldName = "Undead Lair";
+            ClientWorldName = "dungeons.Undead_Lair";
             Dungeon = true;
-            Background = 3;
+            Background = 0;
             AllowTeleport = true;
-            SetMusic("undeadlair");
         }
-
-        public override bool NeedsPortalKey => true;
 
         protected override void Init()
         {
-            LoadMap("wServer.realm.worlds.maps.UDL2.wmap", MapType.Wmap);
+            LoadMap("wServer.realm.worlds.maps.UDL1.wmap", MapType.Wmap);
         }
 
         public override World GetInstance(Client psr)

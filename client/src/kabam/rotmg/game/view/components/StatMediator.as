@@ -1,34 +1,33 @@
-package kabam.rotmg.game.view.components {
+﻿package kabam.rotmg.game.view.components {
 import flash.events.MouseEvent;
 
 import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class StatMediator extends Mediator {
 
-      [Inject]
-      public var view:StatView;
+    [Inject]
+    public var view:StatView;
 
-      public function StatMediator() {
-         super();
-      }
 
-      override public function initialize() : void {
-         this.view.mouseOut.add(this.onMouseOut);
-         this.view.mouseOver.add(this.onMouseOver);
-      }
+    override public function initialize():void {
+        this.view.mouseOut.add(this.onMouseOut);
+        this.view.mouseOver.add(this.onMouseOver);
+    }
 
-      override public function destroy() : void {
-         this.view.mouseOut.remove(this.onMouseOut);
-         this.view.mouseOver.remove(this.onMouseOver);
-         this.view.removeTooltip();
-      }
+    override public function destroy():void {
+        this.view.mouseOut.remove(this.onMouseOut);
+        this.view.mouseOver.remove(this.onMouseOver);
+        this.view.removeTooltip();
+    }
 
-      private function onMouseOver(param1:MouseEvent) : void {
-         this.view.addTooltip();
-      }
+    private function onMouseOver(_arg_1:MouseEvent):void {
+        this.view.addTooltip();
+    }
 
-      private function onMouseOut(param1:MouseEvent) : void {
-         this.view.removeTooltip();
-      }
-   }
+    private function onMouseOut(_arg_1:MouseEvent):void {
+        this.view.removeTooltip();
+    }
+
+
 }
+}//package kabam.rotmg.game.view.components

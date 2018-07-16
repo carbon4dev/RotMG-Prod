@@ -1,4 +1,4 @@
-package kabam.rotmg.pets.view.dialogs.evolving {
+﻿package kabam.rotmg.pets.view.dialogs.evolving {
 import flash.display.DisplayObject;
 import flash.display.Sprite;
 
@@ -12,63 +12,58 @@ import org.swiftsuspenders.Injector;
 
 public class EvolveAnimation extends Sprite {
 
-      [Inject]
-      public var petIconFactory:PetIconFactory;
+    public const background:DisplayObject = new EmbeddedAssets.EvolveBackground();
+    public const backgroundMask:DisplayObject = new EmbeddedAssets.EvolveBackground();
 
-      [Inject]
-      public var injector:Injector;
+    [Inject]
+    public var petIconFactory:PetIconFactory;
+    [Inject]
+    public var injector:Injector;
+    [Inject]
+    public var transition:EvolveTransition;
+    public var initialPet:PetIcon;
+    public var evolvedPet:EvolvedPet;
+    private var evolvePetInfo:EvolvePetInfo;
 
-      [Inject]
-      public var transition:EvolveTransition;
+    public function EvolveAnimation() {
+        addChild(this.background);
+        addChild(this.backgroundMask);
+    }
 
-      public const background:DisplayObject = new EmbeddedAssets.EvolveBackground();
+    public function setEvolvedPets(_arg_1:EvolvePetInfo):void {
+        this.petIconFactory.outlineSize = 6;
+        this.evolvePetInfo = _arg_1;
+        this.addInitialPet(_arg_1.initialPet);
+        this.makeEvolvedPet(_arg_1.finalPet);
+        addChild(this.transition);
+        this.transition.opaqueReached.addOnce(this.onOpaque);
+        this.transition.play();
+    }
 
-      public const backgroundMask:DisplayObject = new EmbeddedAssets.EvolveBackground();
+    public function getPetInfo():EvolvePetInfo {
+        return (this.evolvePetInfo);
+    }
 
-      public var initialPet:PetIcon;
+    private function makeEvolvedPet(_arg_1:PetVO):void {
+        this.evolvedPet = this.injector.getInstance(EvolvedPet);
+        this.evolvedPet.setPet(_arg_1);
+        this.evolvedPet.mask = this.backgroundMask;
+        this.evolvedPet.x = (this.background.width / 2);
+        this.evolvedPet.y = (this.background.height / 2);
+    }
 
-      public var evolvedPet:EvolvedPet;
+    private function addInitialPet(_arg_1:PetVO):void {
+        this.initialPet = this.petIconFactory.create(_arg_1, 100);
+        this.initialPet.x = ((this.background.width - this.initialPet.width) / 2);
+        this.initialPet.y = ((this.background.height - this.initialPet.height) / 2);
+        addChild(this.initialPet);
+    }
 
-      private var evolvePetInfo:EvolvePetInfo;
+    private function onOpaque():void {
+        removeChild(this.initialPet);
+        addChildAt(this.evolvedPet, getChildIndex(this.transition));
+    }
 
-      public function EvolveAnimation() {
-         super();
-         addChild(this.background);
-         addChild(this.backgroundMask);
-      }
 
-      public function setEvolvedPets(param1:EvolvePetInfo) : void {
-         this.petIconFactory.outlineSize = 6;
-         this.evolvePetInfo = param1;
-         this.addInitialPet(param1.initialPet);
-         this.makeEvolvedPet(param1.finalPet);
-         addChild(this.transition);
-         this.transition.opaqueReached.addOnce(this.onOpaque);
-         this.transition.play();
-      }
-
-      public function getPetInfo() : EvolvePetInfo {
-         return this.evolvePetInfo;
-      }
-
-      private function makeEvolvedPet(param1:PetVO) : void {
-         this.evolvedPet = this.injector.getInstance(EvolvedPet);
-         this.evolvedPet.setPet(param1);
-         this.evolvedPet.mask = this.backgroundMask;
-         this.evolvedPet.x = this.background.width / 2;
-         this.evolvedPet.y = this.background.height / 2;
-      }
-
-      private function addInitialPet(param1:PetVO) : void {
-         this.initialPet = this.petIconFactory.create(param1,100);
-         this.initialPet.x = (this.background.width - this.initialPet.width) / 2;
-         this.initialPet.y = (this.background.height - this.initialPet.height) / 2;
-         addChild(this.initialPet);
-      }
-
-      private function onOpaque() : void {
-         removeChild(this.initialPet);
-         addChildAt(this.evolvedPet,getChildIndex(this.transition));
-      }
-   }
 }
+}//package kabam.rotmg.pets.view.dialogs.evolving

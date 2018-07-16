@@ -1,16 +1,9 @@
-// Decompiled by AS3 Sorcerer 1.40
-// http://www.as3sorcerer.com/
+﻿package kabam.lib.net.api {
+public interface MessageMap {
 
-//kabam.lib.net.api.MessageMap
+    function map(_arg_1:int):MessageMapping;
 
-package kabam.lib.net.api
-{
-    public interface MessageMap 
-    {
+    function unmap(_arg_1:int):void;
 
-        function map(_arg1:int):MessageMapping;
-        function unmap(_arg1:int):void;
-
-    }
+}
 }//package kabam.lib.net.api
-

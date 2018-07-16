@@ -1,75 +1,73 @@
-package kabam.lib.loopedprocs {
+﻿package kabam.lib.loopedprocs {
 import flash.utils.Dictionary;
 import flash.utils.getTimer;
 
 public class LoopedProcess {
 
-      private static var maxId:uint;
+    private static var maxId:uint;
+    private static var loopProcs:Dictionary = new Dictionary();
 
-      private static var loopProcs:Dictionary = new Dictionary();
+    public var id:uint;
+    public var paused:Boolean;
+    public var interval:uint;
+    public var lastRun:int;
 
-      public var id:uint;
+    public function LoopedProcess(_arg_1:uint) {
+        this.interval = _arg_1;
+    }
 
-      public var paused:Boolean;
+    public static function addProcess(_arg_1:LoopedProcess):uint {
+        if (loopProcs[_arg_1.id] == _arg_1) {
+            return (_arg_1.id);
+        }
+        var _local_2 = ++maxId;
+        loopProcs[_local_2] = _arg_1;
+        _arg_1.lastRun = getTimer();
+        return (maxId);
+    }
 
-      public var interval:uint;
-
-      public var lastRun:int;
-
-      public function LoopedProcess(param1:uint) {
-         super();
-         this.interval = param1;
-      }
-
-      public static function addProcess(param1:LoopedProcess) : uint {
-         if(loopProcs[param1.id] == param1) {
-            return param1.id;
-         }
-         var _local2:* = ++maxId;
-         loopProcs[_local2] = param1;
-         param1.lastRun = getTimer();
-         return maxId;
-      }
-
-      public static function runProcesses(param1:int) : void {
-         var _local2:LoopedProcess;
-         var _local3:int = 0;
-         for each(_local2 in loopProcs) {
-            if(!_local2.paused) {
-               _local3 = param1 - _local2.lastRun;
-               if(_local3 >= _local2.interval) {
-                  _local2.lastRun = param1;
-                  _local2.run();
-               }
+    public static function runProcesses(_arg_1:int):void {
+        var _local_2:LoopedProcess;
+        var _local_3:int;
+        for each (_local_2 in loopProcs) {
+            if (!_local_2.paused) {
+                _local_3 = (_arg_1 - _local_2.lastRun);
+                if (_local_3 >= _local_2.interval) {
+                    _local_2.lastRun = _arg_1;
+                    _local_2.run();
+                }
             }
-         }
-      }
+        }
+    }
 
-      public static function destroyProcess(param1:LoopedProcess) : void {
-         delete loopProcs[param1.id];
-         param1.onDestroyed();
-      }
+    public static function destroyProcess(_arg_1:LoopedProcess):void {
+        delete loopProcs[_arg_1.id];
+        _arg_1.onDestroyed();
+    }
 
-      public static function destroyAll() : void {
-         var _local1:LoopedProcess;
-         for each(_local1 in loopProcs) {
-            _local1.destroy();
-         }
-         loopProcs = new Dictionary();
-      }
+    public static function destroyAll():void {
+        var _local_1:LoopedProcess;
+        for each (_local_1 in loopProcs) {
+            _local_1.destroy();
+        }
+        loopProcs = new Dictionary();
+    }
 
-      public final function add() : void {
-         addProcess(this);
-      }
 
-      public final function destroy() : void {
-         destroyProcess(this);
-      }
+    final public function add():void {
+        addProcess(this);
+    }
 
-      protected function run() : void {
-      }
+    final public function destroy():void {
+        destroyProcess(this);
+    }
 
-      protected function onDestroyed() : void {
-      }
-   }
+    protected function run():void {
+    }
+
+    protected function onDestroyed():void {
+    }
+
+
 }
+}//package kabam.lib.loopedprocs

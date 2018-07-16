@@ -44,7 +44,6 @@ namespace wServer.logic
                         new HpLessTransition(0.99999, "Solo")
                         ),
                     new State("HugeMob",
-                        new ConditionalEffect(ConditionEffectIndex.Invulnerable),
                         new Taunt("You are many, yet the sum of your years is nothing."),
                         new Spawn("Greater Nature Sprite", 6, 0, 400),
                         new TossObject("Ent", 3, 0, 100000),
@@ -58,11 +57,9 @@ namespace wServer.logic
                         new TossObject("Ent", 10, 30, 100000),
                         new TossObject("Ent", 10, 210, 100000),
                         new TossObject("Ent", 10, 90, 100000),
-                        new TimedTransition(15000, "espera")
-                        //new TimedTransition(5000, "Wait")
+                        new TimedTransition(5000, "Wait")
                         ),
                     new State("Mob",
-                        new ConditionalEffect(ConditionEffectIndex.Invulnerable),
                         new Taunt("Little flies, little flies... we will swat you."),
                         new Spawn("Greater Nature Sprite", 3, 0, 1000),
                         new TossObject("Ent", 3, 0, 100000),
@@ -70,30 +67,21 @@ namespace wServer.logic
                         new TossObject("Ent", 5, 10, 100000),
                         new TossObject("Ent", 6, 190, 100000),
                         new TossObject("Ent", 7, 20, 100000),
-                        new TimedTransition(15000, "espera")
-                        //new TimedTransition(5000, "Wait")
+                        new TimedTransition(5000, "Wait")
                         ),
                     new State("SmallGroup",
-                        new ConditionalEffect(ConditionEffectIndex.Invulnerable),
                         new Taunt("It will be trivial to dispose of you."),
                         new Spawn("Greater Nature Sprite", 1, 1, 100000),
                         new TossObject("Ent", 3, 0, 100000),
                         new TossObject("Ent", 4.5, 180, 100000),
-                        new TimedTransition(15000, "espera")
-                        ),
-                    new State("espera",
-                        new ConditionalEffect(ConditionEffectIndex.Invulnerable),
-                        new Flash(0xFFFFFF, 2, 15),
-                        new Order(50, "Greater Nature Sprite", "Transform"),
-                        new EntityNotExistsTransition("Greater Nature Sprite", 50, "Wait")
+                        new TimedTransition(3000, "Wait")
                         ),
                     new State("Solo",
                         new Taunt("Mmm? Did you say something, mortal?"),
                         new TimedTransition(3000, "Wait")
                         ),
                     new State("Wait",
-                        new Transform("Lich")
-                        //new Transform("Actual Ent Ancient")
+                        new Transform("Actual Ent Ancient")
                         )
                     )
             )
@@ -177,6 +165,7 @@ namespace wServer.logic
                         new Shoot(10, projectileIndex: 9, count: 1),
                         new State("convert_sprites",
                             new ConditionalEffect(ConditionEffectIndex.Invulnerable),
+                            new Order(50, "Greater Nature Sprite", "Transform"),
                             new TimedTransition(2000, "shielded")
                             ),
                         new State("received_armor",
@@ -264,18 +253,11 @@ namespace wServer.logic
                         ),
                     new Decay(60000)
                     ),
-                new MostDamagers(3,
-                    new OnlyOne(
-                        new ItemLoot("Quiver of Thunderstorm", blackbag/5),
-                        new ItemLoot("Quiver of Thunder",whitebag/5)
-                    )
-                ),
-                new MostDamagers(5,
-                    new ItemLoot("Magic Potion", 0.25),
-                    new ItemLoot("Tincture of Life", 0.06),
-                    new ItemLoot("Green Drake Egg", 0.08),
-                    new TierLoot(8, ItemType.Armor, 0.3)
-                    )
+                new ItemLoot("Magic Potion", 0.25),
+                new ItemLoot("Tincture of Life", 0.06),
+                new ItemLoot("Green Drake Egg", 0.08),
+                new ItemLoot("Quiver of Thunder", 0.002),
+                new TierLoot(8, ItemType.Armor, 0.3)
             )
             ;
     }

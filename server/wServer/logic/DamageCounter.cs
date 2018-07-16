@@ -63,6 +63,7 @@ namespace wServer.logic
             }
             return dat.ToArray();
         }
+
         public void Death(RealmTime time)
         {
             if (Corpse != null)
@@ -74,7 +75,6 @@ namespace wServer.logic
             List<Tuple<Player, int>> eligiblePlayers = new List<Tuple<Player, int>>();
             int totalDamage = 0;
             int totalPlayer = 0;
-            float groupExBoost = 0;
             Enemy enemy = (Parent ?? this).enemy;
             foreach (KeyValuePair<Player, int> i in (Parent ?? this).hitters)
             {
@@ -85,31 +85,18 @@ namespace wServer.logic
             }
             if (totalPlayer != 0)
             {
-                //int totalExp = (int)enemy.ObjectDesc.EXP;
-
-                groupExBoost = 1f;
-                if ((totalPlayer > 3) && (totalPlayer <= 5))
-                    groupExBoost = 1.15f;
-                else if ((totalPlayer > 5) && (totalPlayer <= 7))
-                    groupExBoost = 1.2f;
-                else if ((totalPlayer > 7) && (totalPlayer <= 10))
-                    groupExBoost = 1.25f;
-                else if (totalPlayer > 10)
-                    groupExBoost = 1.35f;
-
-                float totalExp = groupExBoost*((float) enemy.ObjectDesc.EXP);
-                float lowerLimit = totalExp;
+                float totalExp = totalPlayer*((float) enemy.ObjectDesc.MaxHP/10f)*(enemy.ObjectDesc.ExpMultiplier ?? 1);
+                float lowerLimit = totalExp/totalPlayer*0.1f;
                 int lvUps = 0;
                 foreach (Tuple<Player, int> i in eligiblePlayers)
                 {
-                    //int groupEXP = totalExp * groupExBoost;
-                    float playerXp = totalExp;
+                    float playerXp = totalExp*i.Item2/totalDamage;
 
-                    float upperLimit = i.Item1.ExperienceGoal + playerXp;
+                    float upperLimit = i.Item1.ExperienceGoal*0.1f;
                     if (i.Item1.Quest == enemy)
-                        upperLimit = i.Item1.ExperienceGoal + playerXp*1.5f;
+                        upperLimit = i.Item1.ExperienceGoal*0.5f;
 
-                    if (playerXp < lowerLimit) playerXp = i.Item1.ExperienceGoal + playerXp;
+                    if (playerXp < lowerLimit) playerXp = lowerLimit;
                     if (playerXp > upperLimit) playerXp = upperLimit;
 
                     bool killer = (Parent ?? this).LastHitter == i.Item1;
@@ -125,74 +112,5 @@ namespace wServer.logic
             if (enemy.Owner is GameWorld)
                 (enemy.Owner as GameWorld).EnemyKilled(enemy, (Parent ?? this).LastHitter);
         }
-
-        //public void Death(RealmTime time)
-        //{
-        //    if (Corpse != null)
-        //    {
-        //        Corpse.Parent = this;
-        //        return;
-        //    }
-
-        //    List<Tuple<Player, int>> eligiblePlayers = new List<Tuple<Player, int>>();
-        //    int totalDamage = 0;
-        //    int totalPlayer = 0;
-        //    Enemy enemy = (Parent ?? this).enemy;
-        //    foreach (KeyValuePair<Player, int> i in (Parent ?? this).hitters)
-        //    {
-        //        if (i.Key.Owner == null) continue;
-        //        totalDamage += i.Value;
-        //        totalPlayer++;
-        //        eligiblePlayers.Add(new Tuple<Player, int>(i.Key, i.Value));
-        //    }
-        //    if (totalPlayer != 0)
-        //    {
-        //        int totalExp = (int) enemy.ObjectDesc.EXP;
-        //        int groupExBoost = 1;
-
-        //        if(totalPlayer <= 3)
-        //            groupExBoost = 1 + 10/100;
-        //        else if((totalPlayer > 3) && (totalPlayer <= 5))
-        //            groupExBoost = 1 + 15/100;
-        //        else if((totalPlayer > 5) && (totalPlayer <= 7))
-        //            groupExBoost = 1 + 20/100;
-        //        else if((totalPlayer > 7) && (totalPlayer <= 10))
-        //            groupExBoost = 1 + 25/100;
-        //        else if(totalPlayer > 10)
-        //            groupExBoost = 1 + 35/100;
-
-        //        //float totalExp = totalPlayer*((float) enemy.ObjectDesc.MaxHP/10f)*(enemy.ObjectDesc.ExpMultiplier ?? 1);
-        //        //float lowerLimit = totalExp/totalPlayer*0.1f;
-        //        int lvUps = 0;
-        //        foreach (Tuple<Player, int> i in eligiblePlayers)
-        //        {
-        //            int groupEXP = totalExp*groupExBoost;
-
-        //            if(i.Item1.Quest == enemy)
-        //                i.Item1.Experience += (groupEXP + groupEXP/2);
-        //            else
-        //                i.Item1.Experience += groupEXP;
-        //            //float playerXp = totalExp*i.Item2/totalDamage;
-
-        //            //float upperLimit = i.Item1.ExperienceGoal*0.1f;
-        //            //if (i.Item1.Quest == enemy)
-        //            //    upperLimit = i.Item1.ExperienceGoal*0.5f;
-
-        //            //if (playerXp < lowerLimit) playerXp = lowerLimit;
-        //            //if (playerXp > upperLimit) playerXp = upperLimit;
-
-        //            //bool killer = (Parent ?? this).LastHitter == i.Item1;
-        //            //if (i.Item1.EnemyKilled(
-        //            //    enemy,
-        //            //    (int) playerXp,
-        //            //    killer) && !killer)
-        //            lvUps++;
-        //        }
-        //        (Parent ?? this).LastHitter.FameCounter.LevelUpAssist(lvUps);
-        //    }
-
-        //    if (enemy.Owner is GameWorld)
-        //        (enemy.Owner as GameWorld).EnemyKilled(enemy, (Parent ?? this).LastHitter);
-        //}
     }
 }

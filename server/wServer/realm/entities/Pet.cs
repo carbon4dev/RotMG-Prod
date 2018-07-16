@@ -232,7 +232,7 @@ namespace wServer.realm.entities
                         item.Abilities[2].Points = 2080;
                         break;
                     case 4:
-                        item.MaxAbilityPower = 125;
+                        item.MaxAbilityPower = 100;
                         item.Abilities[0].Power = 90;
                         item.Abilities[0].Points = 235610;
                         item.Abilities[1].Power = 70;
@@ -281,15 +281,15 @@ namespace wServer.realm.entities
         {
             List<Ability> abilities = new List<Ability>()
             {
-                Ability.AttackClose,    //402
-                Ability.AttackFar,      //405
-                Ability.AttackMid,      //404
-                Ability.Decoy,          //410
-                Ability.Electric,       //406
-                Ability.Heal,           //407
-                Ability.MagicHeal,      //408
-                Ability.RisingFury,     //411
-                Ability.Savage          //409
+                Ability.AttackClose,
+                Ability.AttackFar,
+                Ability.AttackMid,
+                Ability.Decoy,
+                Ability.Electric,
+                Ability.Heal,
+                Ability.MagicHeal,
+                Ability.RisingFury,
+                Ability.Savage
             };
 
             Random rand = new Random((int)DateTime.Now.Ticks);

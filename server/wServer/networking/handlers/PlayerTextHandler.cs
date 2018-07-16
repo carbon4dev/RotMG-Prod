@@ -4,7 +4,6 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using wServer.networking.cliPackets;
-using wServer.realm;
 
 #endregion
 
@@ -19,8 +18,8 @@ namespace wServer.networking.handlers
 
         protected override void HandlePacket(Client client, PlayerTextPacket packet)
         {
-            RealmTime t = new RealmTime();
-            //client.Manager.Logic.AddPendingAction(t =>{
+            client.Manager.Logic.AddPendingAction(t =>
+            {
                 if (client.Player.Owner == null) return;
 
                 if (packet.Text[0] == '/')
@@ -32,12 +31,17 @@ namespace wServer.networking.handlers
                         client.Player.SendInfo("{\"key\":\"server.muted\"}");
                         return;
                     }
+                    if (!client.Player.NameChosen)
+                    {
+                        client.Player.SendInfo("{\"key\":\"server.must_be_named\"}");
+                        return;
+                    }
                     if (!String.IsNullOrWhiteSpace(packet.Text))
                         client.Player.Manager.Chat.Say(client.Player, packet.Text);
                     else
                         client.Player.SendInfo("{\"key\":\"server.invalid_chars\"}");
                 }
-            //});
+            });
         }
     }
 }

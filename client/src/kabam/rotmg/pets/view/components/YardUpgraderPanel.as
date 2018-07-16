@@ -1,5 +1,5 @@
-package kabam.rotmg.pets.view.components {
-import com.company.assembleegameclient.LOEBUILD_c8d46d341bea4fd5bff866a65ff8aea9.GameSprite;
+﻿package kabam.rotmg.pets.view.components {
+import com.company.assembleegameclient.game.GameSprite;
 import com.company.assembleegameclient.ui.DeprecatedTextButton;
 import com.company.assembleegameclient.ui.panels.Panel;
 
@@ -11,73 +11,70 @@ import kabam.rotmg.text.view.stringBuilder.LineBuilder;
 
 public class YardUpgraderPanel extends Panel {
 
-      private const titleText:TextFieldDisplayConcrete = PetsViewAssetFactory.returnTextfield(16777215,16,true);
+    private const titleText:TextFieldDisplayConcrete = PetsViewAssetFactory.returnTextfield(0xFFFFFF, 16, true);
 
-      private var icon:Bitmap;
+    private var icon:Bitmap;
+    var infoButton:DeprecatedTextButton;
+    var upgradeYardButton:DeprecatedTextButton;
+    private var title:String = "Pets.caretakerPanelTitle";
+    private var infoButtonString:String = "Pets.caretakerPanelButtonInfo";
+    private var upgradeYardButtonString:String = "Pets.caretakerPanelButtonUpgrade";
+    var type:uint;
 
-      var infoButton:DeprecatedTextButton;
+    public function YardUpgraderPanel(_arg_1:GameSprite, _arg_2:uint) {
+        this.type = _arg_2;
+        super(_arg_1);
+    }
 
-      var upgradeYardButton:DeprecatedTextButton;
+    private function handleInfoButton():void {
+        this.infoButton = new DeprecatedTextButton(16, this.infoButtonString);
+        this.infoButton.textChanged.addOnce(this.alignButton);
+        addChild(this.infoButton);
+    }
 
-      private var title:String = "Pets.caretakerPanelTitle";
+    private function handleTitleText():void {
+        this.icon.x = -25;
+        this.icon.y = -36;
+        this.titleText.setStringBuilder(new LineBuilder().setParams(this.title));
+        this.titleText.x = 48;
+        this.titleText.y = 28;
+        addChild(this.titleText);
+    }
 
-      private var infoButtonString:String = "Pets.caretakerPanelButtonInfo";
+    private function handleUpgradeYardButton():void {
+        this.upgradeYardButton = new DeprecatedTextButton(16, this.upgradeYardButtonString);
+        this.upgradeYardButton.textChanged.addOnce(this.alignButton);
+        addChild(this.upgradeYardButton);
+    }
 
-      private var upgradeYardButtonString:String = "Pets.caretakerPanelButtonUpgrade";
-
-      var type:uint;
-
-      public function YardUpgraderPanel(param1:GameSprite, param2:uint) {
-         this.type = param2;
-         super(param1);
-      }
-
-      private function handleInfoButton() : void {
-         this.infoButton = new DeprecatedTextButton(16,this.infoButtonString);
-         this.infoButton.textChanged.addOnce(this.alignButton);
-         addChild(this.infoButton);
-      }
-
-      private function handleTitleText() : void {
-         this.icon.x = -25;
-         this.icon.y = -36;
-         this.titleText.setStringBuilder(new LineBuilder().setParams(this.title));
-         this.titleText.x = 48;
-         this.titleText.y = 28;
-         addChild(this.titleText);
-      }
-
-      private function handleUpgradeYardButton() : void {
-         this.upgradeYardButton = new DeprecatedTextButton(16,this.upgradeYardButtonString);
-         this.upgradeYardButton.textChanged.addOnce(this.alignButton);
-         addChild(this.upgradeYardButton);
-      }
-
-      public function init(param1:Boolean) : void {
-         this.handleIcon();
-         this.handleTitleText();
-         this.handleInfoButton();
-         if(param1) {
+    public function init(_arg_1:Boolean):void {
+        this.handleIcon();
+        this.handleTitleText();
+        this.handleInfoButton();
+        if (_arg_1) {
             this.handleUpgradeYardButton();
-         }
-      }
+        }
+    }
 
-      private function handleIcon() : void {
-         this.icon = PetsViewAssetFactory.returnCaretakerBitmap(this.type);
-         addChild(this.icon);
-         this.icon.x = 5;
-      }
+    private function handleIcon():void {
+        this.icon = PetsViewAssetFactory.returnCaretakerBitmap(this.type);
+        addChild(this.icon);
+        this.icon.x = 5;
+    }
 
-      private function alignButton() : void {
-         if(Boolean(this.upgradeYardButton) && Boolean(contains(this.upgradeYardButton))) {
-            this.upgradeYardButton.x = WIDTH / 4 * 3 - this.upgradeYardButton.width / 2;
-            this.upgradeYardButton.y = HEIGHT - this.upgradeYardButton.height - 4;
-            this.infoButton.x = WIDTH / 4 * 1 - this.infoButton.width / 2;
-            this.infoButton.y = HEIGHT - this.infoButton.height - 4;
-         } else {
-            this.infoButton.x = (WIDTH - this.infoButton.width) / 2;
-            this.infoButton.y = HEIGHT - this.infoButton.height - 4;
-         }
-      }
-   }
+    private function alignButton():void {
+        if (((this.upgradeYardButton) && (contains(this.upgradeYardButton)))) {
+            this.upgradeYardButton.x = (((WIDTH / 4) * 3) - (this.upgradeYardButton.width / 2));
+            this.upgradeYardButton.y = ((HEIGHT - this.upgradeYardButton.height) - 4);
+            this.infoButton.x = (((WIDTH / 4) * 1) - (this.infoButton.width / 2));
+            this.infoButton.y = ((HEIGHT - this.infoButton.height) - 4);
+        }
+        else {
+            this.infoButton.x = ((WIDTH - this.infoButton.width) / 2);
+            this.infoButton.y = ((HEIGHT - this.infoButton.height) - 4);
+        }
+    }
+
+
 }
+}//package kabam.rotmg.pets.view.components

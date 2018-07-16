@@ -2,7 +2,6 @@
 
 using wServer.logic.behaviors;
 using wServer.logic.transitions;
-using wServer.logic.loot;
 
 #endregion
 
@@ -908,21 +907,12 @@ namespace wServer.logic
                             new ConditionalEffect(ConditionEffectIndex.Invulnerable),
                             new State("BOOM BOOM BOOM",
                                 new Taunt("You shall be food for the ether. Blobs, attack!"),
-                        new TossObject("shtrs Blobomb", 4, 0, coolDown: 9999999),
-                        new InvisiToss("shtrs Blobomb", 4, 45, coolDown: 9999999),
-                        new InvisiToss("shtrs Blobomb", 4, 90, coolDown: 9999999),
-                        new InvisiToss("shtrs Blobomb", 4, 135, coolDown: 9999999),
-                        new InvisiToss("shtrs Blobomb", 4, 180, coolDown: 9999999),
-                        new InvisiToss("shtrs Blobomb", 4, 225, coolDown: 9999999),
-                        new InvisiToss("shtrs Blobomb", 4, 270, coolDown: 9999999),
-                        new InvisiToss("shtrs Blobomb", 4, 315, coolDown: 9999999),
-                        new InvisiToss("shtrs Blobomb", 5, 245, coolDown: 3000),
-                        new InvisiToss("shtrs Blobomb", 5, 100, coolDown: 3000),
-                        new InvisiToss("shtrs Blobomb", 5, 300, coolDown: 6000),
-                                new TimedTransition(12000, "stars after blo")
+                                new Order(50, "shtrs blobomb maker", "blobombs avatar"),
+                                new TimedTransition(6000, "stars after blo")
                                 )
                             ),
                     new State("stars after blo",
+                        new Order(50, "shtrs blobomb maker", "AVATAR HELP!"),
                         new Taunt("I WILL NOT FALL!"),
                         new Taunt("BURN!!"),
                         new HpLessTransition(.2, "Pillars"),
@@ -1528,52 +1518,13 @@ namespace wServer.logic
                             ),
                         new State("suicide",
                             new Suicide()
-                         )
-                      )       
-                   )
-                ),
-                
-                /*
-                new MostDamagers(5,
-                    LootTemplates.StatIncreasePotionsLoot()
-                ),
-                new Threshold(1,
-                    new OnlyOne(
-                        new ItemLoot("Tablet of the King's Avatar", whitebag)
-                        ),
-                    new TierLoot(12, ItemType.Armor, goodloot),
-                    new TierLoot(5, ItemType.Ability, goodloot),
-                    new TierLoot(11, ItemType.Armor, normalloot),
-                    new TierLoot(11, ItemType.Weapon, goodloot),
-                    new TierLoot(10, ItemType.Armor, normalloot),
-                    new TierLoot(10, ItemType.Weapon, goodloot),
-                    new TierLoot(9, ItemType.Armor, mediumloot),
-                    new TierLoot(9, ItemType.Weapon, normalloot)
+                            )
+                        )
+                        )
                     )
-                )
-                */
-
-                 new MostDamagers(5,
-                    LootTemplates.StatIncreasePotionsLoot()
-                ),
-                 new MostDamagers(3,
-                    new OnlyOne(
-                        new ItemLoot("Tablet of the King's Avatar", whitebag),
-                        new ItemLoot("Warden Helmet", whitebag)
-                        ),
-                    new TierLoot(12, ItemType.Armor, goodloot),
-                    new TierLoot(5, ItemType.Ability, goodloot),
-                    new TierLoot(11, ItemType.Armor, normalloot),
-                    new TierLoot(11, ItemType.Weapon, goodloot),
-                    new TierLoot(10, ItemType.Armor, normalloot),
-                    new TierLoot(10, ItemType.Weapon, goodloot),
-                    new TierLoot(9, ItemType.Armor, mediumloot),
-                    new TierLoot(9, ItemType.Weapon, normalloot)
-                     )
             )
             .Init("shtrs shadowmans",
                 new State(
-                    new SpecificHeal(20, 500, "Self", coolDown: 3000), 
                     new ConditionalEffect(ConditionEffectIndex.Armored),
                     new State("shoot1",
                         new Shoot(20, 1, 0, 0, 0),
@@ -1626,21 +1577,21 @@ namespace wServer.logic
                         new Taunt("PROTECT THE AVATAR!"),
                         new ConditionalEffect(ConditionEffectIndex.Invulnerable),
                         new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2, coolDownOffset: 1000),
-                        new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2 * 2, coolDownOffset: 4000),
+                        new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2 *2, coolDownOffset: 4000),
                         new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2, coolDownOffset: 7000),
-                        new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2 * 2, coolDownOffset: 10000),
+                        new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2 *2, coolDownOffset: 10000),
                         new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2, coolDownOffset: 13000),
-                        new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2 * 2, coolDownOffset: 16000),
+                        new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2 *2, coolDownOffset: 16000),
                         new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2, coolDownOffset: 19000),
-                        new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2 * 2, coolDownOffset: 22000),
+                        new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2 *2, coolDownOffset: 22000),
                         new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2, coolDownOffset: 25000),
                         new Shoot(10, 1, 20, angleOffset: 0 / 1, projectileIndex: 1, coolDownOffset: 1000, coolDown: 3000),
-                        new TimedTransition(10000, "preparing")
+                        new TimedTransition(25000, "preparing")
                         ),
                     new State("preparing",
                         new ConditionalEffect(ConditionEffectIndex.Armored),
                         new Flash(0x0D00FF, 0.4, 10),
-                        new TimedTransition(35000, "PROTECT2")
+                        new TimedTransition(15000, "PROTECT2")
                         ),
                     new State("PROTECT2",
                         new ConditionalEffect(ConditionEffectIndex.Invulnerable),
@@ -1676,12 +1627,12 @@ namespace wServer.logic
                         new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2 * 2, coolDownOffset: 32000),
                         new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2, coolDownOffset: 35000),
                         new Shoot(10, 1, 20, angleOffset: 0 / 1, projectileIndex: 1, coolDown: 3000, coolDownOffset: 11000),
-                        new TimedTransition(10000, "preparing")
+                        new TimedTransition(35000, "preparing")
                         ),
                     new State("preparing",
                         new ConditionalEffect(ConditionEffectIndex.Armored),
                         new Flash(0x0D00FF, 0.4, 10),
-                        new TimedTransition(30000, "PROTECT2")
+                        new TimedTransition(10000, "PROTECT2")
                         ),
                     new State("PROTECT2",
                         new ConditionalEffect(ConditionEffectIndex.Invulnerable),
@@ -1716,13 +1667,13 @@ namespace wServer.logic
                         new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2, coolDownOffset: 24000),
                         new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2 * 2, coolDownOffset: 27000),
                         new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2, coolDownOffset: 30000),
-                        new Shoot(10, 1, 20, angleOffset: 0 / 1, projectileIndex: 1, coolDown: 3000, coolDownOffset: 6000),
-                        new TimedTransition(10000, "preparing")
+                        new Shoot(10, 1, 20, angleOffset: 0 / 1, projectileIndex: 1, coolDown: 3000 , coolDownOffset: 6000),
+                        new TimedTransition(30000, "preparing")
                         ),
                     new State("preparing",
                         new ConditionalEffect(ConditionEffectIndex.Armored),
                         new Flash(0x0D00FF, 0.4, 10),
-                        new TimedTransition(35000, "PROTECT2")
+                        new TimedTransition(15000, "PROTECT2")
                         ),
                     new State("PROTECT2",
                         new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2, coolDownOffset: 1000),
@@ -1757,12 +1708,12 @@ namespace wServer.logic
                         new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2 * 2, coolDownOffset: 37000),
                         new Shoot(20, count: 10, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2, coolDownOffset: 40000),
                         new Shoot(10, 1, 20, angleOffset: 0 / 1, projectileIndex: 1, coolDown: 3000, coolDownOffset: 16000),
-                        new TimedTransition(10000, "preparing")
+                        new TimedTransition(40000, "preparing")
                         ),
                     new State("preparing",
                         new ConditionalEffect(ConditionEffectIndex.Armored),
                         new Flash(0x0D00FF, 0.4, 10),
-                        new TimedTransition(30000, "PROTECT2")
+                        new TimedTransition(15000, "PROTECT2")
                         ),
                     new State("PROTECT2",
                         new ConditionalEffect(ConditionEffectIndex.Invulnerable),

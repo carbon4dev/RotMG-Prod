@@ -34,7 +34,6 @@ namespace wServer.networking.handlers
 
                         var g = db.ChangeGuild(p.Client.Account, p.Client.Account.Guild.Id, p.Guild[p.AccountId].Rank, p.Client.Account.Guild.Fame, true);
                         client.Player.Guild.RemoveFromGuild(client.Player, p);
-
                     }
                     else
                     {
@@ -49,7 +48,7 @@ namespace wServer.networking.handlers
                                         return;
 
                                     db.ChangeGuild(acc, acc.Guild.Id, acc.Guild.Rank, acc.Guild.Fame, true);
-                                    client.Player.Guild.Chat(client.Player, client.Player.Name + " removed " + acc.Name + " from " + client.Player.Guild.Name + ".");
+                                    client.Player.Guild.Chat(client.Player, client.Player.Name + " removed " + acc.Name + " from " + client.Player.Guild.Name);
                                 }
                             }
                             catch (Exception e)

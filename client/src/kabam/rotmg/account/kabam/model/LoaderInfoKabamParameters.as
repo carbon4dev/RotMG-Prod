@@ -1,4 +1,4 @@
-package kabam.rotmg.account.kabam.model {
+﻿package kabam.rotmg.account.kabam.model {
 import flash.display.LoaderInfo;
 
 import kabam.lib.json.Base64Decoder;
@@ -8,56 +8,52 @@ import robotlegs.bender.framework.api.ILogger;
 
 public class LoaderInfoKabamParameters implements KabamParameters {
 
-      [Inject]
-      public var info:LoaderInfo;
+    [Inject]
+    public var info:LoaderInfo;
+    [Inject]
+    public var json:JsonParser;
+    [Inject]
+    public var decoder:Base64Decoder;
+    [Inject]
+    public var logger:ILogger;
 
-      [Inject]
-      public var json:JsonParser;
 
-      [Inject]
-      public var decoder:Base64Decoder;
+    public function getSignedRequest():String {
+        return (this.info.parameters.kabam_signed_request);
+    }
 
-      [Inject]
-      public var logger:ILogger;
-
-      public function LoaderInfoKabamParameters() {
-         super();
-      }
-
-      public function getSignedRequest() : String {
-         return this.info.parameters.kabam_signed_request;
-      }
-
-      public function getUserSession() : Object {
-         var signedRequest:String = null;
-         var requestDetails:Array = null;
-         var payload:String = null;
-         var userSession:Object = null;
-         signedRequest = this.getSignedRequest();
-         try {
-            requestDetails = signedRequest.split(".",2);
-            if(requestDetails.length != 2) {
-               throw new Error("Invalid signed request");
+    public function getUserSession():Object {
+        var signedRequest:String;
+        var requestDetails:Array;
+        var payload:String;
+        var userSession:Object;
+        signedRequest = this.getSignedRequest();
+        try {
+            requestDetails = signedRequest.split(".", 2);
+            if (requestDetails.length != 2) {
+                throw (new Error("Invalid signed request"));
             }
             payload = this.base64UrlDecode(requestDetails[1]);
             userSession = this.json.parse(payload);
-         }
-         catch(error:Error) {
-            logger.info("Failed to get user session: " + error.toString() + ", signed request: " + signedRequest);
+        }
+        catch (error:Error) {
+            logger.info(((("Failed to get user session: " + error.toString()) + ", signed request: ") + signedRequest));
             userSession = null;
-         }
-         return userSession;
-      }
+        }
+        return (userSession);
+    }
 
-      protected function base64UrlDecode(param1:String) : String {
-         var _local2:RegExp = new RegExp("-","g");
-         var _local3:RegExp = new RegExp("_","g");
-         var _local4:int = 4 - param1.length % 4;
-         while(_local4--) {
-            param1 = param1 + "=";
-         }
-         param1 = param1.replace(_local2,"+").replace(_local3,"/");
-         return this.decoder.decode(param1);
-      }
-   }
+    protected function base64UrlDecode(_arg_1:String):String {
+        var _local_2:RegExp = /-/g;
+        var _local_3:RegExp = /_/g;
+        var _local_4:int = (4 - (_arg_1.length % 4));
+        while (_local_4--) {
+            _arg_1 = (_arg_1 + "=");
+        }
+        _arg_1 = _arg_1.replace(_local_2, "+").replace(_local_3, "/");
+        return (this.decoder.decode(_arg_1));
+    }
+
+
 }
+}//package kabam.rotmg.account.kabam.model

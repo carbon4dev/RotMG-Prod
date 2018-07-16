@@ -1,4 +1,4 @@
-package kabam.rotmg.pets.controller.reskin {
+﻿package kabam.rotmg.pets.controller.reskin {
 import kabam.rotmg.dialogs.control.OpenDialogSignal;
 import kabam.rotmg.pets.view.PetFormView;
 
@@ -6,15 +6,14 @@ import robotlegs.bender.bundles.mvcs.Command;
 
 public class ReskinPetFlowStartCommand extends Command {
 
-      [Inject]
-      public var openDialog:OpenDialogSignal;
+    [Inject]
+    public var openDialog:OpenDialogSignal;
 
-      public function ReskinPetFlowStartCommand() {
-         super();
-      }
 
-      override public function execute() : void {
-         this.openDialog.dispatch(new PetFormView());
-      }
-   }
+    override public function execute():void {
+        this.openDialog.dispatch(new PetFormView());
+    }
+
+
 }
+}//package kabam.rotmg.pets.controller.reskin

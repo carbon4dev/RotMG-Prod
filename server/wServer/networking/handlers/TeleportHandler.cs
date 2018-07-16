@@ -17,10 +17,9 @@ namespace wServer.networking.handlers
         protected override void HandlePacket(Client client, TeleportPacket packet)
         {
             if (client.Player.Owner == null) return;
-            RealmTime t = new RealmTime();
-            //client.Manager.Logic.AddPendingAction(t =>
-            client.Player.Teleport(t, packet);
-                //PendingPriority.Networking);
+
+            client.Manager.Logic.AddPendingAction(t => client.Player.Teleport(t, packet),
+                PendingPriority.Networking);
         }
     }
 }

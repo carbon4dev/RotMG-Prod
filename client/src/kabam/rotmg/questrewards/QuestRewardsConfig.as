@@ -1,4 +1,4 @@
-package kabam.rotmg.questrewards {
+﻿package kabam.rotmg.questrewards {
 import kabam.rotmg.questrewards.controller.QuestFetchCompleteSignal;
 import kabam.rotmg.questrewards.controller.QuestRedeemCompleteSignal;
 import kabam.rotmg.questrewards.view.QuestRewardsContainer;
@@ -15,27 +15,23 @@ import robotlegs.bender.framework.api.IConfig;
 
 public class QuestRewardsConfig implements IConfig {
 
-      [Inject]
-      public var injector:Injector;
+    [Inject]
+    public var injector:Injector;
+    [Inject]
+    public var mediatorMap:IMediatorMap;
+    [Inject]
+    public var commandMap:ISignalCommandMap;
+    [Inject]
+    public var commandCenter:ICommandCenter;
 
-      [Inject]
-      public var mediatorMap:IMediatorMap;
 
-      [Inject]
-      public var commandMap:ISignalCommandMap;
+    public function configure():void {
+        this.mediatorMap.map(QuestRewardsPanel).toMediator(QuestRewardsPanelMediator);
+        this.mediatorMap.map(QuestRewardsContainer).toMediator(QuestRewardsMediator);
+        this.injector.map(QuestFetchCompleteSignal).asSingleton();
+        this.injector.map(QuestRedeemCompleteSignal).asSingleton();
+    }
 
-      [Inject]
-      public var commandCenter:ICommandCenter;
 
-      public function QuestRewardsConfig() {
-         super();
-      }
-
-      public function configure() : void {
-         this.mediatorMap.map(QuestRewardsPanel).toMediator(QuestRewardsPanelMediator);
-         this.mediatorMap.map(QuestRewardsContainer).toMediator(QuestRewardsMediator);
-         this.injector.map(QuestFetchCompleteSignal).asSingleton();
-         this.injector.map(QuestRedeemCompleteSignal).asSingleton();
-      }
-   }
 }
+}//package kabam.rotmg.questrewards

@@ -52,9 +52,9 @@ namespace wServer.realm
                 {
                     cb(world, time);
                 }
-                catch// (Exception ex)
+                catch (Exception ex)
                 {
-                    //log.Error(ex);
+                    log.Error(ex);
                 }
                 return true;
             }

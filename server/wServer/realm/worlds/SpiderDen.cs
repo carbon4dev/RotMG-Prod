@@ -11,15 +11,11 @@ namespace wServer.realm.worlds
         public SpiderDen()
         {
             Name = "Spider Den";
-            ClientWorldName = "Spider Den";
+            ClientWorldName = "dungeons.Spider_Den";
             Background = 0;
-            Dungeon = true;
             Difficulty = 2;
             AllowTeleport = true;
-            SetMusic("spiderden");
         }
-
-        public override bool NeedsPortalKey => true;
 
         protected override void Init()
         {

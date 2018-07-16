@@ -1,12 +1,12 @@
+﻿//Created by Action Script Viewer - http://www.buraks.com/asv
 package kabam.rotmg.text.model {
-import mx.core.FontAsset;
+import mx.core.*;
 
-[Embed(source="MyriadPro.ttf", fontName="Myriad Pro", mimeType="application/x-font", embedAsCFF="false")]
-
+[Embed(source="FontModel_MyriadPro.swf", symbol="kabam.rotmg.text.model.FontModel_MyriadPro")]
 public class FontModel_MyriadPro extends FontAsset {
+    public function FontModel_MyriadPro() {
+        super();
 
-      public function FontModel_MyriadPro() {
-         super();
-      }
-   }
+    }
 }
+}//package kabam.rotmg.text.model

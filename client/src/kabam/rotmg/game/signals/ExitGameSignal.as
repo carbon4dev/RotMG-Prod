@@ -1,10 +1,8 @@
-package kabam.rotmg.game.signals {
+﻿package kabam.rotmg.game.signals {
 import org.osflash.signals.Signal;
 
 public class ExitGameSignal extends Signal {
 
-      public function ExitGameSignal() {
-         super();
-      }
-   }
+
 }
+}//package kabam.rotmg.game.signals

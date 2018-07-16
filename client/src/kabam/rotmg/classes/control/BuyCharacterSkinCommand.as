@@ -1,4 +1,4 @@
-package kabam.rotmg.classes.control {
+﻿package kabam.rotmg.classes.control {
 import kabam.lib.tasks.TaskMonitor;
 import kabam.rotmg.classes.model.CharacterSkin;
 import kabam.rotmg.classes.model.CharacterSkinState;
@@ -9,54 +9,50 @@ import kabam.rotmg.ui.view.NotEnoughGoldDialog;
 
 public class BuyCharacterSkinCommand {
 
-      [Inject]
-      public var skin:CharacterSkin;
+    [Inject]
+    public var skin:CharacterSkin;
+    [Inject]
+    public var model:PlayerModel;
+    [Inject]
+    public var task:BuySkinTask;
+    [Inject]
+    public var monitor:TaskMonitor;
+    [Inject]
+    public var openDialog:OpenDialogSignal;
 
-      [Inject]
-      public var model:PlayerModel;
 
-      [Inject]
-      public var task:BuySkinTask;
-
-      [Inject]
-      public var monitor:TaskMonitor;
-
-      [Inject]
-      public var openDialog:OpenDialogSignal;
-
-      public function BuyCharacterSkinCommand() {
-         super();
-      }
-
-      public function execute() : void {
-         if(this.isSkinPurchasable()) {
+    public function execute():void {
+        if (this.isSkinPurchasable()) {
             this.enterPurchaseFlow();
-         }
-      }
+        }
+    }
 
-      private function enterPurchaseFlow() : void {
-         if(this.isSkinAffordable()) {
+    private function enterPurchaseFlow():void {
+        if (this.isSkinAffordable()) {
             this.purchaseSkin();
-         } else {
+        }
+        else {
             this.enterGetCreditsFlow();
-         }
-      }
+        }
+    }
 
-      private function isSkinPurchasable() : Boolean {
-         return this.skin.getState() == CharacterSkinState.PURCHASABLE;
-      }
+    private function isSkinPurchasable():Boolean {
+        return ((this.skin.getState() == CharacterSkinState.PURCHASABLE));
+    }
 
-      private function isSkinAffordable() : Boolean {
-         return this.model.getCredits() >= this.skin.cost;
-      }
+    private function isSkinAffordable():Boolean {
+        return ((this.model.getCredits() >= this.skin.cost));
+    }
 
-      private function purchaseSkin() : void {
-         this.monitor.add(this.task);
-         this.task.start();
-      }
+    private function purchaseSkin():void {
+        this.monitor.add(this.task);
+        this.task.start();
+    }
 
-      private function enterGetCreditsFlow() : void {
-         this.openDialog.dispatch(new NotEnoughGoldDialog());
-      }
-   }
+    private function enterGetCreditsFlow():void {
+        this.openDialog.dispatch(new NotEnoughGoldDialog());
+    }
+
+
 }
+}//package kabam.rotmg.classes.control

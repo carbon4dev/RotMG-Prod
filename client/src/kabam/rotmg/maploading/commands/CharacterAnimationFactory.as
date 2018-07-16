@@ -1,5 +1,6 @@
-package kabam.rotmg.maploading.commands {
-import com.company.assembleegameclient.LOEBUILD_1f4c42c309fe6bc45253d598cfdf9b99.LOEBUILD_7ebef6bdf3535c86294f666e62e89578;
+﻿package kabam.rotmg.maploading.commands {
+import com.company.assembleegameclient.appengine.SavedCharacter;
+import com.company.assembleegameclient.parameters.Parameters;
 
 import kabam.rotmg.assets.model.Animation;
 import kabam.rotmg.assets.services.CharacterFactory;
@@ -10,44 +11,37 @@ import kabam.rotmg.core.model.PlayerModel;
 
 public class CharacterAnimationFactory {
 
-      [Inject]
-      public var playerModel:PlayerModel;
+    [Inject]
+    public var playerModel:PlayerModel;
+    [Inject]
+    public var factory:CharacterFactory;
+    [Inject]
+    public var classesModel:ClassesModel;
+    private var currentChar:SavedCharacter;
+    private var characterClass:CharacterClass;
+    private var skin:CharacterSkin;
+    private var tex2:int;
+    private var tex1:int;
 
-      [Inject]
-      public var factory:CharacterFactory;
 
-      [Inject]
-      public var classesModel:ClassesModel;
+    public function make():Animation {
+        this.currentChar = this.playerModel.getCharacterById(this.playerModel.currentCharId);
+        this.characterClass = ((this.currentChar) ? this.getCurrentCharacterClass() : this.getDefaultCharacterClass());
+        this.skin = this.characterClass.skins.getSelectedSkin();
+        this.tex1 = ((this.currentChar) ? this.currentChar.tex1() : 0);
+        this.tex2 = ((this.currentChar) ? this.currentChar.tex2() : 0);
+        var _local_1:int = (((Parameters.skinTypes16.indexOf(this.skin.id)) != -1) ? 70 : 100);
+        return (this.factory.makeWalkingIcon(this.skin.template, _local_1, this.tex1, this.tex2));
+    }
 
-      private var currentChar:LOEBUILD_7ebef6bdf3535c86294f666e62e89578;
+    private function getDefaultCharacterClass():CharacterClass {
+        return (this.classesModel.getSelected());
+    }
 
-      private var characterClass:CharacterClass;
+    private function getCurrentCharacterClass():CharacterClass {
+        return (this.classesModel.getCharacterClass(this.currentChar.objectType()));
+    }
 
-      private var skin:CharacterSkin;
 
-      private var tex2:int;
-
-      private var tex1:int;
-
-      public function CharacterAnimationFactory() {
-         super();
-      }
-
-      public function make() : Animation {
-         this.currentChar = this.playerModel.getCharacterById(this.playerModel.currentCharId);
-         this.characterClass = !!this.currentChar?this.getCurrentCharacterClass():this.getDefaultCharacterClass();
-         this.skin = this.characterClass.skins.getSelectedSkin();
-         this.tex1 = !!this.currentChar?int(this.currentChar.tex1()):0;
-         this.tex2 = !!this.currentChar?int(this.currentChar.tex2()):0;
-         return this.factory.makeWalkingIcon(this.skin.template,100,this.tex1,this.tex2);
-      }
-
-      private function getDefaultCharacterClass() : CharacterClass {
-         return this.classesModel.getSelected();
-      }
-
-      private function getCurrentCharacterClass() : CharacterClass {
-         return this.classesModel.getCharacterClass(this.currentChar.objectType());
-      }
-   }
 }
+}//package kabam.rotmg.maploading.commands

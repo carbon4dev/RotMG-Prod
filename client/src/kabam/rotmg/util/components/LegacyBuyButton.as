@@ -1,4 +1,4 @@
-package kabam.rotmg.util.components {
+﻿package kabam.rotmg.util.components {
 import com.company.assembleegameclient.util.Currency;
 import com.company.util.GraphicsUtil;
 import com.company.util.MoreColorUtil;
@@ -26,220 +26,200 @@ import kabam.rotmg.util.components.api.BuyButton;
 
 public class LegacyBuyButton extends BuyButton {
 
-      private static const BEVEL:int = 4;
+    private static const BEVEL:int = 4;
+    private static const PADDING:int = 2;
+    public static const coin:BitmapData = IconFactory.makeCoin();
+    public static const fortune:BitmapData = IconFactory.makeFortune();
+    public static const fame:BitmapData = IconFactory.makeFame();
+    public static const guildFame:BitmapData = IconFactory.makeGuildFame();
+    private static const grayfilter:ColorMatrixFilter = new ColorMatrixFilter(MoreColorUtil.greyscaleFilterMatrix);
 
-      private static const PADDING:int = 2;
+    private const enabledFill:GraphicsSolidFill = new GraphicsSolidFill(0xFFFFFF, 1);
+    private const disabledFill:GraphicsSolidFill = new GraphicsSolidFill(0x7F7F7F, 1);
+    private const graphicsPath:GraphicsPath = new GraphicsPath(new Vector.<int>(), new Vector.<Number>());
+    private const graphicsData:Vector.<IGraphicsData> = new <IGraphicsData>[enabledFill, graphicsPath, GraphicsUtil.END_FILL];
+    private const waiter:SignalWaiter = new SignalWaiter();
 
-      public static const coin:BitmapData = IconFactory.makeCoin();
+    public var prefix:String;
+    public var text:TextFieldDisplayConcrete;
+    private var staticStringBuilder:StaticStringBuilder;
+    private var lineBuilder:LineBuilder;
+    public var icon:Bitmap;
+    public var price:int = -1;
+    public var currency:int = -1;
+    public var _width:int = -1;
+    private var withOutLine:Boolean = false;
+    private var outLineColor:int = 0x545454;
+    private var fixedWidth:int = -1;
+    private var fixedHeight:int = -1;
+    private var textVertMargin:int = 4;
 
-      public static const fortune:BitmapData = IconFactory.makeFortune();
+    public function LegacyBuyButton(_arg_1:String, _arg_2:int, _arg_3:int, _arg_4:int, _arg_5:Boolean = false) {
+        this.staticStringBuilder = new StaticStringBuilder("");
+        this.lineBuilder = new LineBuilder();
+        super();
+        this.prefix = _arg_1;
+        this.text = new TextFieldDisplayConcrete().setSize(_arg_2).setColor(0x363636).setBold(true);
+        this.waiter.push(this.text.textChanged);
+        var _local_6:StringBuilder = (((_arg_1) != "") ? this.lineBuilder.setParams(_arg_1, {"cost": _arg_3.toString()}) : this.staticStringBuilder.setString(_arg_3.toString()));
+        this.text.setStringBuilder(_local_6);
+        this.waiter.complete.add(this.updateUI);
+        this.waiter.complete.addOnce(this.readyForPlacementDispatch);
+        addChild(this.text);
+        this.icon = new Bitmap();
+        addChild(this.icon);
+        addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
+        addEventListener(MouseEvent.ROLL_OUT, this.onRollOut);
+        this.setPrice(_arg_3, _arg_4);
+        this.withOutLine = _arg_5;
+    }
 
-      public static const fame:BitmapData = IconFactory.makeFame();
-
-      public static const guildFame:BitmapData = IconFactory.makeGuildFame();
-
-      private static const grayfilter:ColorMatrixFilter = new ColorMatrixFilter(MoreColorUtil.greyscaleFilterMatrix);
-
-      public var prefix:String;
-
-      public var text:TextFieldDisplayConcrete;
-
-      private var staticStringBuilder:StaticStringBuilder;
-
-      private var lineBuilder:LineBuilder;
-
-      public var icon:Bitmap;
-
-      public var price:int = -1;
-
-      public var currency:int = -1;
-
-      public var _width:int = -1;
-
-      private const enabledFill:GraphicsSolidFill = new GraphicsSolidFill(16777215,1);
-
-      private const disabledFill:GraphicsSolidFill = new GraphicsSolidFill(8355711,1);
-
-      private const graphicsPath:GraphicsPath = new GraphicsPath(new Vector.<int>(),new Vector.<Number>());
-
-      private const graphicsData:Vector.<IGraphicsData> = new <IGraphicsData>[enabledFill,graphicsPath,GraphicsUtil.END_FILL];
-
-      private const waiter:SignalWaiter = new SignalWaiter();
-
-      private var withOutLine:Boolean = false;
-
-      private var outLineColor:int = 2368548;
-
-      private var fixedWidth:int = -1;
-
-      private var fixedHeight:int = -1;
-
-      private var textVertMargin:int = 4;
-
-      public function LegacyBuyButton(param1:String, param2:int, param3:int, param4:int, param5:Boolean = false) {
-         this.staticStringBuilder = new StaticStringBuilder("");
-         this.lineBuilder = new LineBuilder();
-         super();
-         this.prefix = param1;
-         this.text = new TextFieldDisplayConcrete().setSize(param2).setColor(3552822).setBold(true);
-         this.waiter.push(this.text.textChanged);
-         var _local6:StringBuilder = param1 != ""?this.lineBuilder.setParams(param1,{"cost":param3.toString()}):this.staticStringBuilder.setString(param3.toString());
-         this.text.setStringBuilder(_local6);
-         this.waiter.complete.add(this.updateUI);
-         this.waiter.complete.addOnce(this.readyForPlacementDispatch);
-         addChild(this.text);
-         this.icon = new Bitmap();
-         addChild(this.icon);
-         addEventListener(MouseEvent.MOUSE_OVER,this.onMouseOver);
-         addEventListener(MouseEvent.ROLL_OUT,this.onRollOut);
-         this.setPrice(param3,param4);
-         this.withOutLine = param5;
-      }
-
-      override public function setPrice(param1:int, param2:int) : void {
-         var _local3:StringBuilder = null;
-         if(this.price != param1 || this.currency != param2) {
-            this.price = param1;
-            this.currency = param2;
-            _local3 = this.prefix != ""?this.lineBuilder.setParams(this.prefix,{"cost":param1.toString()}):this.staticStringBuilder.setString(param1.toString());
-            this.text.setStringBuilder(_local3);
+    override public function setPrice(_arg_1:int, _arg_2:int):void {
+        var _local_3:StringBuilder;
+        if (((!((this.price == _arg_1))) || (!((this.currency == _arg_2))))) {
+            this.price = _arg_1;
+            this.currency = _arg_2;
+            _local_3 = (((this.prefix) != "") ? this.lineBuilder.setParams(this.prefix, {"cost": _arg_1.toString()}) : this.staticStringBuilder.setString(_arg_1.toString()));
+            this.text.setStringBuilder(_local_3);
             this.updateUI();
-         }
-      }
+        }
+    }
 
-      public function setStringBuilder(param1:StringBuilder) : * {
-         this.text.setStringBuilder(param1);
-         this.updateUI();
-      }
+    public function setStringBuilder(_arg_1:StringBuilder) {
+        this.text.setStringBuilder(_arg_1);
+        this.updateUI();
+    }
 
-      public function getPrice() : int {
-         return this.price;
-      }
+    public function getPrice():int {
+        return (this.price);
+    }
 
-      public function setText(param1:String) : void {
-         this.text.setStringBuilder(new StaticStringBuilder(param1));
-         this.updateUI();
-      }
+    public function setText(_arg_1:String):void {
+        this.text.setStringBuilder(new StaticStringBuilder(_arg_1));
+        this.updateUI();
+    }
 
-      override public function setEnabled(param1:Boolean) : void {
-         if(param1 != mouseEnabled) {
-            mouseEnabled = param1;
-            filters = !!param1?[]:[grayfilter];
+    override public function setEnabled(_arg_1:Boolean):void {
+        if (_arg_1 != mouseEnabled) {
+            mouseEnabled = _arg_1;
+            filters = ((_arg_1) ? [] : [grayfilter]);
             this.draw();
-         }
-      }
+        }
+    }
 
-      override public function setWidth(param1:int) : void {
-         this._width = param1;
-         this.updateUI();
-      }
+    override public function setWidth(_arg_1:int):void {
+        this._width = _arg_1;
+        this.updateUI();
+    }
 
-      private function updateUI() : void {
-         this.updateText();
-         this.updateIcon();
-         this.updateBackground();
-         this.draw();
-      }
+    private function updateUI():void {
+        this.updateText();
+        this.updateIcon();
+        this.updateBackground();
+        this.draw();
+    }
 
-      private function readyForPlacementDispatch() : void {
-         this.updateUI();
-         readyForPlacement.dispatch();
-      }
+    private function readyForPlacementDispatch():void {
+        this.updateUI();
+        readyForPlacement.dispatch();
+    }
 
-      private function updateIcon() : void {
-         switch(this.currency) {
+    private function updateIcon():void {
+        switch (this.currency) {
             case Currency.GOLD:
-               this.icon.bitmapData = coin;
-               break;
+                this.icon.bitmapData = coin;
+                break;
             case Currency.FAME:
-               this.icon.bitmapData = fame;
-               break;
+                this.icon.bitmapData = fame;
+                break;
             case Currency.GUILD_FAME:
-               this.icon.bitmapData = guildFame;
-               break;
+                this.icon.bitmapData = guildFame;
+                break;
             case Currency.FORTUNE:
-               this.icon.bitmapData = fortune;
-               break;
+                this.icon.bitmapData = fortune;
+                break;
             default:
-               this.icon.bitmapData = null;
-         }
-         this.updateIconPosition();
-      }
+                this.icon.bitmapData = null;
+        }
+        this.updateIconPosition();
+    }
 
-      private function updateBackground() : void {
-         GraphicsUtil.clearPath(this.graphicsPath);
-         GraphicsUtil.drawCutEdgeRect(0,0,this.getWidth(),this.getHeight(),BEVEL,[1,1,1,1],this.graphicsPath);
-      }
+    private function updateBackground():void {
+        GraphicsUtil.clearPath(this.graphicsPath);
+        GraphicsUtil.drawCutEdgeRect(0, 0, this.getWidth(), this.getHeight(), BEVEL, [1, 1, 1, 1], this.graphicsPath);
+    }
 
-      private function updateText() : void {
-         this.text.x = (this.getWidth() - this.icon.width - this.text.width - PADDING) * 0.5;
-         this.text.y = this.textVertMargin;
-      }
+    private function updateText():void {
+        this.text.x = ((((this.getWidth() - this.icon.width) - this.text.width) - PADDING) * 0.5);
+        this.text.y = this.textVertMargin;
+    }
 
-      private function updateIconPosition() : void {
-         this.icon.x = this.text.x + this.text.width + PADDING;
-         this.icon.y = (this.getHeight() - this.icon.height - 1) * 0.5;
-      }
+    private function updateIconPosition():void {
+        this.icon.x = ((this.text.x + this.text.width) + PADDING);
+        this.icon.y = (((this.getHeight() - this.icon.height) - 1) * 0.5);
+    }
 
-      private function onMouseOver(param1:MouseEvent) : void {
-         this.enabledFill.color = 16768133;
-         this.draw();
-      }
+    private function onMouseOver(_arg_1:MouseEvent):void {
+        this.enabledFill.color = 16768133;
+        this.draw();
+    }
 
-      private function onRollOut(param1:MouseEvent) : void {
-         this.enabledFill.color = 16777215;
-         this.draw();
-      }
+    private function onRollOut(_arg_1:MouseEvent):void {
+        this.enabledFill.color = 0xFFFFFF;
+        this.draw();
+    }
 
-      public function draw() : void {
-         this.graphicsData[0] = !!mouseEnabled?this.enabledFill:this.disabledFill;
-         graphics.clear();
-         graphics.drawGraphicsData(this.graphicsData);
-         if(this.withOutLine) {
+    public function draw():void {
+        this.graphicsData[0] = ((mouseEnabled) ? this.enabledFill : this.disabledFill);
+        graphics.clear();
+        graphics.drawGraphicsData(this.graphicsData);
+        if (this.withOutLine) {
             this.drawOutline(graphics);
-         }
-      }
+        }
+    }
 
-      private function getWidth() : int {
-         return this.fixedWidth != -1?int(this.fixedWidth):int(Math.max(this._width,this.text.width + this.icon.width + 3 * PADDING));
-      }
+    private function getWidth():int {
+        return ((((this.fixedWidth) != -1) ? this.fixedWidth : Math.max(this._width, ((this.text.width + this.icon.width) + (3 * PADDING)))));
+    }
 
-      private function getHeight() : int {
-         return this.fixedHeight != -1?int(this.fixedHeight):int(this.text.height + this.textVertMargin * 2);
-      }
+    private function getHeight():int {
+        return ((((this.fixedHeight) != -1) ? this.fixedHeight : (this.text.height + (this.textVertMargin * 2))));
+    }
 
-      public function freezeSize() : void {
-         this.fixedHeight = this.getHeight();
-         this.fixedWidth = this.getWidth();
-      }
+    public function freezeSize():void {
+        this.fixedHeight = this.getHeight();
+        this.fixedWidth = this.getWidth();
+    }
 
-      public function unfreezeSize() : void {
-         this.fixedHeight = -1;
-         this.fixedWidth = -1;
-      }
+    public function unfreezeSize():void {
+        this.fixedHeight = -1;
+        this.fixedWidth = -1;
+    }
 
-      public function scaleButtonWidth(param1:Number) : void {
-         this.fixedWidth = this.getWidth() * param1;
-         this.updateUI();
-      }
+    public function scaleButtonWidth(_arg_1:Number):void {
+        this.fixedWidth = (this.getWidth() * _arg_1);
+        this.updateUI();
+    }
 
-      public function scaleButtonHeight(param1:Number) : void {
-         this.textVertMargin = this.textVertMargin * param1;
-         this.updateUI();
-      }
+    public function scaleButtonHeight(_arg_1:Number):void {
+        this.textVertMargin = (this.textVertMargin * _arg_1);
+        this.updateUI();
+    }
 
-      public function setOutLineColor(param1:int) : void {
-         this.outLineColor = param1;
-      }
+    public function setOutLineColor(_arg_1:int):void {
+        this.outLineColor = _arg_1;
+    }
 
-      private function drawOutline(param1:Graphics) : void {
-         var _local2:GraphicsSolidFill = new GraphicsSolidFill(0,0.01);
-         var _local3:GraphicsSolidFill = new GraphicsSolidFill(this.outLineColor,0.6);
-         var _local4:GraphicsStroke = new GraphicsStroke(4,false,LineScaleMode.NORMAL,CapsStyle.NONE,JointStyle.ROUND,3,_local3);
-         var _local5:GraphicsPath = new GraphicsPath();
-         GraphicsUtil.drawCutEdgeRect(0,0,this.getWidth(),this.getHeight(),4,GraphicsUtil.ALL_CUTS,_local5);
-         var _local6:Vector.<IGraphicsData> = new <IGraphicsData>[_local4,_local2,_local5,GraphicsUtil.END_FILL,GraphicsUtil.END_STROKE];
-         param1.drawGraphicsData(_local6);
-      }
-   }
+    private function drawOutline(_arg_1:Graphics):void {
+        var _local_2:GraphicsSolidFill = new GraphicsSolidFill(0, 0.01);
+        var _local_3:GraphicsSolidFill = new GraphicsSolidFill(this.outLineColor, 0.6);
+        var _local_4:GraphicsStroke = new GraphicsStroke(4, false, LineScaleMode.NORMAL, CapsStyle.NONE, JointStyle.ROUND, 3, _local_3);
+        var _local_5:GraphicsPath = new GraphicsPath();
+        GraphicsUtil.drawCutEdgeRect(0, 0, this.getWidth(), this.getHeight(), 4, GraphicsUtil.ALL_CUTS, _local_5);
+        var _local_6:Vector.<IGraphicsData> = new <IGraphicsData>[_local_4, _local_2, _local_5, GraphicsUtil.END_FILL, GraphicsUtil.END_STROKE];
+        _arg_1.drawGraphicsData(_local_6);
+    }
+
+
 }
+}//package kabam.rotmg.util.components

@@ -7,7 +7,6 @@
         private bool ninjaShoot;
         private bool ninjaFreeTimer;
         private bool xpFreeTimer;
-        private bool OPBUFF;
 
         public void HandleBoosts()
         {
@@ -18,26 +17,9 @@
                     ninjaFreeTimer = false;
                     Owner.Timers.Add(new WorldTimer(100, (w, t) =>
                     {
-                        Mp -= 5;
+                        Mp -= 1;
                         if (Mp <= 0)
                             ApplyConditionEffect(new ConditionEffect { Effect = ConditionEffectIndex.Speedy, DurationMS = 0 });
-                        ninjaFreeTimer = true;
-                        UpdateCount++;
-                    }));
-                }
-            }
-            
-            if (OPBUFF && ninjaFreeTimer && ninjaShoot)
-            {
-                if (Mp > 0)
-                {
-                    ninjaFreeTimer = false;
-                    Owner.Timers.Add(new WorldTimer(100, (w, t) =>
-                    {
-                        Mp -= 10;
-                        if (Mp <= 0)
-                           ApplyConditionEffect(new ConditionEffect
-                                {Effect = ConditionEffectIndex.Damaging,DurationMS = 0});
                         ninjaFreeTimer = true;
                         UpdateCount++;
                     }));

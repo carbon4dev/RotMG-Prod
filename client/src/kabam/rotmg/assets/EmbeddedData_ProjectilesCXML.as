@@ -1,15 +1,11 @@
-// Decompiled by AS3 Sorcerer 1.40
-// http://www.as3sorcerer.com/
+package kabam.rotmg.assets {
+import mx.core.*;
 
-//kabam.rotmg.assets.EmbeddedData_ProjectilesCXML
-
-package kabam.rotmg.assets{
-    import mx.core.ByteArrayAsset;
-
-[Embed(source="EmbeddedData_ProjectilesCXML.xml", mimeType="application/octet-stream")]
-    public class EmbeddedData_ProjectilesCXML extends ByteArrayAsset {
-
+[Embed(source="EmbeddedData_ProjectilesCXML.dat", mimeType="application/octet-stream")]
+public class EmbeddedData_ProjectilesCXML extends ByteArrayAsset {
+    public function EmbeddedData_ProjectilesCXML() {
+        super();
 
     }
-}//package kabam.rotmg.assets
-
+}
+}

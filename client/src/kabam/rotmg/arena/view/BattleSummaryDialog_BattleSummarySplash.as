@@ -1,13 +1,10 @@
+﻿//Created by Action Script Viewer - http://www.buraks.com/asv
 package kabam.rotmg.arena.view {
 import mx.core.BitmapAsset;
 
 [Embed(source="BattleSummaryDialog_BattleSummarySplash.jpg")]
-
 public class BattleSummaryDialog_BattleSummarySplash extends BitmapAsset {
 
 
-    public function BattleSummaryDialog_BattleSummarySplash() {
-         super();
-      }
-   }
 }
+}//package kabam.rotmg.arena.view

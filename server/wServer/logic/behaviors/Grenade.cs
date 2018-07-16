@@ -14,17 +14,11 @@ namespace wServer.logic.behaviors
     {
         //State storage: cooldown timer
 
-        //private readonly int damage;
-        //private readonly float radius;
-        //private readonly double range;
-        //private Cooldown coolDown;
-        //private double? fixedAngle;
-
-        protected readonly int damage;
-        protected readonly float radius;
-        protected readonly double range;
-        protected Cooldown coolDown;
-        protected double? fixedAngle;
+        private readonly int damage;
+        private readonly float radius;
+        private readonly double range;
+        private Cooldown coolDown;
+        private double? fixedAngle;
 
         public Grenade(double radius, int damage, double range = 5,
             double? fixedAngle = null, Cooldown coolDown = new Cooldown())
@@ -56,10 +50,8 @@ namespace wServer.logic.behaviors
                     if (fixedAngle != null)
                         target = new Position
                         {
-                            //X = (float) (range*Math.Cos(fixedAngle.Value)),
-                            //Y = (float) (range*Math.Sin(fixedAngle.Value)),
-                            X = host.X + (float)(range * Math.Cos(fixedAngle.Value)),
-                            Y = host.Y + (float)(range * Math.Sin(fixedAngle.Value)),
+                            X = (float) (range*Math.Cos(fixedAngle.Value)),
+                            Y = (float) (range*Math.Sin(fixedAngle.Value)),
                         };
                     else
                         target = new Position

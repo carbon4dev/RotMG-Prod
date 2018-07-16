@@ -1,57 +1,56 @@
-package com.company.util {
+﻿package com.company.util {
 import flash.geom.Point;
 
 public class PointUtil {
 
-      public static const ORIGIN:Point = new Point(0,0);
+    public static const ORIGIN:Point = new Point(0, 0);
 
-      public function PointUtil(param1:StaticEnforcer) {
-         super();
-      }
+    public function PointUtil(_arg_1:StaticEnforcer) {
+    }
 
-      public static function roundPoint(param1:Point) : Point {
-         var _local2:Point = param1.clone();
-         _local2.x = Math.round(_local2.x);
-         _local2.y = Math.round(_local2.y);
-         return _local2;
-      }
+    public static function roundPoint(_arg_1:Point):Point {
+        var _local_2:Point = _arg_1.clone();
+        _local_2.x = Math.round(_local_2.x);
+        _local_2.y = Math.round(_local_2.y);
+        return (_local_2);
+    }
 
-      public static function distanceSquared(param1:Point, param2:Point) : Number {
-         return distanceSquaredXY(param1.x,param1.y,param2.x,param2.y);
-      }
+    public static function distanceSquared(_arg_1:Point, _arg_2:Point):Number {
+        return (distanceSquaredXY(_arg_1.x, _arg_1.y, _arg_2.x, _arg_2.y));
+    }
 
-      public static function distanceSquaredXY(param1:Number, param2:Number, param3:Number, param4:Number) : Number {
-         var _local5:Number = param3 - param1;
-         var _local6:Number = param4 - param2;
-         return _local5 * _local5 + _local6 * _local6;
-      }
+    public static function distanceSquaredXY(_arg_1:Number, _arg_2:Number, _arg_3:Number, _arg_4:Number):Number {
+        var _local_5:Number = (_arg_3 - _arg_1);
+        var _local_6:Number = (_arg_4 - _arg_2);
+        return (((_local_5 * _local_5) + (_local_6 * _local_6)));
+    }
 
-      public static function distanceXY(param1:Number, param2:Number, param3:Number, param4:Number) : Number {
-         var _local5:Number = param3 - param1;
-         var _local6:Number = param4 - param2;
-         return Math.sqrt(_local5 * _local5 + _local6 * _local6);
-      }
+    public static function distanceXY(_arg_1:Number, _arg_2:Number, _arg_3:Number, _arg_4:Number):Number {
+        var _local_5:Number = (_arg_3 - _arg_1);
+        var _local_6:Number = (_arg_4 - _arg_2);
+        return (Math.sqrt(((_local_5 * _local_5) + (_local_6 * _local_6))));
+    }
 
-      public static function lerpXY(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number) : Point {
-         return new Point(param1 + (param3 - param1) * param5,param2 + (param4 - param2) * param5);
-      }
+    public static function lerpXY(_arg_1:Number, _arg_2:Number, _arg_3:Number, _arg_4:Number, _arg_5:Number):Point {
+        return (new Point((_arg_1 + ((_arg_3 - _arg_1) * _arg_5)), (_arg_2 + ((_arg_4 - _arg_2) * _arg_5))));
+    }
 
-      public static function angleTo(param1:Point, param2:Point) : Number {
-         return Math.atan2(param2.y - param1.y,param2.x - param1.x);
-      }
+    public static function angleTo(_arg_1:Point, _arg_2:Point):Number {
+        return (Math.atan2((_arg_2.y - _arg_1.y), (_arg_2.x - _arg_1.x)));
+    }
 
-      public static function pointAt(param1:Point, param2:Number, param3:Number) : Point {
-         var _local4:Point = new Point();
-         _local4.x = param1.x + param3 * Math.cos(param2);
-         _local4.y = param1.y + param3 * Math.sin(param2);
-         return _local4;
-      }
-   }
+    public static function pointAt(_arg_1:Point, _arg_2:Number, _arg_3:Number):Point {
+        var _local_4:Point = new Point();
+        _local_4.x = (_arg_1.x + (_arg_3 * Math.cos(_arg_2)));
+        _local_4.y = (_arg_1.y + (_arg_3 * Math.sin(_arg_2)));
+        return (_local_4);
+    }
+
+
 }
+}//package com.company.util
 
 class StaticEnforcer {
 
-   function StaticEnforcer() {
-      super();
-   }
+
 }

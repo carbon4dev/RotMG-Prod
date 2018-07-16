@@ -1,37 +1,34 @@
-package kabam.rotmg.friends.service {
+﻿package kabam.rotmg.friends.service {
 import kabam.lib.tasks.BaseTask;
 import kabam.rotmg.account.core.Account;
 import kabam.rotmg.appengine.api.AppEngineClient;
 
 public class FriendDataRequestTask extends BaseTask {
 
-      [Inject]
-      public var client:AppEngineClient;
+    [Inject]
+    public var client:AppEngineClient;
+    [Inject]
+    public var account:Account;
+    public var requestURL:String;
+    public var xml:XML;
 
-      [Inject]
-      public var account:Account;
 
-      public var requestURL:String;
+    override protected function startTask():void {
+        this.client.setMaxRetries(8);
+        this.client.complete.addOnce(this.onComplete);
+        this.client.sendRequest(this.requestURL, this.account.getCredentials());
+    }
 
-      public var xml:XML;
-
-      public function FriendDataRequestTask() {
-         super();
-      }
-
-      override protected function startTask() : void {
-         this.client.setMaxRetries(8);
-         this.client.complete.addOnce(this.onComplete);
-         this.client.sendRequest(this.requestURL,this.account.getCredentials());
-      }
-
-      private function onComplete(param1:Boolean, param2:*) : void {
-         if(param1) {
-            this.xml = new XML(param2);
+    private function onComplete(_arg_1:Boolean, _arg_2:*):void {
+        if (_arg_1) {
+            this.xml = new XML(_arg_2);
             completeTask(true);
-         } else {
-            completeTask(false,param2);
-         }
-      }
-   }
+        }
+        else {
+            completeTask(false, _arg_2);
+        }
+    }
+
+
 }
+}//package kabam.rotmg.friends.service

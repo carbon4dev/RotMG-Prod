@@ -1,51 +1,51 @@
-package kabam.rotmg.text.view.stringBuilder {
+﻿package kabam.rotmg.text.view.stringBuilder {
 import kabam.rotmg.language.model.StringMap;
 
 public class AppendingLineBuilder implements StringBuilder {
 
-      private var data:Vector.<LineData>;
+    private var data:Vector.<LineData>;
+    private var delimiter:String = "\n";
+    private var provider:StringMap;
 
-      private var delimiter:String = "\n";
+    public function AppendingLineBuilder() {
+        this.data = new Vector.<LineData>();
+        super();
+    }
 
-      private var provider:StringMap;
+    public function pushParams(_arg_1:String, _arg_2:Object = null, _arg_3:String = "", _arg_4:String = ""):AppendingLineBuilder {
+        this.data.push(new LineData().setKey(_arg_1).setTokens(_arg_2).setOpeningTags(_arg_3).setClosingTags(_arg_4));
+        return (this);
+    }
 
-      public function AppendingLineBuilder() {
-         this.data = new Vector.<LineData>();
-         super();
-      }
+    public function setDelimiter(_arg_1:String):AppendingLineBuilder {
+        this.delimiter = _arg_1;
+        return (this);
+    }
 
-      public function pushParams(param1:String, param2:Object = null, param3:String = "", param4:String = "") : AppendingLineBuilder {
-         this.data.push(new LineData().setKey(param1).setTokens(param2).setOpeningTags(param3).setClosingTags(param4));
-         return this;
-      }
+    public function setStringMap(_arg_1:StringMap):void {
+        this.provider = _arg_1;
+    }
 
-      public function setDelimiter(param1:String) : AppendingLineBuilder {
-         this.delimiter = param1;
-         return this;
-      }
+    public function getString():String {
+        var _local_2:LineData;
+        var _local_1:Vector.<String> = new Vector.<String>();
+        for each (_local_2 in this.data) {
+            _local_1.push(_local_2.getString(this.provider));
+        }
+        return (_local_1.join(this.delimiter));
+    }
 
-      public function setStringMap(param1:StringMap) : void {
-         this.provider = param1;
-      }
+    public function hasLines():Boolean {
+        return (!((this.data.length == 0)));
+    }
 
-      public function getString() : String {
-         var _local2:LineData = null;
-         var _local1:Vector.<String> = new Vector.<String>();
-         for each(_local2 in this.data) {
-            _local1.push(_local2.getString(this.provider));
-         }
-         return _local1.join(this.delimiter);
-      }
+    public function clear():void {
+        this.data = new Vector.<LineData>();
+    }
 
-      public function hasLines() : Boolean {
-         return this.data.length != 0;
-      }
 
-      public function clear() : void {
-         this.data = new Vector.<LineData>();
-      }
-   }
 }
+}//package kabam.rotmg.text.view.stringBuilder
 
 import kabam.rotmg.language.model.StringMap;
 import kabam.rotmg.text.model.TextKey;
@@ -53,63 +53,60 @@ import kabam.rotmg.text.view.stringBuilder.StringBuilder;
 
 class LineData {
 
-   public var key:String;
+    public var key:String;
+    public var tokens:Object;
+    public var openingHTMLTags:String = "";
+    public var closingHTMLTags:String = "";
 
-   public var tokens:Object;
 
-   public var openingHTMLTags:String = "";
+    public function setKey(_arg_1:String):LineData {
+        this.key = _arg_1;
+        return (this);
+    }
 
-   public var closingHTMLTags:String = "";
+    public function setTokens(_arg_1:Object):LineData {
+        this.tokens = _arg_1;
+        return (this);
+    }
 
-   function LineData() {
-      super();
-   }
+    public function setOpeningTags(_arg_1:String):LineData {
+        this.openingHTMLTags = _arg_1;
+        return (this);
+    }
 
-   public function setKey(param1:String) : LineData {
-      this.key = param1;
-      return this;
-   }
+    public function setClosingTags(_arg_1:String):LineData {
+        this.closingHTMLTags = _arg_1;
+        return (this);
+    }
 
-   public function setTokens(param1:Object) : LineData {
-      this.tokens = param1;
-      return this;
-   }
-
-   public function setOpeningTags(param1:String) : LineData {
-      this.openingHTMLTags = param1;
-      return this;
-   }
-
-   public function setClosingTags(param1:String) : LineData {
-      this.closingHTMLTags = param1;
-      return this;
-   }
-
-   public function getString(param1:StringMap) : String {
-      var _local3:String = null;
-      var _local4:* = null;
-      var _local5:StringBuilder = null;
-      var _local6:String = null;
-      var _local2:String = this.openingHTMLTags;
-      if((_local3 = param1.getValue(TextKey.stripCurlyBrackets(this.key))) == null) {
-         _local3 = this.key;
-      }
-      _local2 = _local2.concat(_local3);
-      for(_local4 in this.tokens) {
-         if(this.tokens[_local4] is StringBuilder) {
-            _local5 = StringBuilder(this.tokens[_local4]);
-            _local5.setStringMap(param1);
-            _local2 = _local2.replace("{" + _local4 + "}",_local5.getString());
-         } else {
-            _local6 = this.tokens[_local4];
-            if(_local6.length > 0 && _local6.charAt(0) == "{" && _local6.charAt(_local6.length - 1) == "}") {
-               _local6 = param1.getValue(_local6.substr(1,_local6.length - 2));
+    public function getString(_arg_1:StringMap):String {
+        var _local_3:String;
+        var _local_4:String;
+        var _local_5:StringBuilder;
+        var _local_6:String;
+        var _local_2:String = this.openingHTMLTags;
+        _local_3 = _arg_1.getValue(TextKey.stripCurlyBrackets(this.key));
+        if (_local_3 == null) {
+            _local_3 = this.key;
+        }
+        _local_2 = _local_2.concat(_local_3);
+        for (_local_4 in this.tokens) {
+            if ((this.tokens[_local_4] is StringBuilder)) {
+                _local_5 = StringBuilder(this.tokens[_local_4]);
+                _local_5.setStringMap(_arg_1);
+                _local_2 = _local_2.replace((("{" + _local_4) + "}"), _local_5.getString());
             }
-            _local2 = _local2.replace("{" + _local4 + "}",_local6);
-         }
-      }
-      _local2 = _local2.replace(new RegExp("\\\\n","g"),"\n");
-      _local2 = _local2.concat(this.closingHTMLTags);
-      return _local2;
-   }
+            else {
+                _local_6 = this.tokens[_local_4];
+                if ((((((_local_6.length > 0)) && ((_local_6.charAt(0) == "{")))) && ((_local_6.charAt((_local_6.length - 1)) == "}")))) {
+                    _local_6 = _arg_1.getValue(_local_6.substr(1, (_local_6.length - 2)));
+                }
+                _local_2 = _local_2.replace((("{" + _local_4) + "}"), _local_6);
+            }
+        }
+        _local_2 = _local_2.replace(/\\n/g, "\n");
+        return (_local_2.concat(this.closingHTMLTags));
+    }
+
+
 }

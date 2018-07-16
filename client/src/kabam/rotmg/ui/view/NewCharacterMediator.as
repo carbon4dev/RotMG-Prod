@@ -1,4 +1,4 @@
-package kabam.rotmg.ui.view {
+﻿package kabam.rotmg.ui.view {
 import com.company.assembleegameclient.screens.CharacterSelectionAndNewsScreen;
 import com.company.assembleegameclient.screens.NewCharacterScreen;
 
@@ -19,86 +19,77 @@ import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class NewCharacterMediator extends Mediator {
 
-      [Inject]
-      public var view:NewCharacterScreen;
+    [Inject]
+    public var view:NewCharacterScreen;
+    [Inject]
+    public var playerModel:PlayerModel;
+    [Inject]
+    public var setScreen:SetScreenSignal;
+    [Inject]
+    public var playGame:PlayGameSignal;
+    [Inject]
+    public var showTooltip:ShowTooltipSignal;
+    [Inject]
+    public var hideTooltips:HideTooltipsSignal;
+    [Inject]
+    public var updateNewCharacterScreen:UpdateNewCharacterScreenSignal;
+    [Inject]
+    public var buyCharacterPending:BuyCharacterPendingSignal;
+    [Inject]
+    public var purchaseCharacter:PurchaseCharacterSignal;
+    [Inject]
+    public var classesModel:ClassesModel;
 
-      [Inject]
-      public var playerModel:PlayerModel;
 
-      [Inject]
-      public var setScreen:SetScreenSignal;
+    override public function initialize():void {
+        this.view.selected.add(this.onSelected);
+        this.view.close.add(this.onClose);
+        this.view.tooltip.add(this.onTooltip);
+        this.view.buy.add(this.onBuy);
+        this.updateNewCharacterScreen.add(this.onUpdate);
+        this.buyCharacterPending.add(this.onBuyCharacterPending);
+        this.view.initialize(this.playerModel);
+    }
 
-      [Inject]
-      public var playGame:PlayGameSignal;
+    private function onBuyCharacterPending(_arg_1:int):void {
+        this.view.updateCreditsAndFame(this.playerModel.getCredits(), this.playerModel.getFame());
+    }
 
-      [Inject]
-      public var showTooltip:ShowTooltipSignal;
+    override public function destroy():void {
+        this.view.selected.remove(this.onSelected);
+        this.view.close.remove(this.onClose);
+        this.view.tooltip.remove(this.onTooltip);
+        this.view.buy.remove(this.onBuy);
+        this.buyCharacterPending.remove(this.onBuyCharacterPending);
+        this.updateNewCharacterScreen.remove(this.onUpdate);
+    }
 
-      [Inject]
-      public var hideTooltips:HideTooltipsSignal;
+    private function onClose():void {
+        this.setScreen.dispatch(new CharacterSelectionAndNewsScreen());
+    }
 
-      [Inject]
-      public var updateNewCharacterScreen:UpdateNewCharacterScreenSignal;
+    private function onSelected(_arg_1:int):void {
+        this.classesModel.getCharacterClass(_arg_1).setIsSelected(true);
+        this.setScreen.dispatch(new CharacterSkinView());
+    }
 
-      [Inject]
-      public var buyCharacterPending:BuyCharacterPendingSignal;
-
-      [Inject]
-      public var purchaseCharacter:PurchaseCharacterSignal;
-
-      [Inject]
-      public var classesModel:ClassesModel;
-
-      public function NewCharacterMediator() {
-         super();
-      }
-
-      override public function initialize() : void {
-         this.view.selected.add(this.onSelected);
-         this.view.close.add(this.onClose);
-         this.view.tooltip.add(this.onTooltip);
-         this.view.buy.add(this.onBuy);
-         this.updateNewCharacterScreen.add(this.onUpdate);
-         this.buyCharacterPending.add(this.onBuyCharacterPending);
-         this.view.initialize(this.playerModel);
-      }
-
-      private function onBuyCharacterPending(param1:int) : void {
-         this.view.updateCreditsAndFame(this.playerModel.getCredits(),this.playerModel.getFame());
-      }
-
-      override public function destroy() : void {
-         this.view.selected.remove(this.onSelected);
-         this.view.close.remove(this.onClose);
-         this.view.tooltip.remove(this.onTooltip);
-         this.view.buy.remove(this.onBuy);
-         this.buyCharacterPending.remove(this.onBuyCharacterPending);
-         this.updateNewCharacterScreen.remove(this.onUpdate);
-      }
-
-      private function onClose() : void {
-         this.setScreen.dispatch(new CharacterSelectionAndNewsScreen());
-      }
-
-      private function onSelected(param1:int) : void {
-         this.classesModel.getCharacterClass(param1).setIsSelected(true);
-         this.setScreen.dispatch(new CharacterSkinView());
-      }
-
-      private function onTooltip(param1:Sprite) : void {
-         if(param1) {
-            this.showTooltip.dispatch(param1);
-         } else {
+    private function onTooltip(_arg_1:Sprite):void {
+        if (_arg_1) {
+            this.showTooltip.dispatch(_arg_1);
+        }
+        else {
             this.hideTooltips.dispatch();
-         }
-      }
+        }
+    }
 
-      private function onUpdate() : void {
-         this.view.update(this.playerModel);
-      }
+    private function onUpdate():void {
+        this.view.update(this.playerModel);
+    }
 
-      private function onBuy(param1:int) : void {
-         this.purchaseCharacter.dispatch(param1);
-      }
-   }
+    private function onBuy(_arg_1:int):void {
+        this.purchaseCharacter.dispatch(_arg_1);
+    }
+
+
 }
+}//package kabam.rotmg.ui.view

@@ -1,33 +1,22 @@
-// Decompiled by AS3 Sorcerer 1.40
-// http://www.as3sorcerer.com/
-
-//kabam.rotmg.messaging.impl.incoming.PasswordPrompt
-
-package kabam.rotmg.messaging.impl.incoming
-{
+﻿package kabam.rotmg.messaging.impl.incoming {
 import flash.utils.IDataInput;
 
-public class PasswordPrompt extends IncomingMessage
-    {
+public class PasswordPrompt extends IncomingMessage {
 
-        public var cleanPasswordStatus:int;
+    public var cleanPasswordStatus:int;
 
-        public function PasswordPrompt(_arg1:uint, _arg2:Function)
-        {
-            super(_arg1, _arg2);
-        }
-
-        override public function parseFromInput(_arg1:IDataInput):void
-        {
-            this.cleanPasswordStatus = _arg1.readInt();
-        }
-
-        override public function toString():String
-        {
-            return (formatToString("PASSWORDPROMPT", "cleanPasswordStatus"));
-        }
-
-
+    public function PasswordPrompt(_arg_1:uint, _arg_2:Function) {
+        super(_arg_1, _arg_2);
     }
-}//package kabam.rotmg.messaging.impl.incoming
 
+    override public function parseFromInput(_arg_1:IDataInput):void {
+        this.cleanPasswordStatus = _arg_1.readInt();
+    }
+
+    override public function toString():String {
+        return (formatToString("PASSWORDPROMPT", "cleanPasswordStatus"));
+    }
+
+
+}
+}//package kabam.rotmg.messaging.impl.incoming

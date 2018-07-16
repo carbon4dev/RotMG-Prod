@@ -1,10 +1,9 @@
-package kabam.rotmg.questrewards.view {
+﻿package kabam.rotmg.questrewards.view {
 import mx.core.BitmapAsset;
 
+[Embed(source="../../fortune/components/FortuneModal_backgroundImageEmbed.png")]
 public class QuestRewardsView_backgroundImageEmbed extends BitmapAsset {
 
-      public function QuestRewardsView_backgroundImageEmbed() {
-         super();
-      }
-   }
+
 }
+}//package kabam.rotmg.questrewards.view

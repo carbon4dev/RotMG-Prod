@@ -5,12 +5,10 @@
         public TomboftheAncients()
         {
             Name = "Tomb of the Ancients";
-            ClientWorldName = "Tomb of the Ancients";
+            ClientWorldName = "dungeons.Tomb_of_the_Ancients";
             Dungeon = true;
             Background = 0;
-            Difficulty = 5;
             AllowTeleport = true;
-            SetMusic("tombs");
         }
 
         protected override void Init()

@@ -1,4 +1,4 @@
-package kabam.rotmg.account.web.services {
+﻿package kabam.rotmg.account.web.services {
 import com.company.assembleegameclient.util.GUID;
 
 import flash.net.SharedObject;
@@ -11,52 +11,51 @@ import kabam.rotmg.appengine.api.AppEngineClient;
 
 public class WebLoadAccountTask extends BaseTask implements LoadAccountTask {
 
-      [Inject]
-      public var account:Account;
+    [Inject]
+    public var account:Account;
+    [Inject]
+    public var client:AppEngineClient;
+    private var data:AccountData;
 
-      [Inject]
-      public var client:AppEngineClient;
 
-      private var data:AccountData;
-
-      public function WebLoadAccountTask() {
-         super();
-      }
-
-      override protected function startTask() : void {
-         this.getAccountData();
-         if(this.data.username) {
+    override protected function startTask():void {
+        this.getAccountData();
+        if (this.data.username) {
             this.setAccountDataThenComplete();
-         } else {
+        }
+        else {
             this.setGuestPasswordAndComplete();
-         }
-      }
+        }
+    }
 
-      private function getAccountData() : void {
-         var rotmg:SharedObject = null;
-         this.data = new AccountData();
-         try {
-            rotmg = SharedObject.getLocal("RotMG","/");
-            rotmg.data["GUID"] && (this.data.username = rotmg.data["GUID"]);
-            rotmg.data["Password"] && (this.data.password = rotmg.data["Password"]);
-            return;
-         }
-         catch(error:Error) {
+    private function getAccountData():void {
+        var rotmg:SharedObject;
+        this.data = new AccountData();
+        try {
+            rotmg = SharedObject.getLocal("RotMG", "/");
+            ((rotmg.data["GUID"]) && ((this.data.username = rotmg.data["GUID"])));
+            ((rotmg.data["Password"]) && ((this.data.password = rotmg.data["Password"])));
+            if (rotmg.data.hasOwnProperty("Name")) {
+                this.data.name = rotmg.data["Name"];
+            }
+        }
+        catch (error:Error) {
             data.username = null;
             data.password = null;
-            return;
-         }
-      }
+        }
+    }
 
-      private function setAccountDataThenComplete() : void {
-         this.account.updateUser(this.data.username,this.data.password);
-         this.account.verify(false);
-         completeTask(true);
-      }
+    private function setAccountDataThenComplete():void {
+        this.account.updateUser(this.data.username, this.data.password);
+        this.account.verify(false);
+        completeTask(true);
+    }
 
-      private function setGuestPasswordAndComplete() : void {
-         this.account.updateUser(GUID.create(),null);
-         completeTask(true);
-      }
-   }
+    private function setGuestPasswordAndComplete():void {
+        this.account.updateUser(GUID.create(), null);
+        completeTask(true);
+    }
+
+
 }
+}//package kabam.rotmg.account.web.services

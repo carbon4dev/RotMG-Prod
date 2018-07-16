@@ -1,4 +1,4 @@
-package kabam.rotmg.stage3D.graphic3D {
+﻿package kabam.rotmg.stage3D.graphic3D {
 import flash.utils.Dictionary;
 
 import kabam.rotmg.stage3D.proxies.Context3DProxy;
@@ -9,24 +9,25 @@ import org.swiftsuspenders.dependencyproviders.DependencyProvider;
 
 public class IndexBufferFactory implements DependencyProvider {
 
-      private static const numVertices:int = 6;
+    private static const numVertices:int = 6;
 
-      private var indexBuffer:IndexBuffer3DProxy;
+    private var indexBuffer:IndexBuffer3DProxy;
 
-      public function IndexBufferFactory(param1:Context3DProxy) {
-         super();
-         var _local2:Vector.<uint> = Vector.<uint>([0,1,2,2,1,3]);
-         if(param1 != null) {
-            this.indexBuffer = param1.createIndexBuffer(numVertices);
-            this.indexBuffer.uploadFromVector(_local2,0,numVertices);
-         }
-      }
+    public function IndexBufferFactory(_arg_1:Context3DProxy):void {
+        var _local_2:Vector.<uint> = Vector.<uint>([0, 1, 2, 2, 1, 3]);
+        if (_arg_1 != null) {
+            this.indexBuffer = _arg_1.createIndexBuffer(numVertices);
+            this.indexBuffer.uploadFromVector(_local_2, 0, numVertices);
+        }
+    }
 
-      public function apply(param1:Class, param2:Injector, param3:Dictionary) : Object {
-         return this.indexBuffer;
-      }
+    public function apply(_arg_1:Class, _arg_2:Injector, _arg_3:Dictionary):Object {
+        return (this.indexBuffer);
+    }
 
-      public function destroy() : void {
-      }
-   }
+    public function destroy():void {
+    }
+
+
 }
+}//package kabam.rotmg.stage3D.graphic3D

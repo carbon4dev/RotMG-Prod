@@ -1,6 +1,6 @@
-package kabam.rotmg.account.web.view {
+﻿package kabam.rotmg.account.web.view {
 import com.company.assembleegameclient.account.ui.Frame;
-import com.company.assembleegameclient.account.ui.LOEBUILD_b5d88c64baa451896772d5efdf29f2bf;
+import com.company.assembleegameclient.account.ui.TextInputField;
 import com.company.assembleegameclient.ui.DeprecatedClickableText;
 import com.company.util.KeyCodes;
 
@@ -21,105 +21,101 @@ import org.osflash.signals.natives.NativeMappedSignal;
 
 public class WebLoginDialogForced extends Frame {
 
-      public var signInForced:Signal;
+    public var signInForced:Signal;
+    public var forgot:Signal;
+    public var register:Signal;
+    public var email:TextInputField;
+    private var password:TextInputField;
+    private var forgotText:DeprecatedClickableText;
+    private var registerText:DeprecatedClickableText;
 
-      public var forgot:Signal;
+    public function WebLoginDialogForced(_arg_1:Boolean = false) {
+        super(TextKey.WEB_LOGIN_DIALOG_TITLE, "", TextKey.WEB_LOGIN_DIALOG_RIGHT);
+        this.makeUI();
+        if (_arg_1) {
+            addChild(this.getText("Attention!", -165, -85).setColor(0xFF0000));
+            addChild(this.getText("A new password was sent to your Sign In Email Address.", -165, -65));
+            addChild(this.getText("Please use the new password to Sign In.", -165, -45));
+        }
+        this.forgot = new NativeMappedSignal(this.forgotText, MouseEvent.CLICK);
+        this.register = new NativeMappedSignal(this.registerText, MouseEvent.CLICK);
+        this.signInForced = new Signal(AccountData);
+    }
 
-      public var register:Signal;
+    private function makeUI():void {
+        this.email = new TextInputField(TextKey.WEB_LOGIN_DIALOG_EMAIL, false);
+        addTextInputField(this.email);
+        this.password = new TextInputField(TextKey.WEB_LOGIN_DIALOG_PASSWORD, true);
+        addTextInputField(this.password);
+        this.forgotText = new DeprecatedClickableText(12, false, TextKey.WEB_LOGIN_DIALOG_FORGOT);
+        addNavigationText(this.forgotText);
+        this.registerText = new DeprecatedClickableText(12, false, TextKey.WEB_LOGIN_DIALOG_REGISTER);
+        addNavigationText(this.registerText);
+        rightButton_.addEventListener(MouseEvent.CLICK, this.onSignIn);
+        addEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown);
+        addEventListener(Event.REMOVED_FROM_STAGE, this.onRemovedFromStage);
+    }
 
-      public var email:LOEBUILD_b5d88c64baa451896772d5efdf29f2bf;
+    private function onRemovedFromStage(_arg_1:Event):void {
+        removeEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown);
+        removeEventListener(Event.REMOVED_FROM_STAGE, this.onRemovedFromStage);
+    }
 
-      private var password:LOEBUILD_b5d88c64baa451896772d5efdf29f2bf;
-
-      private var forgotText:DeprecatedClickableText;
-
-      private var registerText:DeprecatedClickableText;
-
-      public function WebLoginDialogForced(param1:Boolean = false) {
-         super(TextKey.WEB_LOGIN_DIALOG_TITLE,"",TextKey.WEB_LOGIN_DIALOG_RIGHT,"/signIn");
-         this.makeUI();
-         if(param1) {
-            addChild(this.getText("Attention!",-165,-85).setColor(16711680));
-            addChild(this.getText("A new password was sent to your Sign In Email Address.",-165,-65));
-            addChild(this.getText("Please use the new password to Sign In.",-165,-45));
-         }
-         this.forgot = new NativeMappedSignal(this.forgotText,MouseEvent.CLICK);
-         this.register = new NativeMappedSignal(this.registerText,MouseEvent.CLICK);
-         this.signInForced = new Signal(AccountData);
-      }
-
-      private function makeUI() : void {
-         this.email = new LOEBUILD_b5d88c64baa451896772d5efdf29f2bf(TextKey.WEB_LOGIN_DIALOG_EMAIL,false);
-         addTextInputField(this.email);
-         this.password = new LOEBUILD_b5d88c64baa451896772d5efdf29f2bf(TextKey.WEB_LOGIN_DIALOG_PASSWORD,true);
-         addTextInputField(this.password);
-         this.forgotText = new DeprecatedClickableText(12,false,TextKey.WEB_LOGIN_DIALOG_FORGOT);
-         addNavigationText(this.forgotText);
-         this.registerText = new DeprecatedClickableText(12,false,TextKey.WEB_LOGIN_DIALOG_REGISTER);
-         addNavigationText(this.registerText);
-         rightButton_.addEventListener(MouseEvent.CLICK,this.onSignIn);
-         addEventListener(KeyboardEvent.KEY_DOWN,this.onKeyDown);
-         addEventListener(Event.REMOVED_FROM_STAGE,this.onRemovedFromStage);
-      }
-
-      private function onRemovedFromStage(param1:Event) : void {
-         removeEventListener(KeyboardEvent.KEY_DOWN,this.onKeyDown);
-         removeEventListener(Event.REMOVED_FROM_STAGE,this.onRemovedFromStage);
-      }
-
-      private function onKeyDown(param1:KeyboardEvent) : void {
-         if(param1.keyCode == KeyCodes.ENTER) {
+    private function onKeyDown(_arg_1:KeyboardEvent):void {
+        if (_arg_1.keyCode == KeyCodes.ENTER) {
             this.onSignInSub();
-         }
-      }
+        }
+    }
 
-      private function onSignIn(param1:MouseEvent) : void {
-         this.onSignInSub();
-      }
+    private function onSignIn(_arg_1:MouseEvent):void {
+        this.onSignInSub();
+    }
 
-      private function onSignInSub() : void {
-         var _local1:AccountData = null;
-         if(Boolean(this.isEmailValid()) && Boolean(this.isPasswordValid())) {
-            _local1 = new AccountData();
-            _local1.username = this.email.text();
-            _local1.password = this.password.text();
-            this.signInForced.dispatch(_local1);
-         }
-      }
+    private function onSignInSub():void {
+        var _local_1:AccountData;
+        if (((this.isEmailValid()) && (this.isPasswordValid()))) {
+            _local_1 = new AccountData();
+            _local_1.username = this.email.text();
+            _local_1.password = this.password.text();
+            this.signInForced.dispatch(_local_1);
+        }
+    }
 
-      private function isPasswordValid() : Boolean {
-         var _local1:* = this.password.text() != "";
-         if(!_local1) {
+    private function isPasswordValid():Boolean {
+        var _local_1 = !((this.password.text() == ""));
+        if (!_local_1) {
             this.password.setError(TextKey.WEB_LOGIN_DIALOG_PASSWORD_ERROR);
-         }
-         return _local1;
-      }
+        }
+        return (_local_1);
+    }
 
-      private function isEmailValid() : Boolean {
-         var _local1:* = this.email.text() != "";
-         if(!_local1) {
+    private function isEmailValid():Boolean {
+        var _local_1 = !((this.email.text() == ""));
+        if (!_local_1) {
             this.email.setError(TextKey.WEBLOGINDIALOG_EMAIL_ERROR);
-         }
-         return _local1;
-      }
+        }
+        return (_local_1);
+    }
 
-      public function setError(param1:String) : void {
-         this.password.setError(param1);
-      }
+    public function setError(_arg_1:String):void {
+        this.password.setError(_arg_1);
+    }
 
-      public function getText(param1:String, param2:int, param3:int) : TextFieldDisplayConcrete {
-         var _local4:TextFieldDisplayConcrete = new TextFieldDisplayConcrete().setSize(16).setColor(16777215).setTextWidth(600);
-         _local4.setBold(true);
-         _local4.setStringBuilder(new StaticStringBuilder(param1));
-         _local4.setSize(16).setColor(16777215);
-         _local4.setWordWrap(true);
-         _local4.setMultiLine(true);
-         _local4.setAutoSize(TextFieldAutoSize.CENTER);
-         _local4.setHorizontalAlign(TextFormatAlign.CENTER);
-         _local4.filters = [new DropShadowFilter(0,0,0)];
-         _local4.x = param2;
-         _local4.y = param3;
-         return _local4;
-      }
-   }
+    public function getText(_arg_1:String, _arg_2:int, _arg_3:int):TextFieldDisplayConcrete {
+        var _local_4:TextFieldDisplayConcrete = new TextFieldDisplayConcrete().setSize(16).setColor(0xFFFFFF).setTextWidth(600);
+        _local_4.setBold(true);
+        _local_4.setStringBuilder(new StaticStringBuilder(_arg_1));
+        _local_4.setSize(16).setColor(0xFFFFFF);
+        _local_4.setWordWrap(true);
+        _local_4.setMultiLine(true);
+        _local_4.setAutoSize(TextFieldAutoSize.CENTER);
+        _local_4.setHorizontalAlign(TextFormatAlign.CENTER);
+        _local_4.filters = [new DropShadowFilter(0, 0, 0)];
+        _local_4.x = _arg_2;
+        _local_4.y = _arg_3;
+        return (_local_4);
+    }
+
+
 }
+}//package kabam.rotmg.account.web.view

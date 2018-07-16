@@ -1,12 +1,9 @@
-package kabam.rotmg.pets.data {
-   public class ReskinViewState {
+﻿package kabam.rotmg.pets.data {
+public class ReskinViewState {
 
-      public static const PETPICKER:String = "PETPICKER";
+    public static const PETPICKER:String = "PETPICKER";
+    public static const SKINPICKER:String = "SKINPICKER";
 
-      public static const SKINPICKER:String = "SKINPICKER";
 
-      public function ReskinViewState() {
-         super();
-      }
-   }
 }
+}//package kabam.rotmg.pets.data

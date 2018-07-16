@@ -1,17 +1,15 @@
-package kabam.rotmg.friends.model {
-   public class FriendRequestVO {
+﻿package kabam.rotmg.friends.model {
+public class FriendRequestVO {
 
-      public var request:String;
+    public var request:String;
+    public var target:String;
+    public var callback:Function;
 
-      public var target:String;
+    public function FriendRequestVO(_arg_1:String, _arg_2:String, _arg_3:Function = null) {
+        this.request = _arg_1;
+        this.target = _arg_2;
+        this.callback = _arg_3;
+    }
 
-      public var callback:Function;
-
-      public function FriendRequestVO(param1:String, param2:String, param3:Function = null) {
-         super();
-         this.request = param1;
-         this.target = param2;
-         this.callback = param3;
-      }
-   }
 }
+}//package kabam.rotmg.friends.model

@@ -25,14 +25,16 @@ namespace wServer.networking.handlers
         {
             if (client.Player.Owner == null) return;
 
-            //No more autistic bug in pet yard
-            if ((client.Player.Owner is PetYard) || (client.Player.Owner.Name == "Pet Yard"))
+            if (client.Player.Owner is PetYard)
             {
-                client.Player.SendInfo("You can't swap items in Pet Yard. We did it to avoid loosing items when players are feeding pets.");
-                return;
+                client.SendPacket(new InvResultPacket
+                {
+                    Result = 0
+                });
             }
-            
-            //client.Manager.Logic.AddPendingAction(t =>{
+
+            client.Manager.Logic.AddPendingAction(t =>
+            {
                 //TODO: locker again
                 const ushort NORM_BAG = 0x0500;
                 const ushort SOUL_BAG = 0x0507;
@@ -96,13 +98,13 @@ namespace wServer.networking.handlers
                             if ((client.Player.Owner as Vault).PlayerOwnerName == client.Account.Name)
                                 return;
                     }
-                    catch// (Exception ex)
+                    catch (Exception ex)
                     {
-                        //log.Error(ex);
-                        //log.InfoFormat(client.Player.Name + " just attempted to dupe.");
+                        log.Error(ex);
+                        log.InfoFormat(client.Player.Name + " just attempted to dupe.");
                     }
                 }
-            //}, PendingPriority.Networking);
+            }, PendingPriority.Networking);
         }
     }
 }

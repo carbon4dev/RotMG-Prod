@@ -1,8 +1,6 @@
-package com.company.assembleegameclient.ui.options {
-   public class NullOption extends Option {
+﻿package com.company.assembleegameclient.ui.options {
+public class NullOption extends Option {
 
-      public function NullOption() {
-         super();
-      }
-   }
+
 }
+}//package com.company.assembleegameclient.ui.options

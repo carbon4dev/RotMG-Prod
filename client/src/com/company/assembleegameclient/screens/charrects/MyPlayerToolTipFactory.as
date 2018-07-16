@@ -1,15 +1,14 @@
-package com.company.assembleegameclient.screens.charrects {
-import com.company.assembleegameclient.LOEBUILD_1f4c42c309fe6bc45253d598cfdf9b99.LOEBUILD_9ef2cbbbd6e1617e4401a08c93ad0f9c;
+﻿package com.company.assembleegameclient.screens.charrects {
+import com.company.assembleegameclient.appengine.CharacterStats;
 import com.company.assembleegameclient.ui.tooltip.MyPlayerToolTip;
 
 public class MyPlayerToolTipFactory {
 
-      public function MyPlayerToolTipFactory() {
-         super();
-      }
 
-      public function create(param1:String, param2:XML, param3:LOEBUILD_9ef2cbbbd6e1617e4401a08c93ad0f9c) : MyPlayerToolTip {
-         return new MyPlayerToolTip(param1,param2,param3);
-      }
-   }
+    public function create(_arg_1:String, _arg_2:XML, _arg_3:CharacterStats):MyPlayerToolTip {
+        return (new MyPlayerToolTip(_arg_1, _arg_2, _arg_3));
+    }
+
+
 }
+}//package com.company.assembleegameclient.screens.charrects

@@ -11,11 +11,10 @@ namespace wServer.realm.worlds
         public WineCellar()
         {
             Name = "Wine Cellar";
-            ClientWorldName = "Wine Cellar";
+            ClientWorldName = "server.wine_cellar";
             Background = 0;
             AllowTeleport = false;
             Dungeon = true;
-            SetMusic("winecellar");
         }
 
         protected override void Init()

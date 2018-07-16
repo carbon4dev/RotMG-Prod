@@ -286,10 +286,6 @@ public class ProjectileDesc
 public enum ActivateEffects
 {
     Shoot,
-    TreasureActivate,
-    OPBUFF,
-    FameActivate,
-    SpiderTrap,
     StatBoostSelf,
     StatBoostAura,
     BulletNova,
@@ -305,7 +301,6 @@ public enum ActivateEffects
     StasisBlast,
     Decoy,
     Lightning,
-    LightningFulmi,
     PoisonGrenade,
     RemoveNegativeConditions,
     RemoveNegativeConditionsSelf,
@@ -395,7 +390,6 @@ public class ActivateEffect
             VisualEffect = float.Parse(elem.Attribute("visualEffect").Value, NumberStyles.Any, ci);
         if (elem.Attribute("center") != null)
             Center = elem.Attribute("center").Value;
-		noStack = elem.Attribute("noStack") != null;
     }
 
     public ActivateEffects Effect { get; private set; }
@@ -420,108 +414,9 @@ public class ActivateEffect
     public string Target { get; private set; }
     public string Center { get; private set; }
     public bool UseWisMod { get; private set; }
-    public bool noStack { get; private set; }
     public float VisualEffect { get; private set; }
     public uint? Color { get; private set; }
 }
-
-/*public class ActivateEffect
-{
-    public ActivateEffect(XElement elem)
-    {
-        CultureInfo ci = (CultureInfo) CultureInfo.CurrentCulture.Clone();
-        ci.NumberFormat.CurrencyDecimalSeparator = ".";
-        Effect = (ActivateEffects) Enum.Parse(typeof (ActivateEffects), elem.Value);
-        if (elem.Attribute("stat") != null)
-            Stats = Utils.FromString(elem.Attribute("stat").Value);
-
-        if (elem.Attribute("amount") != null)
-            Amount = Utils.FromString(elem.Attribute("amount").Value);
-
-        if (elem.Attribute("range") != null)
-            Range = float.Parse(elem.Attribute("range").Value, NumberStyles.Any, ci);
-        if (elem.Attribute("duration") != null)
-        {
-            DurationSec = float.Parse(elem.Attribute("duration").Value, NumberStyles.Any, ci);
-            DurationMS = (int)(DurationSec * 1000);
-        }
-        if (elem.Attribute("duration2") != null)
-            DurationMS2 = (int) (float.Parse(elem.Attribute("duration2").Value, NumberStyles.Any, ci)*1000);
-        if (elem.Attribute("effect") != null)
-            ConditionEffect =
-                (ConditionEffectIndex) Enum.Parse(typeof (ConditionEffectIndex), elem.Attribute("effect").Value);
-        if (elem.Attribute("condEffect") != null)
-            ConditionEffect =
-                (ConditionEffectIndex) Enum.Parse(typeof (ConditionEffectIndex), elem.Attribute("condEffect").Value);
-        if (elem.Attribute("condDuration") != null)
-            EffectDuration = float.Parse(elem.Attribute("condDuration").Value, NumberStyles.Any, ci);
-
-        if (elem.Attribute("maxDistance") != null)
-            MaximumDistance = Utils.FromString(elem.Attribute("maxDistance").Value);
-
-        if (elem.Attribute("radius") != null)
-            Radius = float.Parse(elem.Attribute("radius").Value, NumberStyles.Any, ci);
-
-        if (elem.Attribute("totalDamage") != null)
-            TotalDamage = Utils.FromString(elem.Attribute("totalDamage").Value);
-
-        if (elem.Attribute("objectId") != null)
-            ObjectId = elem.Attribute("objectId").Value;
-
-        if (elem.Attribute("angleOffset") != null)
-            AngleOffset = Utils.FromString(elem.Attribute("angleOffset").Value);
-
-        if (elem.Attribute("maxTargets") != null)
-            MaxTargets = Utils.FromString(elem.Attribute("maxTargets").Value);
-
-        if (elem.Attribute("id") != null)
-            Id = elem.Attribute("id").Value;
-
-        if (elem.Attribute("dungeonName") != null)
-            DungeonName = elem.Attribute("dungeonName").Value;
-
-        if (elem.Attribute("skinType") != null)
-            SkinType = int.Parse(elem.Attribute("skinType").Value);
-
-        if (elem.Attribute("lockedName") != null)
-            LockedName = elem.Attribute("lockedName").Value;
-
-        if (elem.Attribute("color") != null)
-            Color = uint.Parse(elem.Attribute("color").Value.Substring(2), NumberStyles.AllowHexSpecifier);
-        if (elem.Attribute("target") != null)
-            Target = elem.Attribute("target").Value;
-        UseWisMod = elem.Attribute("useWisMod") != null;
-        if (elem.Attribute("visualEffect") != null)
-            VisualEffect = float.Parse(elem.Attribute("visualEffect").Value, NumberStyles.Any, ci);
-        if (elem.Attribute("center") != null)
-            Center = elem.Attribute("center").Value;
-    }
-
-    public ActivateEffects Effect { get; private set; }
-    public int Stats { get; private set; }
-    public int Amount { get; private set; }
-    public float Range { get; private set; }
-    public float DurationSec { get; private set; }
-    public int DurationMS { get; private set; }
-    public int DurationMS2 { get; private set; }
-    public ConditionEffectIndex? ConditionEffect { get; private set; }
-    public float EffectDuration { get; private set; }
-    public int MaximumDistance { get; private set; }
-    public float Radius { get; private set; }
-    public int TotalDamage { get; private set; }
-    public string ObjectId { get; private set; }
-    public int AngleOffset { get; private set; }
-    public int MaxTargets { get; private set; }
-    public string Id { get; private set; }
-    public int SkinType { get; private set; }
-    public string DungeonName { get; private set; }
-    public string LockedName { get; private set; }
-    public string Target { get; private set; }
-    public string Center { get; private set; }
-    public bool UseWisMod { get; private set; }
-    public float VisualEffect { get; private set; }
-    public uint? Color { get; private set; }
-}*/
 
 public class PortalDesc
 {
@@ -552,7 +447,7 @@ public class PortalDesc
 
 public class Item : IFeedable
 {
-    private const bool DISABLE_SOULBOUND_UT = true; //false normal
+    private const bool DISABLE_SOULBOUND_UT = false;
 
     public Item(ushort type, XElement elem)
     {
@@ -796,10 +691,6 @@ public class ObjectDesc
             ExpMultiplier = float.Parse(n.Value, NumberStyles.Any, ci);
         else
             ExpMultiplier = null;
-        if ((n = elem.Element("EXP")) != null)
-            EXP = float.Parse(n.Value, NumberStyles.Any, ci);
-        else
-            EXP = 5;
     }
 
     public int UnlockCost { get; private set; }
@@ -853,7 +744,6 @@ public class ObjectDesc
     public bool Oryx { get; private set; }
     public bool Hero { get; private set; }
     public int? PerRealmMax { get; private set; }
-    public float? EXP { get; private set; }
     public float? ExpMultiplier { get; private set; } //Exp gained = level total / 10 * multi
 }
 

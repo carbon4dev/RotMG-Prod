@@ -1,4 +1,4 @@
-package kabam.rotmg.promotions.view {
+﻿package kabam.rotmg.promotions.view {
 import com.company.assembleegameclient.util.PaymentMethod;
 
 import flash.display.Sprite;
@@ -12,54 +12,51 @@ import org.osflash.signals.natives.NativeMappedSignal;
 
 public class WebChoosePaymentTypeDialog extends Sprite {
 
-      public static var hifiBeginnerOfferMoneyFrameEmbed:Class = WebChoosePaymentTypeDialog_hifiBeginnerOfferMoneyFrameEmbed;
+    public static var hifiBeginnerOfferMoneyFrameEmbed:Class = WebChoosePaymentTypeDialog_hifiBeginnerOfferMoneyFrameEmbed;
 
-      public var close:Signal;
+    public var close:Signal;
+    public var select:GroupMappedSignal;
+    public var paypal:Sprite;
+    public var creditCard:Sprite;
+    public var google:Sprite;
 
-      public var select:GroupMappedSignal;
+    public function WebChoosePaymentTypeDialog() {
+        this.close = new Signal();
+        this.select = new GroupMappedSignal(MouseEvent.CLICK, String);
+        this.makeBackground();
+        this.makeCloseButton();
+        this.makePaymentSelection();
+    }
 
-      public var paypal:Sprite;
+    public function centerOnScreen():void {
+        x = ((stage.stageWidth - width) * 0.5);
+        y = (((stage.stageHeight - height) * 0.5) - 5);
+    }
 
-      public var creditCard:Sprite;
+    private function makeBackground():void {
+        addChild(new hifiBeginnerOfferMoneyFrameEmbed());
+    }
 
-      public var google:Sprite;
+    private function makeCloseButton():void {
+        var _local_1:Sprite = this.makeTransparentButton(550, 30, 30, 30);
+        this.close = new NativeMappedSignal(_local_1, MouseEvent.CLICK);
+    }
 
-      public function WebChoosePaymentTypeDialog() {
-         super();
-         this.close = new Signal();
-         this.select = new GroupMappedSignal(MouseEvent.CLICK,String);
-         this.makeBackground();
-         this.makeCloseButton();
-         this.makePaymentSelection();
-      }
+    private function makePaymentSelection():void {
+        this.paypal = this.makeTransparentButton(220, 180, 180, 35);
+        this.creditCard = this.makeTransparentButton(220, 224, 180, 35);
+        this.google = this.makeTransparentButton(220, 268, 180, 35);
+        this.select.map(this.paypal, PaymentMethod.PAYPAL_METHOD.label_);
+        this.select.map(this.creditCard, PaymentMethod.CREDITS_METHOD.label_);
+        this.select.map(this.google, PaymentMethod.GO_METHOD.label_);
+    }
 
-      public function centerOnScreen() : void {
-         x = (stage.stageWidth - width) * 0.5;
-         y = (stage.stageHeight - height) * 0.5 - 5;
-      }
+    private function makeTransparentButton(_arg_1:int, _arg_2:int, _arg_3:int, _arg_4:int):Sprite {
+        var _local_5:TransparentButton = new TransparentButton(_arg_1, _arg_2, _arg_3, _arg_4);
+        addChild(_local_5);
+        return (_local_5);
+    }
 
-      private function makeBackground() : void {
-         addChild(new hifiBeginnerOfferMoneyFrameEmbed());
-      }
 
-      private function makeCloseButton() : void {
-         var _local1:Sprite = this.makeTransparentButton(550,30,30,30);
-         this.close = new NativeMappedSignal(_local1,MouseEvent.CLICK);
-      }
-
-      private function makePaymentSelection() : void {
-         this.paypal = this.makeTransparentButton(220,180,180,35);
-         this.creditCard = this.makeTransparentButton(220,224,180,35);
-         this.google = this.makeTransparentButton(220,268,180,35);
-         this.select.map(this.paypal,PaymentMethod.PAYPAL_METHOD.label_);
-         this.select.map(this.creditCard,PaymentMethod.CREDITS_METHOD.label_);
-         this.select.map(this.google,PaymentMethod.GO_METHOD.label_);
-      }
-
-      private function makeTransparentButton(param1:int, param2:int, param3:int, param4:int) : Sprite {
-         var _local5:TransparentButton = new TransparentButton(param1,param2,param3,param4);
-         addChild(_local5);
-         return _local5;
-      }
-   }
 }
+}//package kabam.rotmg.promotions.view

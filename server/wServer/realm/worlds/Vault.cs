@@ -15,9 +15,6 @@ namespace wServer.realm.worlds
 {
     public class Vault : World
     {
-        public const string WINTER_RESOURCE = "wServer.realm.worlds.maps.vault_winter.jm";
-        public const string SHATTERS_RESOURCE = "wServer.realm.worlds.maps.vault_shatters2.jm";
-
         private readonly ConcurrentDictionary<Tuple<Container, VaultChest>, int> _vaultChests =
             new ConcurrentDictionary<Tuple<Container, VaultChest>, int>();
 
@@ -29,12 +26,11 @@ namespace wServer.realm.worlds
         {
             Id = VAULT_ID;
             Name = "Vault";
-            ClientWorldName = "Vault";
+            ClientWorldName = "server.Vault";
             Background = 2;
             this.psr = psr;
             this.isLimbo = isLimbo;
             ShowDisplays = true;
-            SetMusic("vault");
             if (psr != null)
                 AccountId = psr.Account != null ? psr.Account.AccountId : "-1";
             else
@@ -47,7 +43,7 @@ namespace wServer.realm.worlds
         {
             if (!(IsLimbo = isLimbo))
             {
-                LoadMap(WINTER_RESOURCE, MapType.Json);
+                LoadMap("wServer.realm.worlds.maps.vault.wmap", MapType.Wmap);
                 if (psr != null)
                     Init(psr);
                 else
@@ -230,6 +226,7 @@ namespace wServer.realm.worlds
                     con.Move(vaultChestPosition[0].X + 0.5f, vaultChestPosition[0].Y + 0.5f);
                     EnterWorld(con);
                     vaultChestPosition.RemoveAt(0);
+
                     _vaultChests[new Tuple<Container, VaultChest>(con, t)] = con.UpdateCount;
                 }
                 foreach (IntPoint i in vaultChestPosition)

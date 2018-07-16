@@ -1,10 +1,8 @@
-package kabam.rotmg.fortune.model {
+﻿package kabam.rotmg.fortune.model {
 import mx.core.BitmapAsset;
 
 public class FortuneInfo_chestImageEmbed extends BitmapAsset {
 
-      public function FortuneInfo_chestImageEmbed() {
-         super();
-      }
-   }
+
 }
+}//package kabam.rotmg.fortune.model

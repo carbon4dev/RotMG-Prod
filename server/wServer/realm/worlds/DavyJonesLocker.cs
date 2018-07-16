@@ -12,20 +12,19 @@ namespace wServer.realm.worlds
         public DavyJonesLocker()
         {
             Name = "Davy Jones's Locker";
-            ClientWorldName = "Davy Jones's Locker";
+            ClientWorldName = "dungeons.Davy_JonesAPOSs_Locker";
             Dungeon = true;
             Difficulty = 5;
             Background = 0;
             AllowTeleport = true;
-            SetMusic("davyjones");
         }
 
         protected override void Init()
         {
-            LoadMap("wServer.realm.worlds.maps.davy.jm", MapType.Json);
+            LoadMap("wServer.realm.worlds.maps.vault.wmap", MapType.Wmap);
         }
 
-        /*public override int EnterWorld(Entity entity)
+        public override int EnterWorld(Entity entity)
         {
             int ret = base.EnterWorld(entity);
             if (entity is Player)
@@ -46,6 +45,6 @@ namespace wServer.realm.worlds
                     Type = 0
                 });
             base.LeaveWorld(entity);
-        }*/
+        }
     }
 }

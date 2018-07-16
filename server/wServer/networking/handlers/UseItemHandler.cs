@@ -25,8 +25,9 @@ namespace wServer.networking.handlers
         protected override void HandlePacket(Client client, UseItemPacket packet)
         {
             if (client.Player.Owner == null) return;
-            RealmTime t = new RealmTime();
-            //client.Manager.Logic.AddPendingAction(t =>{
+
+            client.Manager.Logic.AddPendingAction(t =>
+            {
                 var container = client.Player.Owner.GetEntity(packet.SlotObject.ObjectId) as IContainer;
                 if(container == null) return;
                 Item item;
@@ -291,7 +292,7 @@ namespace wServer.networking.handlers
                 client.Player.UpdateCount++;
                 client.Player.SaveToCharacter();
                 client.Save();
-            //}, PendingPriority.Networking);
+            }, PendingPriority.Networking);
         }
     }
 }

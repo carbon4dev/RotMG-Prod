@@ -1,16 +1,16 @@
-package kabam.rotmg.promotions.view.components {
+﻿package kabam.rotmg.promotions.view.components {
 import flash.display.Sprite;
 
 public class TransparentButton extends Sprite {
 
-      public function TransparentButton(param1:int, param2:int, param3:int, param4:int) {
-         super();
-         graphics.beginFill(0,0);
-         graphics.drawRect(0,0,param3,param4);
-         graphics.endFill();
-         this.x = param1;
-         this.y = param2;
-         buttonMode = true;
-      }
-   }
+    public function TransparentButton(_arg_1:int, _arg_2:int, _arg_3:int, _arg_4:int) {
+        graphics.beginFill(0, 0);
+        graphics.drawRect(0, 0, _arg_3, _arg_4);
+        graphics.endFill();
+        this.x = _arg_1;
+        this.y = _arg_2;
+        buttonMode = true;
+    }
+
 }
+}//package kabam.rotmg.promotions.view.components

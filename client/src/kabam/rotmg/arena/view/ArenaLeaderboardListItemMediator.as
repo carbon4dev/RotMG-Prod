@@ -1,4 +1,4 @@
-package kabam.rotmg.arena.view {
+﻿package kabam.rotmg.arena.view {
 import flash.display.Sprite;
 
 import kabam.rotmg.core.signals.HideTooltipsSignal;
@@ -9,39 +9,35 @@ import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class ArenaLeaderboardListItemMediator extends Mediator {
 
-      [Inject]
-      public var view:ArenaLeaderboardListItem;
+    [Inject]
+    public var view:ArenaLeaderboardListItem;
+    [Inject]
+    public var showTooltip:ShowTooltipSignal;
+    [Inject]
+    public var hideTooltips:HideTooltipsSignal;
+    [Inject]
+    public var gameModel:GameModel;
 
-      [Inject]
-      public var showTooltip:ShowTooltipSignal;
 
-      [Inject]
-      public var hideTooltips:HideTooltipsSignal;
+    override public function initialize():void {
+        this.view.showTooltip.add(this.onShow);
+        this.view.hideTooltip.add(this.onHide);
+        this.view.setColor();
+    }
 
-      [Inject]
-      public var gameModel:GameModel;
+    override public function destroy():void {
+        this.view.showTooltip.remove(this.onShow);
+        this.view.hideTooltip.remove(this.onHide);
+    }
 
-      public function ArenaLeaderboardListItemMediator() {
-         super();
-      }
+    private function onShow(_arg_1:Sprite):void {
+        this.showTooltip.dispatch(_arg_1);
+    }
 
-      override public function initialize() : void {
-         this.view.showTooltip.add(this.onShow);
-         this.view.hideTooltip.add(this.onHide);
-         this.view.setColor();
-      }
+    private function onHide():void {
+        this.hideTooltips.dispatch();
+    }
 
-      override public function destroy() : void {
-         this.view.showTooltip.remove(this.onShow);
-         this.view.hideTooltip.remove(this.onHide);
-      }
 
-      private function onShow(param1:Sprite) : void {
-         this.showTooltip.dispatch(param1);
-      }
-
-      private function onHide() : void {
-         this.hideTooltips.dispatch();
-      }
-   }
 }
+}//package kabam.rotmg.arena.view

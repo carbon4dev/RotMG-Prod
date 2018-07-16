@@ -1,4 +1,4 @@
-package kabam.rotmg.pets.view.dialogs {
+﻿package kabam.rotmg.pets.view.dialogs {
 import com.company.util.GraphicsUtil;
 
 import flash.display.GraphicsPath;
@@ -8,17 +8,17 @@ import flash.display.Sprite;
 
 public class PetItemBackground extends Sprite {
 
-      private var backgroundFill_:GraphicsSolidFill;
+    private var backgroundFill_:GraphicsSolidFill;
+    private var path_:GraphicsPath;
 
-      private var path_:GraphicsPath;
+    public function PetItemBackground(_arg_1:int, _arg_2:Array) {
+        this.backgroundFill_ = new GraphicsSolidFill(0x545454);
+        this.path_ = new GraphicsPath(new Vector.<int>(), new Vector.<Number>());
+        super();
+        var _local_3:Vector.<IGraphicsData> = new <IGraphicsData>[this.backgroundFill_, this.path_, GraphicsUtil.END_FILL];
+        GraphicsUtil.drawCutEdgeRect(0, 0, _arg_1, _arg_1, (_arg_1 / 12), _arg_2, this.path_);
+        graphics.drawGraphicsData(_local_3);
+    }
 
-      public function PetItemBackground(param1:int, param2:Array) {
-         this.backgroundFill_ = new GraphicsSolidFill(2368548);
-         this.path_ = new GraphicsPath(new Vector.<int>(),new Vector.<Number>());
-         super();
-         var _local3:Vector.<IGraphicsData> = new <IGraphicsData>[this.backgroundFill_,this.path_,GraphicsUtil.END_FILL];
-         GraphicsUtil.drawCutEdgeRect(0,0,param1,param1,param1 / 12,param2,this.path_);
-         graphics.drawGraphicsData(_local3);
-      }
-   }
 }
+}//package kabam.rotmg.pets.view.dialogs

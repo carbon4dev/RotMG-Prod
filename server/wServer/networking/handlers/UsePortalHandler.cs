@@ -23,7 +23,8 @@ namespace wServer.networking.handlers
         {
             if (client.Player.Owner == null) return;
 
-            //client.Manager.Logic.AddPendingAction(t =>{
+            client.Manager.Logic.AddPendingAction(t =>
+            {
                 Portal portal = client.Player.Owner.GetEntity(packet.ObjectId) as Portal;
                 if (portal == null) return;
                 if (!portal.Usable)
@@ -72,15 +73,6 @@ namespace wServer.networking.handlers
                                 setWorldInstance = false;
                             }
                                 break;
-                            case 0x748d:
-                                world = client.Player.Manager.AddWorld(new TheInnerSanctum());
-                                break;
-                            case 0x5176:
-                                world = client.Player.Manager.AddWorld(new TheEther());
-                                break;
-                            case 0x5186:
-                                world = client.Player.Manager.GetWorld(World.ELDER_MONTAINS);
-                                break;
                             case 0x0750:
                                 world = client.Player.Manager.GetWorld(World.MARKET);
                                 break;
@@ -97,28 +89,19 @@ namespace wServer.networking.handlers
                             case 0x1756:
                                 world = client.Player.Manager.GetWorld(World.DAILY_QUEST_ID);
                                 break;
-                            case 0x072e:
-                                world = client.Player.Manager.AddWorld(new CDepths());
-                                //world = client.Player.Manager.GetWorld(World.CRAWLING_DEPTHS);
-                                break;
-                            case 0x0d7b:
-                                world = client.Player.Manager.AddWorld(new OryxChamber());
-                                //world = client.Player.Manager.GetWorld(World.ORYX_CHAMBER);
-                                break;
-                            case 0x754e:
-                                world = client.Player.Manager.AddWorld(new Ivory());
-                                //world = client.Player.Manager.GetWorld(World.IVORY_WYVERN);
-                                break;
                             case 0x072f:
                                 if (client.Player.Guild != null)
                                 {
+                                    //client.Player.SendInfo(
+                                    //    "Sorry, you are unable to enter the GuildHall because of a possible memory leak, check back later");
+                                    //client.Player.SendInfo("Thanks.");
                                     world = client.Player.Guild.GuildHall;
                                 }
                                 break;
                             default:
                                 Type worldType =
                                     Type.GetType("wServer.realm.worlds." +
-                                                    desc.DungeonName.Replace(" ", String.Empty).Replace("'", String.Empty));
+                                                 desc.DungeonName.Replace(" ", String.Empty).Replace("'", String.Empty));
                                 if (worldType != null)
                                 {
                                     try
@@ -169,7 +152,7 @@ namespace wServer.networking.handlers
                         Key = world.PortalKey,
                     });
                 }
-            //}, PendingPriority.Networking);
+            }, PendingPriority.Networking);
         }
     }
 }

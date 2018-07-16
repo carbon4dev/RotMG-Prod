@@ -1,4 +1,4 @@
-package kabam.rotmg.util.components {
+﻿package kabam.rotmg.util.components {
 import flash.display.DisplayObject;
 import flash.display.Sprite;
 
@@ -11,128 +11,124 @@ import org.osflash.signals.Signal;
 
 public class VerticalScrollingList extends Sprite implements List {
 
-      public static const SCROLLBAR_PADDING:int = 2;
+    public static const SCROLLBAR_PADDING:int = 2;
+    public static const SCROLLBAR_GUTTER:int = (VerticalScrollbar.WIDTH + SCROLLBAR_PADDING);
 
-      public static const SCROLLBAR_GUTTER:int = VerticalScrollbar.WIDTH + SCROLLBAR_PADDING;
+    public const scrollStateChanged:Signal = new Signal(Boolean);
 
-      public const scrollStateChanged:Signal = new Signal(Boolean);
+    private var layout:VerticalLayout;
+    private var list:LayoutList;
+    private var scrollbar:VerticalScrollbar;
+    private var isEnabled:Boolean = true;
+    private var size:Size;
 
-      private var layout:VerticalLayout;
+    public function VerticalScrollingList() {
+        this.makeLayout();
+        this.makeVerticalList();
+        this.makeScrollbar();
+    }
 
-      private var list:LayoutList;
+    public function getIsEnabled():Boolean {
+        return (this.isEnabled);
+    }
 
-      private var scrollbar:VerticalScrollbar;
+    public function setIsEnabled(_arg_1:Boolean):void {
+        this.isEnabled = _arg_1;
+        this.scrollbar.setIsEnabled(_arg_1);
+    }
 
-      private var isEnabled:Boolean = true;
+    public function setSize(_arg_1:Size):void {
+        this.size = _arg_1;
+        if (this.isScrollbarVisible()) {
+            _arg_1 = new Size((_arg_1.width - SCROLLBAR_GUTTER), _arg_1.height);
+        }
+        this.list.setSize(_arg_1);
+        this.refreshScrollbar();
+    }
 
-      private var size:Size;
+    public function getSize():Size {
+        return (this.size);
+    }
 
-      public function VerticalScrollingList() {
-         super();
-         this.makeLayout();
-         this.makeVerticalList();
-         this.makeScrollbar();
-      }
+    public function setPadding(_arg_1:int):void {
+        this.layout.setPadding(_arg_1);
+        this.list.updateLayout();
+        this.refreshScrollbar();
+    }
 
-      public function getIsEnabled() : Boolean {
-         return this.isEnabled;
-      }
+    public function addItem(_arg_1:DisplayObject):void {
+        this.list.addItem(_arg_1);
+    }
 
-      public function setIsEnabled(param1:Boolean) : void {
-         this.isEnabled = param1;
-         this.scrollbar.setIsEnabled(param1);
-      }
+    public function setItems(_arg_1:Vector.<DisplayObject>):void {
+        this.list.setItems(_arg_1);
+    }
 
-      public function setSize(param1:Size) : void {
-         this.size = param1;
-         if(this.isScrollbarVisible()) {
-            param1 = new Size(param1.width - SCROLLBAR_GUTTER,param1.height);
-         }
-         this.list.setSize(param1);
-         this.refreshScrollbar();
-      }
+    public function getItemAt(_arg_1:int):DisplayObject {
+        return (this.list.getItemAt(_arg_1));
+    }
 
-      public function getSize() : Size {
-         return this.size;
-      }
+    public function getItemCount():int {
+        return (this.list.getItemCount());
+    }
 
-      public function setPadding(param1:int) : void {
-         this.layout.setPadding(param1);
-         this.list.updateLayout();
-         this.refreshScrollbar();
-      }
+    public function getListHeight():int {
+        return (this.list.getSizeOfItems().height);
+    }
 
-      public function addItem(param1:DisplayObject) : void {
-         this.list.addItem(param1);
-      }
+    private function makeLayout():void {
+        this.layout = new VerticalLayout();
+    }
 
-      public function setItems(param1:Vector.<DisplayObject>) : void {
-         this.list.setItems(param1);
-      }
+    public function isScrollbarVisible():Boolean {
+        return (this.scrollbar.visible);
+    }
 
-      public function getItemAt(param1:int) : DisplayObject {
-         return this.list.getItemAt(param1);
-      }
+    private function makeVerticalList():void {
+        this.list = new LayoutList();
+        this.list.itemsChanged.add(this.refreshScrollbar);
+        this.list.setLayout(this.layout);
+        addChild(this.list);
+    }
 
-      public function getItemCount() : int {
-         return this.list.getItemCount();
-      }
+    private function refreshScrollbar():void {
+        var _local_3:int;
+        var _local_5:Boolean;
+        var _local_1:Size = this.list.getSize();
+        var _local_2:int = _local_1.height;
+        _local_3 = this.list.getSizeOfItems().height;
+        var _local_4 = (_local_3 > _local_2);
+        _local_5 = !((this.scrollbar.visible == _local_4));
+        this.scrollbar.setIsEnabled(false);
+        this.scrollbar.visible = _local_4;
+        ((_local_4) && (this.scrollbar.setIsEnabled(true)));
+        ((_local_4) && (this.updateScrollbarSize(_local_2, _local_3)));
+        ((_local_5) && (this.updateUiAndDispatchStateChange(_local_4)));
+    }
 
-      public function getListHeight() : int {
-         return this.list.getSizeOfItems().height;
-      }
+    private function updateUiAndDispatchStateChange(_arg_1:Boolean):void {
+        this.setSize(this.size);
+        this.scrollStateChanged.dispatch(_arg_1);
+    }
 
-      private function makeLayout() : void {
-         this.layout = new VerticalLayout();
-      }
+    private function updateScrollbarSize(_arg_1:int, _arg_2:int):void {
+        var _local_3:int = (_arg_1 * (_arg_1 / _arg_2));
+        this.scrollbar.setSize(_local_3, _arg_1);
+        this.scrollbar.x = (this.list.getSize().width + SCROLLBAR_PADDING);
+    }
 
-      public function isScrollbarVisible() : Boolean {
-         return this.scrollbar.visible;
-      }
+    private function makeScrollbar():void {
+        this.scrollbar = new VerticalScrollbar();
+        this.scrollbar.positionChanged.add(this.onPositionChanged);
+        this.scrollbar.visible = false;
+        addChild(this.scrollbar);
+    }
 
-      private function makeVerticalList() : void {
-         this.list = new LayoutList();
-         this.list.itemsChanged.add(this.refreshScrollbar);
-         this.list.setLayout(this.layout);
-         addChild(this.list);
-      }
+    private function onPositionChanged(_arg_1:Number):void {
+        var _local_2:int = (this.list.getSizeOfItems().height - this.list.getSize().height);
+        this.list.setOffset((_local_2 * _arg_1));
+    }
 
-      private function refreshScrollbar() : void {
-         var _local3:int = 0;
-         var _local5:* = false;
-         var _local1:Size = this.list.getSize();
-         var _local2:int = _local1.height;
-         _local3 = this.list.getSizeOfItems().height;
-         var _local4:* = _local3 > _local2;
-         _local5 = this.scrollbar.visible != _local4;
-         this.scrollbar.setIsEnabled(false);
-         this.scrollbar.visible = _local4;
-         _local4 && this.scrollbar.setIsEnabled(true);
-         _local4 && this.updateScrollbarSize(_local2,_local3);
-         _local5 && this.updateUiAndDispatchStateChange(_local4);
-      }
 
-      private function updateUiAndDispatchStateChange(param1:Boolean) : void {
-         this.setSize(this.size);
-         this.scrollStateChanged.dispatch(param1);
-      }
-
-      private function updateScrollbarSize(param1:int, param2:int) : void {
-         var _local3:int = param1 * (param1 / param2);
-         this.scrollbar.setSize(_local3,param1);
-         this.scrollbar.x = this.list.getSize().width + SCROLLBAR_PADDING;
-      }
-
-      private function makeScrollbar() : void {
-         this.scrollbar = new VerticalScrollbar();
-         this.scrollbar.positionChanged.add(this.onPositionChanged);
-         this.scrollbar.visible = false;
-         addChild(this.scrollbar);
-      }
-
-      private function onPositionChanged(param1:Number) : void {
-         var _local2:int = this.list.getSizeOfItems().height - this.list.getSize().height;
-         this.list.setOffset(_local2 * param1);
-      }
-   }
 }
+}//package kabam.rotmg.util.components

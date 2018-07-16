@@ -1,15 +1,11 @@
-// Decompiled by AS3 Sorcerer 1.40
-// http://www.as3sorcerer.com/
+package kabam.rotmg.assets {
+import mx.core.*;
 
-//kabam.rotmg.assets.EmbeddedData_SkinsCXML
-
-package kabam.rotmg.assets{
-    import mx.core.ByteArrayAsset;
-
-[Embed(source="EmbeddedData_SkinsCXML.xml", mimeType="application/octet-stream")]
-    public class EmbeddedData_SkinsCXML extends ByteArrayAsset {
-
+[Embed(source="EmbeddedData_SkinsCXML.dat", mimeType="application/octet-stream")]
+public class EmbeddedData_SkinsCXML extends ByteArrayAsset {
+    public function EmbeddedData_SkinsCXML() {
+        super();
 
     }
-}//package kabam.rotmg.assets
-
+}
+}

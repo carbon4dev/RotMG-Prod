@@ -1,34 +1,32 @@
-package kabam.rotmg.core.view {
+﻿package kabam.rotmg.core.view {
 import flash.display.Sprite;
 
 public class ScreensView extends Sprite {
 
-      private var current:Sprite;
+    private var current:Sprite;
+    private var previous:Sprite;
 
-      private var previous:Sprite;
 
-      public function ScreensView() {
-         super();
-      }
-
-      public function setScreen(param1:Sprite) : void {
-         if(this.current == param1) {
+    public function setScreen(_arg_1:Sprite):void {
+        if (this.current == _arg_1) {
             return;
-         }
-         this.removePrevious();
-         this.current = param1;
-         addChild(param1);
-      }
+        }
+        this.removePrevious();
+        this.current = _arg_1;
+        addChild(_arg_1);
+    }
 
-      private function removePrevious() : void {
-         if(Boolean(this.current) && Boolean(contains(this.current))) {
+    private function removePrevious():void {
+        if (((this.current) && (contains(this.current)))) {
             this.previous = this.current;
             removeChild(this.current);
-         }
-      }
+        }
+    }
 
-      public function getPrevious() : Sprite {
-         return this.previous;
-      }
-   }
+    public function getPrevious():Sprite {
+        return (this.previous);
+    }
+
+
 }
+}//package kabam.rotmg.core.view

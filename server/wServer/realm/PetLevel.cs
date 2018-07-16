@@ -118,41 +118,7 @@ namespace wServer.realm
             {97, 436311},
             {98, 471236},
             {99, 508954},
-            {100, 526614},
-            {101, 537234},
-            {102, 547960},
-            {103, 558792},
-            {104, 569730},
-            {105, 580774},
-            {106, 591924},
-            {107, 603180},
-            {108, 614542},
-            {109, 626010},
-            {110, 637584},
-            {111, 649264},
-            {112, 661050},
-            {113, 672942},
-            {114, 684940},
-            {115, 697044},
-            {116, 709254},
-            {117, 721570},
-            {118, 733992},
-            {119, 746520},
-            {120, 759154},
-            {121, 771894},
-            {122, 784740},
-            {123, 797692},
-            {124, 810750},
         };
-        //98-99: 37718
-        //difference: 2793
-        //97-98: 34926
-        //difference: 2588
-        //96-97: 32338
-        //difference: 2396
-        //95-96: 29942
-        //_difference: 205
-        //_difference: 192
 
         private Pet pet;
         private readonly AbilityType type;
@@ -182,15 +148,13 @@ namespace wServer.realm
         public void Incease(IFeedable petFoodNOMNOMNOM)
         {
             int remaining = petFoodNOMNOMNOM.FeedPower;
-            
-            if (type == AbilityType.First)
-                remaining = (int)(petFoodNOMNOMNOM.FeedPower * 0.702025);
-            if (type == AbilityType.Second)
-                remaining = (int)(petFoodNOMNOMNOM.FeedPower * 0.3240117);
-            if (type == AbilityType.Third)
-                remaining = (int)(petFoodNOMNOMNOM.FeedPower * 0.16200585);
 
-            if (Level == pet.MaximumLevel || Level == 125) return;
+            if (type == AbilityType.Second)
+                remaining = (int)(petFoodNOMNOMNOM.FeedPower * 0.702025);
+            if (type == AbilityType.Third)
+                remaining = (int)(petFoodNOMNOMNOM.FeedPower * 0.3240117);
+
+            if (Level == pet.MaximumLevel || Level == 100) return;
 
             while (remaining > 0)
             {
@@ -198,7 +162,7 @@ namespace wServer.realm
                 Power++;
                 if (Power == LevelCap[Level])
                     Level++;
-                if (Level == pet.MaximumLevel || Level == 125) break;
+                if (Level == pet.MaximumLevel || Level == 100) break;
             }
         }
     }

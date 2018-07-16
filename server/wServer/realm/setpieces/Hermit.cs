@@ -40,7 +40,7 @@ namespace wServer.realm.setpieces
                     {0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 8, 2, 2, 2, 3, 2, 2, 2, 7, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 8, 2, 2, 2, 2, 2, 2, 2, 7, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -79,17 +79,6 @@ namespace wServer.realm.setpieces
                         tile.TileId = dat.IdToTileType[Ground[1]];
                         tile.ObjType = 0;
                         world.Map[x + pos.X, y + pos.Y] = tile;
-                    }
-                    else if (SetPiece[y, x] == 3)
-                    {
-                        WmapTile tile = world.Map[x + pos.X, y + pos.Y].Clone();
-                        tile.TileId = dat.IdToTileType[Ground[1]];
-                        tile.ObjType = 0;
-                        world.Map[x + pos.X, y + pos.Y] = tile;
-
-                        Entity HermitDrop = Entity.Resolve(world.Manager, "Hermit God Drop");
-                        HermitDrop.Move(pos.X + x + 0.5f, pos.Y + y + 0.5f);
-                        world.EnterWorld(HermitDrop);
                     }
                     else if (SetPiece[y, x] == 7)
                     {

@@ -1,4 +1,4 @@
-package kabam.rotmg.pets.view.dialogs {
+﻿package kabam.rotmg.pets.view.dialogs {
 import flash.display.DisplayObject;
 import flash.events.MouseEvent;
 
@@ -8,119 +8,116 @@ import org.osflash.signals.Signal;
 
 public class PetPicker extends GridList implements ClearsPetSlots {
 
-      [Inject]
-      public var petIconFactory:PetItemFactory;
+    [Inject]
+    public var petIconFactory:PetItemFactory;
+    public var petPicked:Signal;
+    private var petItems:Vector.<PetItem>;
+    private var petSize:int;
+    private var items:Vector.<PetItem>;
+    public var doDisableUsed:Boolean = true;
 
-      public var petPicked:Signal;
+    public function PetPicker() {
+        this.petPicked = new PetVOSignal();
+        this.items = new Vector.<PetItem>();
+        super();
+    }
 
-      private var petItems:Vector.<PetItem>;
+    private static function sortByFirstAbilityPoints(_arg_1:PetItem, _arg_2:PetItem):int {
+        var _local_3:int = _arg_1.getPetVO().abilityList[0].points;
+        var _local_4:int = _arg_2.getPetVO().abilityList[0].points;
+        return ((_local_4 - _local_3));
+    }
 
-      private var petSize:int;
 
-      private var items:Vector.<PetItem>;
+    public function setPets(_arg_1:Vector.<PetVO>):void {
+        this.makePetItems(_arg_1);
+        this.addToGridList();
+        setItems(this.items);
+        this.setCorners();
+    }
 
-      public var doDisableUsed:Boolean = true;
+    private function addToGridList():void {
+        var _local_1:PetItem;
+        for each (_local_1 in this.petItems) {
+            this.items.push(_local_1);
+        }
+    }
 
-      public function PetPicker() {
-         this.petPicked = new PetVOSignal();
-         this.items = new Vector.<PetItem>();
-         super();
-      }
+    private function makePetItems(_arg_1:Vector.<PetVO>):void {
+        var _local_2:PetVO;
+        this.petItems = new Vector.<PetItem>();
+        for each (_local_2 in _arg_1) {
+            this.addPet(_local_2);
+        }
+        this.petItems.sort(sortByFirstAbilityPoints);
+    }
 
-      private static function sortByFirstAbilityPoints(param1:PetItem, param2:PetItem) : int {
-         var _local3:int = param1.getPetVO().abilityList[0].points;
-         var _local4:int = param2.getPetVO().abilityList[0].points;
-         return _local4 - _local3;
-      }
+    private function setCorners():void {
+        this.setPetItemState(getTopLeft(), PetItem.TOP_LEFT);
+        this.setPetItemState(getTopRight(), PetItem.TOP_RIGHT);
+        this.setPetItemState(getBottomLeft(), PetItem.BOTTOM_LEFT);
+        this.setPetItemState(getBottomRight(), PetItem.BOTTOM_RIGHT);
+    }
 
-      public function setPets(param1:Vector.<PetVO>) : void {
-         this.makePetItems(param1);
-         this.addToGridList();
-         setItems(this.items);
-         this.setCorners();
-      }
+    private function setPetItemState(_arg_1:DisplayObject, _arg_2:String):void {
+        if (_arg_1) {
+            PetItem(_arg_1).setBackground(_arg_2);
+        }
+    }
 
-      private function addToGridList() : void {
-         var _local1:PetItem = null;
-         for each(_local1 in this.petItems) {
-            this.items.push(_local1);
-         }
-      }
+    public function setPetSize(_arg_1:int):void {
+        this.petSize = _arg_1;
+    }
 
-      private function makePetItems(param1:Vector.<PetVO>) : void {
-         var _local2:PetVO = null;
-         this.petItems = new Vector.<PetItem>();
-         for each(_local2 in param1) {
-            this.addPet(_local2);
-         }
-         this.petItems.sort(sortByFirstAbilityPoints);
-      }
+    public function getPets():Vector.<PetItem> {
+        return (this.petItems);
+    }
 
-      private function setCorners() : void {
-         this.setPetItemState(getTopLeft(),PetItem.TOP_LEFT);
-         this.setPetItemState(getTopRight(),PetItem.TOP_RIGHT);
-         this.setPetItemState(getBottomLeft(),PetItem.BOTTOM_LEFT);
-         this.setPetItemState(getBottomRight(),PetItem.BOTTOM_RIGHT);
-      }
+    public function getPet(_arg_1:int):PetItem {
+        return (this.petItems[_arg_1]);
+    }
 
-      private function setPetItemState(param1:DisplayObject, param2:String) : void {
-         if(param1) {
-            PetItem(param1).setBackground(param2);
-         }
-      }
-
-      public function setPetSize(param1:int) : void {
-         this.petSize = param1;
-      }
-
-      public function getPets() : Vector.<PetItem> {
-         return this.petItems;
-      }
-
-      public function getPet(param1:int) : PetItem {
-         return this.petItems[param1];
-      }
-
-      public function filterFusible(param1:PetVO) : void {
-         var _local3:PetVO = null;
-         var _local2:int = 0;
-         while(_local2 < this.petItems.length) {
-            _local3 = this.petItems[_local2].getPetVO();
-            if(!this.isFusible(param1,_local3)) {
-               this.petItems[_local2].disable();
+    public function filterFusible(_arg_1:PetVO):void {
+        var _local_3:PetVO;
+        var _local_2:int;
+        while (_local_2 < this.petItems.length) {
+            _local_3 = this.petItems[_local_2].getPetVO();
+            if (!this.isFusible(_arg_1, _local_3)) {
+                this.petItems[_local_2].disable();
             }
-            _local2++;
-         }
-      }
+            _local_2++;
+        }
+    }
 
-      public function filterUsedPetVO(param1:PetVO) : void {
-         var _local3:PetVO = null;
-         var _local2:int = 0;
-         while(_local2 < this.petItems.length) {
-            _local3 = this.petItems[_local2].getPetVO();
-            if(_local3.getID() == param1.getID()) {
-               this.petItems[_local2].disable();
+    public function filterUsedPetVO(_arg_1:PetVO):void {
+        var _local_3:PetVO;
+        var _local_2:int;
+        while (_local_2 < this.petItems.length) {
+            _local_3 = this.petItems[_local_2].getPetVO();
+            if (_local_3.getID() == _arg_1.getID()) {
+                this.petItems[_local_2].disable();
             }
-            _local2++;
-         }
-      }
+            _local_2++;
+        }
+    }
 
-      private function isFusible(param1:PetVO, param2:PetVO) : Boolean {
-         return param1.getFamily() == param2.getFamily() && param1.getRarity() == param2.getRarity();
-      }
+    private function isFusible(_arg_1:PetVO, _arg_2:PetVO):Boolean {
+        return ((((_arg_1.getFamily() == _arg_2.getFamily())) && ((_arg_1.getRarity() == _arg_2.getRarity()))));
+    }
 
-      private function addPet(param1:PetVO) : void {
-         var pet:Disableable = null;
-         var pet_clickHandler:Function = null;
-         var petVO:PetVO = param1;
-         pet_clickHandler = function(param1:MouseEvent):void {
-            if(pet.isEnabled()) {
-               petPicked.dispatch(petVO);
+    private function addPet(petVO:PetVO):void {
+        var pet:Disableable;
+        var pet_clickHandler:Function;
+        pet_clickHandler = function (_arg_1:MouseEvent):void {
+            if (pet.isEnabled()) {
+                petPicked.dispatch(petVO);
             }
-         };
-         pet = this.petIconFactory.create(petVO,this.petSize);
-         this.petItems.push(pet);
-         pet.addEventListener(MouseEvent.CLICK,pet_clickHandler);
-      }
-   }
+        };
+        pet = this.petIconFactory.create(petVO, this.petSize);
+        this.petItems.push(pet);
+        pet.addEventListener(MouseEvent.CLICK, pet_clickHandler);
+    }
+
+
 }
+}//package kabam.rotmg.pets.view.dialogs

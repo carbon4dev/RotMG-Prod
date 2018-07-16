@@ -1,5 +1,5 @@
-package kabam.rotmg.core.commands {
-import com.company.assembleegameclient.LOEBUILD_5891da2d64975cae48d175d1e001f5da.LOEBUILD_efda783509bc93eea698457c87bbee3f;
+﻿package kabam.rotmg.core.commands {
+import com.company.assembleegameclient.objects.ObjectLibrary;
 
 import kabam.lib.tasks.BranchingTask;
 import kabam.lib.tasks.DispatchSignalTask;
@@ -20,86 +20,79 @@ import kabam.rotmg.ui.view.NotEnoughGoldDialog;
 
 public class PurchaseCharacterCommand {
 
-      [Inject]
-      public var classType:int;
+    [Inject]
+    public var classType:int;
+    [Inject]
+    public var account:Account;
+    [Inject]
+    public var openDialog:OpenDialogSignal;
+    [Inject]
+    public var playerModel:PlayerModel;
+    [Inject]
+    public var updateNewCharacterScreen:UpdateNewCharacterScreenSignal;
+    [Inject]
+    public var buyCharacterPending:BuyCharacterPendingSignal;
+    [Inject]
+    public var monitor:TaskMonitor;
+    [Inject]
+    public var task:PurchaseCharacterClassTask;
+    [Inject]
+    public var failure:PurchaseCharacterErrorTask;
+    [Inject]
+    public var charList:GetCharListTask;
+    private var cost:int;
 
-      [Inject]
-      public var account:Account;
 
-      [Inject]
-      public var openDialog:OpenDialogSignal;
-
-      [Inject]
-      public var playerModel:PlayerModel;
-
-      [Inject]
-      public var updateNewCharacterScreen:UpdateNewCharacterScreenSignal;
-
-      [Inject]
-      public var buyCharacterPending:BuyCharacterPendingSignal;
-
-      [Inject]
-      public var monitor:TaskMonitor;
-
-      [Inject]
-      public var task:PurchaseCharacterClassTask;
-
-      [Inject]
-      public var failure:PurchaseCharacterErrorTask;
-
-      [Inject]
-      public var charList:GetCharListTask;
-
-      private var cost:int;
-
-      public function PurchaseCharacterCommand() {
-         super();
-      }
-
-      public function execute() : void {
-         this.cost = this.getCostToUnlockCharacter();
-         if(!this.account.isRegistered()) {
+    public function execute():void {
+        this.cost = this.getCostToUnlockCharacter();
+        if (!this.account.isRegistered()) {
             this.showPromptToRegister();
-         } else if(this.isCharacterUnlockAffordable()) {
-            this.purchaseCharacterClass();
-         } else {
-            this.showNotEnoughGoldDialog();
-         }
-      }
+        }
+        else {
+            if (this.isCharacterUnlockAffordable()) {
+                this.purchaseCharacterClass();
+            }
+            else {
+                this.showNotEnoughGoldDialog();
+            }
+        }
+    }
 
-      private function showPromptToRegister() : void {
-         this.openDialog.dispatch(new RegisterPromptDialog("In order to unlock a class MsgType you must be a registered user."));
-         this.updateNewCharacterScreen.dispatch();
-      }
+    private function showPromptToRegister():void {
+        this.openDialog.dispatch(new RegisterPromptDialog("In order to unlock a class type you must be a registered user."));
+        this.updateNewCharacterScreen.dispatch();
+    }
 
-      private function purchaseCharacterClass() : void {
-         this.playerModel.changeCredits(-1 * this.cost);
-         this.buyCharacterPending.dispatch(this.classType);
-         var _local1:TaskSequence = new TaskSequence();
-         _local1.add(new BranchingTask(this.task,this.charList,this.makeFailureTask()));
-         _local1.add(new DispatchSignalTask(this.updateNewCharacterScreen));
-         this.monitor.add(_local1);
-         _local1.start();
-      }
+    private function purchaseCharacterClass():void {
+        this.playerModel.changeCredits((-1 * this.cost));
+        this.buyCharacterPending.dispatch(this.classType);
+        var _local_1:TaskSequence = new TaskSequence();
+        _local_1.add(new BranchingTask(this.task, this.charList, this.makeFailureTask()));
+        _local_1.add(new DispatchSignalTask(this.updateNewCharacterScreen));
+        this.monitor.add(_local_1);
+        _local_1.start();
+    }
 
-      private function makeFailureTask() : Task {
-         this.failure.parentTask = this.task;
-         return this.failure;
-      }
+    private function makeFailureTask():Task {
+        this.failure.parentTask = this.task;
+        return (this.failure);
+    }
 
-      private function showNotEnoughGoldDialog() : void {
-         var _local1:NotEnoughGoldDialog = new NotEnoughGoldDialog();
-         _local1.setTextParams(TextKey.PURCHASECHARACTER_CHARACTERCOST,{"cost":this.cost});
-         this.openDialog.dispatch(_local1);
-         this.updateNewCharacterScreen.dispatch();
-      }
+    private function showNotEnoughGoldDialog():void {
+        var _local_1:NotEnoughGoldDialog = new NotEnoughGoldDialog();
+        _local_1.setTextParams(TextKey.PURCHASECHARACTER_CHARACTERCOST, {"cost": this.cost});
+        this.openDialog.dispatch(_local_1);
+        this.updateNewCharacterScreen.dispatch();
+    }
 
-      private function getCostToUnlockCharacter() : int {
-         return LOEBUILD_efda783509bc93eea698457c87bbee3f.xmlLibrary_[this.classType].UnlockCost;
-      }
+    private function getCostToUnlockCharacter():int {
+        return (ObjectLibrary.xmlLibrary_[this.classType].UnlockCost);
+    }
 
-      private function isCharacterUnlockAffordable() : Boolean {
-         return !this.cost || this.cost <= this.playerModel.getCredits();
-      }
-   }
+    private function isCharacterUnlockAffordable():Boolean {
+        return (((!(this.cost)) || ((this.cost <= this.playerModel.getCredits()))));
+    }
+
+
 }
+}//package kabam.rotmg.core.commands

@@ -41,234 +41,68 @@ namespace wServer.realm.commands
         }
     }
 
+    internal class AddGiftCodeCommand : Command
+    {
+        public AddGiftCodeCommand()
+            : base("gcode", 1)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            try
+            {
+                if (!String.IsNullOrWhiteSpace(args[0]))
+                    player.Manager.FindPlayer(args[0])?.Client.GiftCodeReceived("LevelUp");
+                else
+                    player.Client.GiftCodeReceived("LevelUp");
+            }
+            catch (Exception) { }
+            return true;
+        }
+    }
+
+    internal class posCmd : Command
+    {
+        public posCmd()
+            : base("p", 1)
+        {
+        }
+
+        protected override bool Process(Player player, RealmTime time, string[] args)
+        {
+            player.SendInfo("X: " + (int)player.X + " - Y: " + (int)player.Y);
+            return true;
+        }
+    }
+
     internal class BanCommand : Command
     {
         public BanCommand() : 
-            base("ban")
+            base("ban", permLevel: 1)
         {
         }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            if (player.Client.Account.Rank >= 2)
+            var p = player.Manager.FindPlayer(args[1]);
+            if (p == null)
             {
-                var playerName = args[0];
-                var reason = args[1];
-                string reasonResponse = "";
-                string SQLReason = "";
-                //string reason = string.Join("", args.Skip(1).ToArray());
-                //var corp = wServer.logic.BehaviorDb.LoECorporation;
-                if(((playerName == "help") && (reason == null)) || ((playerName == null) && (reason == null)))
-                {
-                    player.SendHelp("To use this command correctly, you must obey the following structuring:");
-                    player.SendHelp("/ban <player> <reason number>");
-                    player.SendInfo("");
-                    player.SendInfo("-- REASON NUMBER LIST --");
-                    player.SendInfo("1) Begging, curse intently or bad language. Ban time: 15 minutes + 0 warning.");
-                    player.SendInfo("2) Spamming. Ban time: 45 minutes + 0 warning.");
-                    player.SendInfo("3) Profanity names. Ban time: 1 hour + 0 warning.");
-                    player.SendInfo("4) Racism. Ban time: 3 days + 1 warning.");
-                    player.SendInfo("5) Bug abuse or exploit. Ban time: 7 days + 1 warning.");
-                    player.SendInfo("6) Hacking. Ban time: 30 days + 1 warning.");
-                    return false;
-                }
-                //Delay 5 hours between datacenter and denver server! 300 min (set it properly).
-                //set time_zone="+ or - ??:??"; <- SQL command: set it on database using e.g. MySQLWorkbench, phpMyAdmin, etc.
-                else if((playerName != null) && (reason != null)) {
-                    if(reason == "1")
-                    {
-                        SQLReason = "UPDATE accounts SET banned=1, banEnd=DATE_ADD(NOW(), INTERVAL 15 MINUTE) WHERE name=@accId";
-                        reasonResponse = "begging to staff member or bad language. This player was banned for 15 minutes.";
-                    }
-                    else if(reason == "2")
-                    {
-                        SQLReason = "UPDATE accounts SET banned=1, banEnd=DATE_ADD(NOW(), INTERVAL 45 MINUTE) WHERE name=@accId";
-                        reasonResponse = "spamming in chat or disturbing players. This player was banned for 45 minutes.";
-                    }
-                    else if(reason == "3")
-                    {
-                        SQLReason = "UPDATE accounts SET banned=1, banEnd=DATE_ADD(NOW(), INTERVAL 60 MINUTE) WHERE name=@accId";
-                        reasonResponse = "profanity name. This player was banned for 1 hour.";
-                    }
-                    else if(reason == "4")
-                    {
-                        SQLReason = "UPDATE accounts SET banned=1, banEnd=DATE_ADD(NOW(), INTERVAL 4320 MINUTE), accWarnings=(accWarnings+1) WHERE name=@accId";
-                        reasonResponse = "racism to another player. This player was banned for 3 days and received 1 account warning.";
-                    }
-                    else if(reason == "5")
-                    {
-                        SQLReason = "UPDATE accounts SET banned=1, banEnd=DATE_ADD(NOW(), INTERVAL 10380 MINUTE), accWarnings=(accWarnings+1) WHERE name=@accId";
-                        reasonResponse = "bug abuse or exploit. This player was banned for 1 week and received 1 account warning.";
-                    }
-                    else if(reason == "6")
-                    {
-                        SQLReason = "UPDATE accounts SET banned=1, banEnd=DATE_ADD(NOW(), INTERVAL 43200 MINUTE), accWarnings=(accWarnings+1) WHERE name=@accId";
-                        reasonResponse = "hacking or illegal software to play. This player was banned for 1 month and received 1 account warning.";
-                    }
-                    foreach (Client j in player.Manager.Clients.Values)
-                    {
-                        j.SendPacket(new TextPacket
-                        {
-                            BubbleTime = 0,
-                            Stars = -1,
-                            Name = "@ANNOUNCEMENT",
-                            Text = "Player " + playerName + " has been banned! Reason: " + reasonResponse + ""
-                        });
-                    }
-                    player.Manager.Database.DoActionAsync(db =>
-                    {
-                        var cmd = db.CreateQuery();
-                        cmd.CommandText = SQLReason;
-                        cmd.Parameters.AddWithValue("@accId", playerName);
-                        cmd.ExecuteNonQuery();
-                    });
-                    player.SendInfo(playerName + " has been banned!");
-                    foreach (KeyValuePair<string, Client> i in player.Manager.Clients)
-                    {
-                        if (i.Value.Player.Name.EqualsIgnoreCase(playerName))
-                        {
-                            Packet pkt;
-                            pkt = new ReconnectPacket
-                            {
-                                GameId = World.NEXUS_ID,
-                                Host = "",
-                                Key = Empty<byte>.Array,
-                                Name = "Nexus",
-                                Port = Program.Settings.GetValue<int>("port")
-                            };
-                            player.SendInfo("Player will connect to Nexus to apply banishment.");
-                            i.Value.SendPacket(pkt);
-                            return true;
-                        }
-                    }
-                }
-                #region OLD BAN SYSTEM
-                //foreach (string i in corp)
-                //{
-                //    if (i.Contains(p))
-                //    {
-                //        player.SendError("Members of LoE Corporation can not unban other members without Devwarlt's permission!");
-                //        return false;
-                //    }
-                //    if ((p == null) && (p1 == null))
-                //    {
-                //        player.SendError("Insert player name and reason to ban.");
-                //        return false;
-                //    }
-                //    else if (p1 == "loerealm")
-                //    {
-                //        foreach (Client j in player.Manager.Clients.Values)
-                //        {
-                //            string mainReason = string.Join("", args.Skip(2).ToArray());
-                //            j.SendPacket(new TextPacket
-                //            {
-                //                BubbleTime = 0,
-                //                Stars = -1,
-                //                Name = "@ANNOUNCEMENT",
-                //                Text = " A LoE Corporation member " + p + " has banned! Reason: " + mainReason + "."
-                //            });
-                //        }
-                //        player.Manager.Database.DoActionAsync(db =>
-                //        {
-                //            var cmd = db.CreateQuery();
-                //            cmd.CommandText = "UPDATE accounts SET banned=1 WHERE name=@accId;";
-                //            cmd.Parameters.AddWithValue("@accId", p);
-                //            cmd.ExecuteNonQuery();
-                //        });
-                //        player.SendInfo("A member of LoE Corporation " + p + " has been banned!");
-                //        return true;
-                //    }
-                //    else
-                //    {
-                //        foreach (Client j in player.Manager.Clients.Values)
-                //        {
-                //            j.SendPacket(new TextPacket
-                //            {
-                //                BubbleTime = 0,
-                //                Stars = -1,
-                //                Name = "@ANNOUNCEMENT",
-                //                Text = "Player " + p + " has been banned! Reason: " + reason + "."
-                //            });
-                //        }
-                //        player.Manager.Database.DoActionAsync(db =>
-                //        {
-                //            var cmd = db.CreateQuery();
-                //            cmd.CommandText = "UPDATE accounts SET banned=1 WHERE name=@accId;";
-                //            cmd.Parameters.AddWithValue("@accId", p);
-                //            cmd.ExecuteNonQuery();
-                //        });
-                //        player.SendInfo(p + " has been banned!");
-                //        return true;
-                //    }
-                //}
-                #endregion
-            } else
-            {
-                player.SendError("You don't have permission to use this command.");
+                player.SendError("Player not found");
+                return false;
             }
+            player.Manager.Database.DoActionAsync(db =>
+            {
+                var cmd = db.CreateQuery();
+                cmd.CommandText = "UPDATE accounts SET banned=1 WHERE id=@accId;";
+                cmd.Parameters.AddWithValue("@accId", p.AccountId);
+                cmd.ExecuteNonQuery();
+            });
             return true;
         }
     }
 
-    internal class UnBanCommand : Command
-    {
-        public UnBanCommand() : 
-            base("unban")
-        {
-        }
 
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (player.Client.Account.Rank >= 2)
-            {
-                var p = args[0];
-                var p1 = args[1];
-                var corp = wServer.logic.BehaviorDb.LoECorporation;
-                foreach (string i in corp)
-                {
-                    if (i.Contains(p))
-                    {
-                        player.SendError("Members of LoE Corporation can not unban other members without Devwarlt's permission!");
-                        return false;
-                    }
-                    if ((p == null) && (p1 == null))
-                    {
-                        player.SendError("Insert player name to unban.");
-                        return false;
-                    }
-                    else if (p1 == "loerealm")
-                    {
-                        player.Manager.Database.DoActionAsync(db =>
-                        {
-                            var cmd = db.CreateQuery();
-                            cmd.CommandText = "UPDATE accounts SET banned=0 WHERE name=@accId;";
-                            cmd.Parameters.AddWithValue("@accId", p);
-                            cmd.ExecuteNonQuery();
-                        });
-                        player.SendInfo("A member of LoE Corporation " + p + " has been unbanned!");
-                        return true;
-                    }
-                    else
-                    {
-                        player.Manager.Database.DoActionAsync(db =>
-                        {
-                            var cmd = db.CreateQuery();
-                            cmd.CommandText = "UPDATE accounts SET banned=0 WHERE name=@accId;";
-                            cmd.Parameters.AddWithValue("@accId", p);
-                            cmd.ExecuteNonQuery();
-                        });
-                        player.SendInfo(p + " has been unbanned!");
-                        return true;
-                    }
-                }
-            } else
-            {
-                player.SendError("You don't have permission to use this command.");
-            }
-            return true;
-        }
-    }
-    
     internal class AddWorldCommand : Command
     {
         public AddWorldCommand()
@@ -283,139 +117,11 @@ namespace wServer.realm.commands
         }
     }
 
-    internal class MaxPlayer : Command
-        {
-            public MaxPlayer()
-                : base("maxplayer", 1)
-            {
-            }
 
-            protected override bool Process(Player player, RealmTime time, string[] args)
-            {
-                if (string.IsNullOrEmpty(args[0]))
-                {
-                    player.SendHelp("Usage: /maxplayer <player>");
-                    return false;
-                }
-                var plr = player.Manager.FindPlayer(args[0]);
-                if (player.Client.Account.Rank == 4)
-                {
-                    try
-                    {
-                        plr.Stats[0] = plr.ObjectDesc.MaxHitPoints;
-                        plr.Stats[1] = plr.ObjectDesc.MaxMagicPoints;
-                        plr.Stats[2] = plr.ObjectDesc.MaxAttack;
-                        plr.Stats[3] = plr.ObjectDesc.MaxDefense;
-                        plr.Stats[4] = plr.ObjectDesc.MaxSpeed;
-                        plr.Stats[5] = plr.ObjectDesc.MaxHpRegen;
-                        plr.Stats[6] = plr.ObjectDesc.MaxMpRegen;
-                        plr.Stats[7] = plr.ObjectDesc.MaxDexterity;
-                        plr.SaveToCharacter();
-                        plr.Client.Save();
-                        plr.UpdateCount++;
-                        plr.SendInfo(player.Name + " have been maxed you to 8/8!");
-                    }
-                    catch
-                    {
-                        player.SendError("Error while maxing players stats!");
-                        return false;
-                    }   
-                }
-            else
-            {
-                player.SendInfo("You don't have rights to use this command.");
-            }
-                return true;
-            }
-        }
-
-    internal class GodCommand : Command
+    internal class SpawnCommand : Command
     {
-        public GodCommand()
-            : base("god")
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if ((player.Client.Account.Rank > 1) && (player.Client.Account.Rank < 4)) {
-                if (player.Owner.Name == "Beachzone") {
-                    if (player.HasConditionEffect(ConditionEffectIndex.Invincible))
-                    {
-                        player.ApplyConditionEffect(new ConditionEffect
-                        {
-                            Effect = ConditionEffectIndex.Invincible,
-                            DurationMS = 0
-                        });
-                        player.ApplyConditionEffect(new ConditionEffect
-                        {
-                            Effect = ConditionEffectIndex.Invulnerable,
-                            DurationMS = 0
-                        });
-                        player.SendInfo("LoE Admin Protection OFF!");
-                    }
-                    else
-                    {
-                        player.ApplyConditionEffect(new ConditionEffect
-                        {
-                            Effect = ConditionEffectIndex.Invincible,
-                            DurationMS = -1
-                        });
-                        player.ApplyConditionEffect(new ConditionEffect
-                        {
-                            Effect = ConditionEffectIndex.Invulnerable,
-                            DurationMS = -1
-                        });
-                        player.SendInfo("LoE Admin Protection ON!");
-                    }
-                }
-                else
-                {
-                    player.SendInfo("Devwarlt blocked to use this command in any other place, except Beachzone for events.");
-                }
-            } else if(player.Client.Account.Rank == 4) {
-                if (player.HasConditionEffect(ConditionEffectIndex.Invincible))
-                {
-                    player.ApplyConditionEffect(new ConditionEffect
-                    {
-                        Effect = ConditionEffectIndex.Invincible,
-                        DurationMS = 0
-                    });
-                    player.ApplyConditionEffect(new ConditionEffect
-                    {
-                        Effect = ConditionEffectIndex.Invulnerable,
-                        DurationMS = 0
-                    });
-                    player.SendInfo("LoE Admin Protection OFF!");
-                }
-                else
-                {
-                    player.ApplyConditionEffect(new ConditionEffect
-                    {
-                        Effect = ConditionEffectIndex.Invincible,
-                        DurationMS = -1
-                    });
-                    player.ApplyConditionEffect(new ConditionEffect
-                    {
-                        Effect = ConditionEffectIndex.Invulnerable,
-                        DurationMS = -1
-                    });
-                    player.SendInfo("LoE Admin Protection ON!");
-                }
-            } else
-            {
-                player.SendInfo("You don't have rights to use this command.");
-            }
-            return true;
-        }
-    }
-    
-
-
-    internal class MassiveSpawnCommand : Command
-    {
-        public MassiveSpawnCommand()
-            : base("mspawn", 1)
+        public SpawnCommand()
+            : base("spawn", 1)
         {
         }
 
@@ -437,12 +143,12 @@ namespace wServer.realm.commands
                     return false;
                 }
                 int c = int.Parse(args[0]);
-                if (!(player.Client.Account.Rank > 3) && c > 200)
+                if (!(player.Client.Account.Rank > 2) && c > 200)
                 {
                     player.SendError("Maximum spawn count is set to 200!");
                     return false;
                 }
-                if (player.Client.Account.Rank > 3 && c > 200)
+                if (player.Client.Account.Rank > 2 && c > 200)
                 {
                     player.SendInfo("Bypass made!");
                 }
@@ -465,51 +171,12 @@ namespace wServer.realm.commands
                 if (!icdatas.TryGetValue(name, out objType) ||
                     !player.Manager.GameData.ObjectDescs.ContainsKey(objType))
                 {
-                    player.SendHelp("Usage: /mspawn <entityname>");
+                    player.SendHelp("Usage: /spawn <entityname>");
                     return false;
                 }
                 Entity entity = Entity.Resolve(player.Manager, objType);
                 entity.Move(player.X, player.Y);
                 player.Owner.EnterWorld(entity);
-            }
-            return true;
-        }
-    }
-
-    internal class SpawnCommand : Command
-    {
-        public SpawnCommand()
-            : base("spawn")
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (player.Client.Account.Rank >= 3) {
-                
-                if (player.Owner.Name == "Beachzone") {
-                    string name = string.Join(" ", args);
-                    ushort objType;
-                    //creates a new case insensitive dictionary based on the XmlDatas
-                    Dictionary<string, ushort> icdatas = new Dictionary<string, ushort>(
-                        player.Manager.GameData.IdToObjectType,
-                        StringComparer.OrdinalIgnoreCase);
-                    if (!icdatas.TryGetValue(name, out objType) ||
-                        !player.Manager.GameData.ObjectDescs.ContainsKey(objType))
-                    {
-                        player.SendHelp("Usage: /spawn <entityname>");
-                        return false;
-                    }
-                    Entity entity = Entity.Resolve(player.Manager, objType);
-                    entity.Move(player.X, player.Y);
-                    player.Owner.EnterWorld(entity);
-                }
-            else
-                {
-                    player.SendInfo("Devwarlt blocked to use this command in any other place, except Beachzone for events.");
-                }
-            } else {
-                player.SendInfo("You don't have rights to use this command.");
             }
             return true;
         }
@@ -581,59 +248,6 @@ namespace wServer.realm.commands
         }
     }
 
-    internal class VisitCommand : Command
-    {
-        public VisitCommand()
-            : base("visit", 1)
-        {
-        }
-
-        protected override bool Process(Player player, RealmTime time, string[] args)
-        {
-            if (args.Length < 1)
-            {
-                player.SendHelp("Usage: /visit <playername>");
-                return false;
-            }
-            if (player.Client.Account.Rank >= 4) {
-                foreach (KeyValuePair<string, Client> i in player.Manager.Clients)
-                {
-                    if (i.Value.Player.Owner is PetYard)
-                    {
-                        player.SendInfo("Player is in his Pet Yard you cannot visit him.");
-                        return false;
-                    }
-                    else if (i.Value.Player.Name.EqualsIgnoreCase(args[0]))
-                    {
-                        if (player.Owner == i.Value.Player.Owner)
-                        {
-                            player.SendInfo("You are already in the same world as this Player.");
-                            return false;
-                        }
-                        else
-                        {
-                            player.Client.Reconnect(new ReconnectPacket
-                            {
-                                GameId = i.Value.Player.Owner.Id,
-                                Host = "",
-                                IsFromArena = false,
-                                Key = i.Value.Player.Owner.PortalKey,
-                                KeyTime = -1,
-                                Name = i.Value.Player.Owner.Name,
-                                Port = -1
-                            });
-                        }
-                        return true;
-                    }
-                }
-            } else
-            {
-                player.SendError("Player could not be found!");
-            }
-            return false;
-        }
-    }
-
     internal class GiveCommand : Command
     {
         public GiveCommand()
@@ -658,7 +272,7 @@ namespace wServer.realm.commands
                 player.SendError("Unknown type!");
                 return false;
             }
-            if (!player.Manager.GameData.Items[objType].Secret || player.Client.Account.Rank >= 3)
+            if (!player.Manager.GameData.Items[objType].Secret || player.Client.Account.Rank >= 4)
             {
                 for (int i = 0; i < player.Inventory.Length; i++)
                     if (player.Inventory[i] == null)
@@ -755,7 +369,7 @@ namespace wServer.realm.commands
     internal class Kick : Command
     {
         public Kick()
-            : base("kick")
+            : base("kick", 1)
         {
         }
 
@@ -766,26 +380,21 @@ namespace wServer.realm.commands
                 player.SendHelp("Usage: /kick <playername>");
                 return false;
             }
-            if (player.Client.Account.Rank >= 2) {
-                try
+            try
+            {
+                foreach (KeyValuePair<int, Player> i in player.Owner.Players)
                 {
-                    foreach (KeyValuePair<int, Player> i in player.Owner.Players)
+                    if (i.Value.Name.ToLower() == args[0].ToLower().Trim())
                     {
-                        if (i.Value.Name.ToLower() == args[0].ToLower().Trim())
-                        {
-                            player.SendInfo("Player has been disconnected from this server!");
-                            i.Value.Client.Disconnect();
-                        }
+                        player.SendInfo("Player Disconnected");
+                        i.Value.Client.Disconnect();
                     }
                 }
-                catch
-                {
-                    player.SendError("Cannot kick!");
-                    return false;
-                }
-            } else
+            }
+            catch
             {
-                player.SendInfo("You don't have rights to use this command.");
+                player.SendError("Cannot kick!");
+                return false;
             }
             return true;
         }
@@ -794,7 +403,7 @@ namespace wServer.realm.commands
     internal class Mute : Command
     {
         public Mute()
-            : base("mute")
+            : base("mute", 1)
         {
         }
 
@@ -805,28 +414,22 @@ namespace wServer.realm.commands
                 player.SendHelp("Usage: /mute <playername>");
                 return false;
             }
-            if (player.Client.Account.Rank >= 2) {
-
-                try
+            try
+            {
+                foreach (KeyValuePair<int, Player> i in player.Owner.Players)
                 {
-                    foreach (KeyValuePair<int, Player> i in player.Owner.Players)
+                    if (i.Value.Name.ToLower() == args[0].ToLower().Trim())
                     {
-                        if (i.Value.Name.ToLower() == args[0].ToLower().Trim())
-                        {
-                            i.Value.Muted = true;
-                            i.Value.Manager.Database.DoActionAsync(db => db.MuteAccount(i.Value.AccountId));
-                            player.SendInfo("Player Muted.");
-                        }
+                        i.Value.Muted = true;
+                        i.Value.Manager.Database.DoActionAsync(db => db.MuteAccount(i.Value.AccountId));
+                        player.SendInfo("Player Muted.");
                     }
                 }
-                catch
-                {
-                    player.SendError("Cannot mute!");
-                    return false;
-                }
-            } else
+            }
+            catch
             {
-                player.SendInfo("You don't have rights to use this command.");
+                player.SendError("Cannot mute!");
+                return false;
             }
             return true;
         }
@@ -835,40 +438,31 @@ namespace wServer.realm.commands
     internal class Max : Command
     {
         public Max()
-            : base("max")
+            : base("max", 1)
         {
         }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            if (player.Client.Account.Rank > 3)
+            try
             {
-                try
-                {
-                    player.Stats[0] = player.ObjectDesc.MaxHitPoints;
-                    player.Stats[1] = player.ObjectDesc.MaxMagicPoints;
-                    player.Stats[2] = player.ObjectDesc.MaxAttack;
-                    player.Stats[3] = player.ObjectDesc.MaxDefense;
-                    player.Stats[4] = player.ObjectDesc.MaxSpeed;
-                    player.Stats[5] = player.ObjectDesc.MaxHpRegen;
-                    player.Stats[6] = player.ObjectDesc.MaxMpRegen;
-                    player.Stats[7] = player.ObjectDesc.MaxDexterity;
-                    player.SaveToCharacter();
-                    player.Client.Save();
-                    player.UpdateCount++;
-                    player.SendInfo("Success!");
-                }
-                catch
-                {
-                    player.SendError("Nothing happen.");
-                    return false;
-                }
-            } else if (player.Client.Account.Rank < 2) {
-                player.SendInfo("Use this following command to max your character: /tell mreyeball max.");
+                player.Stats[0] = player.ObjectDesc.MaxHitPoints;
+                player.Stats[1] = player.ObjectDesc.MaxMagicPoints;
+                player.Stats[2] = player.ObjectDesc.MaxAttack;
+                player.Stats[3] = player.ObjectDesc.MaxDefense;
+                player.Stats[4] = player.ObjectDesc.MaxSpeed;
+                player.Stats[5] = player.ObjectDesc.MaxHpRegen;
+                player.Stats[6] = player.ObjectDesc.MaxMpRegen;
+                player.Stats[7] = player.ObjectDesc.MaxDexterity;
+                player.SaveToCharacter();
+                player.Client.Save();
+                player.UpdateCount++;
+                player.SendInfo("Success");
             }
-            else
+            catch
             {
-                player.SendInfo("You don't have rights to use this command.");
+                player.SendError("Error while maxing stats");
+                return false;
             }
             return true;
         }
@@ -877,7 +471,7 @@ namespace wServer.realm.commands
     internal class UnMute : Command
     {
         public UnMute()
-            : base("unmute")
+            : base("unmute", 1)
         {
         }
 
@@ -888,37 +482,31 @@ namespace wServer.realm.commands
                 player.SendHelp("Usage: /unmute <playername>");
                 return false;
             }
-            if (player.Client.Account.Rank >= 2)
+            try
             {
-                try
+                foreach (KeyValuePair<int, Player> i in player.Owner.Players)
                 {
-                    foreach (KeyValuePair<int, Player> i in player.Owner.Players)
+                    if (i.Value.Name.ToLower() == args[0].ToLower().Trim())
                     {
-                        if (i.Value.Name.ToLower() == args[0].ToLower().Trim())
-                        {
-                            i.Value.Muted = true;
-                            i.Value.Manager.Database.DoActionAsync(db => db.UnmuteAccount(i.Value.AccountId));
-                            player.SendInfo("Player Unmuted.");
-                        }
+                        i.Value.Muted = true;
+                        i.Value.Manager.Database.DoActionAsync(db => db.UnmuteAccount(i.Value.AccountId));
+                        player.SendInfo("Player Unmuted.");
                     }
                 }
-                catch
-                {
-                    player.SendError("Cannot unmute!");
-                    return false;
-                }
-            } else
+            }
+            catch
             {
-                player.SendInfo("You don't have rights to use this command.");
+                player.SendError("Cannot unmute!");
+                return false;
             }
             return true;
         }
     }
 
-    internal class GlobalChat : Command
+    internal class OryxSay : Command
     {
-        public GlobalChat()
-            : base("global")
+        public OryxSay()
+            : base("osay", 1)
         {
         }
 
@@ -926,22 +514,11 @@ namespace wServer.realm.commands
         {
             if (args.Length == 0)
             {
-                player.SendHelp("Usage: /global <text>");
+                player.SendHelp("Usage: /oryxsay <saytext>");
                 return false;
             }
             string saytext = string.Join(" ", args);
-            //player.SendEnemy("Oryx the Mad God", saytext);
-            
-            foreach (Client i in player.Manager.Clients.Values)
-            {
-                i.SendPacket(new TextPacket
-                {
-                    BubbleTime = 5,
-                    Stars = player.Stars,
-                    Name = "#" + player.Name,
-                    Text = " " + saytext
-                });
-            }
+            player.SendEnemy("Oryx the Mad God", saytext);
             return true;
         }
     }
@@ -949,38 +526,33 @@ namespace wServer.realm.commands
     internal class SWhoCommand : Command //get all players from all worlds (this may become too large!)
     {
         public SWhoCommand()
-            : base("online")
+            : base("swho", 1)
         {
         }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            if (player.Client.Account.Rank >= 4) {
-                StringBuilder sb = new StringBuilder("All players: ");
+            StringBuilder sb = new StringBuilder("All conplayers: ");
 
-                foreach (KeyValuePair<int, World> w in player.Manager.Worlds)
+            foreach (KeyValuePair<int, World> w in player.Manager.Worlds)
+            {
+                World world = w.Value;
+                if (w.Key != 0)
                 {
-                    World world = w.Value;
-                    if (w.Key != 0)
+                    Player[] copy = world.Players.Values.ToArray();
+                    if (copy.Length != 0)
                     {
-                        Player[] copy = world.Players.Values.ToArray();
-                        if (copy.Length != 0)
+                        for (int i = 0; i < copy.Length; i++)
                         {
-                            for (int i = 0; i < copy.Length; i++)
-                            {
-                                sb.Append(copy[i].Name);
-                                sb.Append(", ");
-                            }
+                            sb.Append(copy[i].Name);
+                            sb.Append(", ");
                         }
                     }
                 }
-                string fixedString = sb.ToString().TrimEnd(',', ' '); //clean up trailing ", "s
-
-                player.SendInfo(fixedString);
-            } else
-            {
-                player.SendError("Cannot check who is online on all worlds of server!");
             }
+            string fixedString = sb.ToString().TrimEnd(',', ' '); //clean up trailing ", "s
+
+            player.SendInfo(fixedString);
             return true;
         }
     }
@@ -988,33 +560,28 @@ namespace wServer.realm.commands
     internal class Announcement : Command
     {
         public Announcement()
-            : base("announce")
+            : base("announce", 1)
         {
         }
 
         protected override bool Process(Player player, RealmTime time, string[] args)
         {
-            if (player.Client.Account.Rank >= 2) {
-                if (args.Length == 0)
-                {
-                    player.SendHelp("Usage: /announce <saytext>");
-                    return false;
-                }
-                string saytext = string.Join(" ", args);
-
-                foreach (Client i in player.Manager.Clients.Values)
-                {
-                    i.SendPacket(new TextPacket
-                    {
-                        BubbleTime = 0,
-                        Stars = -1,
-                        Name = "@ANNOUNCEMENT",
-                        Text = " " + saytext
-                    });
-                }
-            } else
+            if (args.Length == 0)
             {
-                player.SendInfo("You don't have rights to use this command.");
+                player.SendHelp("Usage: /announce <saytext>");
+                return false;
+            }
+            string saytext = string.Join(" ", args);
+
+            foreach (Client i in player.Manager.Clients.Values)
+            {
+                i.SendPacket(new TextPacket
+                {
+                    BubbleTime = 0,
+                    Stars = -1,
+                    Name = "@ANNOUNCEMENT",
+                    Text = " " + saytext
+                });
             }
             return true;
         }
@@ -1121,7 +688,7 @@ namespace wServer.realm.commands
                             Stars = -1,
                             BubbleTime = 0,
                             Text =
-                                "| <MAINTENANCE> Server restarting soon. Please be ready to disconnect. We are doing maintenance on server and necessary to restart server. Wait in Menu Screen to avoid Account in Use. Cordially, LoE Team."
+                                "Server restarting soon. Please be ready to disconnect. Estimated server down time: 30 Seconds - 1 Minute"
                         }, null);
                     }
                 }
@@ -1134,7 +701,414 @@ namespace wServer.realm.commands
             return true;
         }
     }
-    
+
+    //class VitalityCommand : ICommand
+    //{
+    //    public string Command { get { return "vit"; } }
+    //    public int RequiredRank { get { return 3; } }
+
+    //    protected override bool Process(Player player, RealmTime time, string[] args)
+    //    {
+    //        try
+    //        {
+    //            if (args.Length == 0)
+    //            {
+    //                player.SendHelp("Use /vit <ammount>");
+    //            }
+    //            else if (args.Length == 1)
+    //            {
+    //                player.Client.Player.Stats[5] = int.Parse(args[0]);
+    //                player.UpdateCount++;
+    //                player.SendInfo("Success!");
+    //            }
+    //        }
+    //        catch
+    //        {
+    //            player.SendError("Error!");
+    //        }
+    //    }
+    //}
+
+    //class DefenseCommand : ICommand
+    //{
+    //    public string Command { get { return "def"; } }
+    //    public int RequiredRank { get { return 3; } }
+
+    //    protected override bool Process(Player player, RealmTime time, string[] args)
+    //    {
+    //        try
+    //        {
+    //            if (args.Length == 0)
+    //            {
+    //                player.SendHelp("Use /def <ammount>");
+    //            }
+    //            else if (args.Length == 1)
+    //            {
+    //                player.Client.Player.Stats[3] = int.Parse(args[0]);
+    //                player.UpdateCount++;
+    //                player.SendInfo("Success!");
+    //            }
+    //        }
+    //        catch
+    //        {
+    //            player.SendError("Error!");
+    //        }
+    //    }
+    //}
+
+    //class AttackCommand : ICommand
+    //{
+    //    public string Command { get { return "att"; } }
+    //    public int RequiredRank { get { return 3; } }
+
+    //    protected override bool Process(Player player, RealmTime time, string[] args)
+    //    {
+    //        try
+    //        {
+    //            if (args.Length == 0)
+    //            {
+    //                player.SendHelp("Use /att <ammount>");
+    //            }
+    //            else if (args.Length == 1)
+    //            {
+    //                player.Client.Player.Stats[2] = int.Parse(args[0]);
+    //                player.UpdateCount++;
+    //                player.SendInfo("Success!");
+    //            }
+    //        }
+    //        catch
+    //        {
+    //            player.SendError("Error!");
+    //        }
+    //    }
+    //}
+
+    //class DexterityCommand : ICommand
+    //{
+    //    public string Command { get { return "dex"; } }
+    //    public int RequiredRank { get { return 3; } }
+
+    //    protected override bool Process(Player player, RealmTime time, string[] args)
+    //    {
+    //        try
+    //        {
+    //            if (args.Length == 0)
+    //            {
+    //                player.SendHelp("Use /dex <ammount>");
+    //            }
+    //            else if (args.Length == 1)
+    //            {
+    //                player.Client.Player.Stats[7] = int.Parse(args[0]);
+    //                player.UpdateCount++;
+    //                player.SendInfo("Success!");
+    //            }
+    //        }
+    //        catch
+    //        {
+    //            player.SendError("Error!");
+    //        }
+    //    }
+    //}
+
+    //class LifeCommand : ICommand
+    //{
+    //    public string Command { get { return "hp"; } }
+    //    public int RequiredRank { get { return 3; } }
+
+    //    protected override bool Process(Player player, RealmTime time, string[] args)
+    //    {
+    //        try
+    //        {
+    //            if (args.Length == 0)
+    //            {
+    //                player.SendHelp("Use /hp <ammount>");
+    //            }
+    //            else if (args.Length == 1)
+    //            {
+    //                player.Client.Player.Stats[0] = int.Parse(args[0]);
+    //                player.UpdateCount++;
+    //                player.SendInfo("Success!");
+    //            }
+    //        }
+    //        catch
+    //        {
+    //            player.SendError("Error!");
+    //        }
+    //    }
+    //}
+
+    //class ManaCommand : ICommand
+    //{
+    //    public string Command { get { return "mp"; } }
+    //    public int RequiredRank { get { return 3; } }
+
+    //    protected override bool Process(Player player, RealmTime time, string[] args)
+    //    {
+    //        try
+    //        {
+    //            if (args.Length == 0)
+    //            {
+    //                player.SendHelp("Use /mp <ammount>");
+    //            }
+    //            else if (args.Length == 1)
+    //            {
+    //                player.Client.Player.Stats[1] = int.Parse(args[0]);
+    //                player.UpdateCount++;
+    //                player.SendInfo("Success!");
+    //            }
+    //        }
+    //        catch
+    //        {
+    //            player.SendError("Error!");
+    //        }
+    //    }
+    //}
+
+    //class SpeedCommand : ICommand
+    //{
+    //    public string Command { get { return "spd"; } }
+    //    public int RequiredRank { get { return 3; } }
+
+    //    protected override bool Process(Player player, RealmTime time, string[] args)
+    //    {
+    //        try
+    //        {
+    //            if (args.Length == 0)
+    //            {
+    //                player.SendHelp("Use /spd <ammount>");
+    //            }
+    //            else if (args.Length == 1)
+    //            {
+    //                player.Client.Player.Stats[4] = int.Parse(args[0]);
+    //                player.UpdateCount++;
+    //                player.SendInfo("Success!");
+    //            }
+    //        }
+    //        catch
+    //        {
+    //            player.SendError("Error!");
+    //        }
+    //    }
+    //}
+
+    //class WisdomCommand : ICommand
+    //{
+    //    public string Command { get { return "wis"; } }
+    //    public int RequiredRank { get { return 3; } }
+
+    //    protected override bool Process(Player player, RealmTime time, string[] args)
+    //    {
+    //        try
+    //        {
+    //            if (args.Length == 0)
+    //            {
+    //                player.SendHelp("Use /spd <ammount>");
+    //            }
+    //            else if (args.Length == 1)
+    //            {
+    //                player.Client.Player.Stats[6] = int.Parse(args[0]);
+    //                player.UpdateCount++;
+    //                player.SendInfo("Success!");
+    //            }
+    //        }
+    //        catch
+    //        {
+    //            player.SendError("Error!");
+    //        }
+    //    }
+    //}
+
+    //class Ban : ICommand
+    //{
+    //    public string Command { get { return "ban"; } }
+    //    public int RequiredRank { get { return 4; } }
+
+    //    protected override bool Process(Player player, RealmTime time, string[] args)
+    //    {
+    //        if (args.Length == 0)
+    //        {
+    //            player.SendHelp("Usage: /ban <username>");
+    //        }
+    //        try
+    //        {
+    //            using (Database dbx = new Database())
+    //            {
+    //                var cmd = dbx.CreateQuery();
+    //                cmd.CommandText = "UPDATE accounts SET banned=1, rank=0 WHERE name=@name";
+    //                cmd.Parameters.AddWithValue("@name", args[0]);
+    //                if (cmd.ExecuteNonQuery() == 0)
+    //                {
+    //                    player.SendInfo("Could not ban");
+    //                }
+    //                else
+    //                {
+    //                    foreach (var i in player.Owner.Players)
+    //                    {
+    //                        if (i.Value.Name.ToLower() == args[0].ToLower().Trim())
+    //                        {
+    //                            i.Value.Client.Disconnect();
+    //                            player.SendInfo("Account successfully Banned");
+    //                            log.InfoFormat(args[0] + " was Banned.");
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        catch
+    //        {
+    //            player.SendInfo("Could not ban");
+    //        }
+    //    }
+    //}
+
+    //class UnBan : ICommand
+    //{
+    //    public string Command { get { return "unban"; } }
+    //    public int RequiredRank { get { return 4; } }
+
+    //    protected override bool Process(Player player, RealmTime time, string[] args)
+    //    {
+    //        if (args.Length == 0)
+    //        {
+    //            player.SendHelp("Usage: /unban <username>");
+    //        }
+    //        try
+    //        {
+    //            using (Database dbx = new Database())
+    //            {
+    //                var cmd = dbx.CreateQuery();
+    //                cmd.CommandText = "UPDATE accounts SET banned=0, rank=1 WHERE name=@name";
+    //                cmd.Parameters.AddWithValue("@name", args[0]);
+    //                if (cmd.ExecuteNonQuery() == 0)
+    //                {
+    //                    player.SendInfo("Could not unban");
+    //                }
+    //                else
+    //                {
+    //                    player.SendInfo("Account successfully Unbanned");
+    //                    log.InfoFormat(args[1] + " was Unbanned.");
+
+    //                }
+    //            }
+    //        }
+    //        catch
+    //        {
+    //            player.SendInfo("Could not unban, please unban in database");
+    //        }
+    //    }
+    //}
+
+    //class Rank : ICommand
+    //{
+    //    public string Command { get { return "rank"; } }
+    //    public int RequiredRank { get { return 4; } }
+
+    //    protected override bool Process(Player player, RealmTime time, string[] args)
+    //    {
+    //        if (args.Length < 2)
+    //        {
+    //            player.SendHelp("Usage: /rank <username> <number>\n0: Player\n1: Donator\n2: Game Master\n3: Developer\n4: Head Developer\n5: Admin");
+    //        }
+    //        else
+    //        {
+    //            try
+    //            {
+    //                using (Database dbx = new Database())
+    //                {
+    //                    var cmd = dbx.CreateQuery();
+    //                    cmd.CommandText = "UPDATE accounts SET rank=@rank WHERE name=@name";
+    //                    cmd.Parameters.AddWithValue("@rank", args[1]);
+    //                    cmd.Parameters.AddWithValue("@name", args[0]);
+    //                    if (cmd.ExecuteNonQuery() == 0)
+    //                    {
+    //                        player.SendInfo("Could not change rank");
+    //                    }
+    //                    else
+    //                        player.SendInfo("Account rank successfully changed");
+    //                }
+    //            }
+    //            catch
+    //            {
+    //                player.SendInfo("Could not change rank, please change rank in database");
+    //            }
+    //        }
+    //    }
+    //}
+    //class GuildRank : ICommand
+    //{
+    //    public string Command { get { return "grank"; } }
+    //    public int RequiredRank { get { return 4; } }
+
+    //    protected override bool Process(Player player, RealmTime time, string[] args)
+    //    {
+    //        if (args.Length < 2)
+    //        {
+    //            player.SendHelp("Usage: /grank <username> <number>");
+    //        }
+    //        else
+    //        {
+    //            try
+    //            {
+    //                using (Database dbx = new Database())
+    //                {
+    //                    var cmd = dbx.CreateQuery();
+    //                    cmd.CommandText = "UPDATE accounts SET guildRank=@guildRank WHERE name=@name";
+    //                    cmd.Parameters.AddWithValue("@guildRank", args[1]);
+    //                    cmd.Parameters.AddWithValue("@name", args[0]);
+    //                    if (cmd.ExecuteNonQuery() == 0)
+    //                    {
+    //                        player.SendInfo("Could not change guild rank. Use 10, 20, 30, 40, or 50 (invisible)");
+    //                    }
+    //                    else
+    //                        player.SendInfo("Guild rank successfully changed");
+    //                    log.InfoFormat(args[1] + "'s guild rank has been changed");
+    //                }
+    //            }
+    //            catch
+    //            {
+    //                player.SendInfo("Could not change rank, please change rank in database");
+    //            }
+    //        }
+    //    }
+    //}
+    //class ChangeGuild : ICommand
+    //{
+    //    public string Command { get { return "setguild"; } }
+    //    public int RequiredRank { get { return 4; } }
+
+    //    protected override bool Process(Player player, RealmTime time, string[] args)
+    //    {
+    //        if (args.Length < 2)
+    //        {
+    //            player.SendHelp("Usage: /setguild <username> <guild id>");
+    //        }
+    //        else
+    //        {
+    //            try
+    //            {
+    //                using (Database dbx = new Database())
+    //                {
+    //                    var cmd = dbx.CreateQuery();
+    //                    cmd.CommandText = "UPDATE accounts SET guild=@guild WHERE name=@name";
+    //                    cmd.Parameters.AddWithValue("@guild", args[1]);
+    //                    cmd.Parameters.AddWithValue("@name", args[0]);
+    //                    if (cmd.ExecuteNonQuery() == 0)
+    //                    {
+    //                        player.SendInfo("Could not change guild.");
+    //                    }
+    //                    else
+    //                        player.SendInfo("Guild successfully changed");
+    //                    log.InfoFormat(args[1] + "'s guild has been changed");
+    //                }
+    //            }
+    //            catch
+    //            {
+    //                player.SendInfo("Could not change guild, please change in database.                                Use /setguild <username> <guild id>");
+    //            }
+    //        }
+    //    }
+    //}
+
     internal class TqCommand : Command
     {
         public TqCommand()
@@ -1166,7 +1140,62 @@ namespace wServer.realm.commands
             return true;
         }
     }
-    
+
+    //class GodMode : ICommand
+    //{
+    //    public string Command { get { return "god"; } }
+    //    public int RequiredRank { get { return 3; } }
+
+    //    protected override bool Process(Player player, RealmTime time, string[] args)
+    //    {
+    //        if (player.HasConditionEffect(ConditionEffects.Invincible))
+    //        {
+    //            player.ApplyConditionEffect(new ConditionEffect()
+    //            {
+    //                Effect = ConditionEffectIndex.Invincible,
+    //                DurationMS = 0
+    //            });
+    //            player.SendInfo("Godmode Off");
+    //        }
+    //        else
+    //        {
+
+    //            player.ApplyConditionEffect(new ConditionEffect()
+    //            {
+    //                Effect = ConditionEffectIndex.Invincible,
+    //                DurationMS = -1
+    //            });
+    //            player.SendInfo("Godmode On");
+    //        }
+    //    }
+    //}
+    //class StarCommand : ICommand
+    //{
+    //    public string Command { get { return "stars"; } }
+    //    public int RequiredRank { get { return 2; } }
+
+    //    protected override bool Process(Player player, RealmTime time, string[] args)
+    //    {
+    //        try
+    //        {
+    //            if (args.Length == 0)
+    //            {
+    //                player.SendHelp("Use /stars <ammount>");
+    //            }
+    //            else if (args.Length == 1)
+    //            {
+    //                player.Client.Player.Stars = int.Parse(args[0]);
+    //                player.UpdateCount++;
+    //                player.SendInfo("Success!");
+    //            }
+    //        }
+    //        catch
+    //        {
+    //            player.SendError("Error!");
+    //        }
+    //    }
+    //}
+
     internal class LevelCommand : Command
     {
         public LevelCommand()

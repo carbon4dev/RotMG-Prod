@@ -1,12 +1,13 @@
-package kabam.rotmg.servers.api {
-   public interface ServerModel {
+﻿package kabam.rotmg.servers.api {
+public interface ServerModel {
 
-      function setServers(param1:Vector.<Server>) : void;
+    function setServers(_arg_1:Vector.<Server>):void;
 
-      function getServer() : Server;
+    function getServer():Server;
 
-      function isServerAvailable() : Boolean;
+    function isServerAvailable():Boolean;
 
-      function getServers() : Vector.<Server>;
-   }
+    function getServers():Vector.<Server>;
+
 }
+}//package kabam.rotmg.servers.api

@@ -1,15 +1,11 @@
-// Decompiled by AS3 Sorcerer 1.40
-// http://www.as3sorcerer.com/
+package kabam.rotmg.assets {
+import mx.core.*;
 
-//kabam.rotmg.assets.EmbeddedData_TombOfTheAncientsCXML
-
-package kabam.rotmg.assets{
-    import mx.core.ByteArrayAsset;
-
-[Embed(source="EmbeddedData_TombOfTheAncientsCXML.xml", mimeType="application/octet-stream")]
-    public class EmbeddedData_TombOfTheAncientsCXML extends ByteArrayAsset {
-
+[Embed(source="EmbeddedData_TombOfTheAncientsCXML.dat", mimeType="application/octet-stream")]
+public class EmbeddedData_TombOfTheAncientsCXML extends ByteArrayAsset {
+    public function EmbeddedData_TombOfTheAncientsCXML() {
+        super();
 
     }
-}//package kabam.rotmg.assets
-
+}
+}

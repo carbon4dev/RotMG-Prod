@@ -44,13 +44,17 @@ namespace server
             Thread.CurrentThread.Name = "Entry";
 
             Settings = new SimpleSettings("server");
-            Database = new Database();
+            Database = new Database(
+                Settings.GetValue<string>("db_host", "127.0.0.1"),
+                Settings.GetValue<string>("db_database", "rotmgprod"),
+                Settings.GetValue<string>("db_user", "root"),
+                Settings.GetValue<string>("db_auth", ""));
             GameData = new XmlData();
 
             InstanceId = Guid.NewGuid().ToString();
             Console.CancelKeyPress += (sender, e) => e.Cancel = true;
 
-            var port = Settings.GetValue<int>("port", "8497");
+            var port = Settings.GetValue<int>("port", "80");
 
             if (RunPreCheck(port))
             {

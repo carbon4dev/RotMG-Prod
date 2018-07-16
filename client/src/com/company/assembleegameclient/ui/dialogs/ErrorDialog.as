@@ -1,7 +1,6 @@
-package com.company.assembleegameclient.ui.dialogs {
+﻿package com.company.assembleegameclient.ui.dialogs {
 import com.company.assembleegameclient.ui.DeprecatedTextButton;
 import com.company.assembleegameclient.util.StageProxy;
-import com.company.googleanalytics.GA;
 import com.company.util.GraphicsUtil;
 
 import flash.display.CapsStyle;
@@ -28,211 +27,179 @@ import org.osflash.signals.natives.NativeMappedSignal;
 
 public class ErrorDialog extends Sprite {
 
-      public static const GREY:int = 11776947;
+    public static const GREY:int = 0xB3B3B3;
+    protected static const WIDTH:int = 300;
+    public var ok:Signal;
+    public var box_:Sprite = new Sprite();
+    public var rect_:Shape = new Shape();
+    public var textText_:TextFieldDisplayConcrete;
+    public var titleText_:TextFieldDisplayConcrete = null;
+    public var button1_:DeprecatedTextButton = null;
+    public var button2_:DeprecatedTextButton = null;
+    public var offsetX:Number = 0;
+    public var offsetY:Number = 0;
+    public var stageProxy:StageProxy;
+    private var outlineFill_:GraphicsSolidFill = new GraphicsSolidFill(0xFFFFFF, 1);
+    private var lineStyle_:GraphicsStroke = new GraphicsStroke(
+            1, false, LineScaleMode.NORMAL, CapsStyle.NONE, JointStyle.ROUND, 3, outlineFill_
+    );
+    private var backgroundFill_:GraphicsSolidFill = new GraphicsSolidFill(0x363636, 1);
+    protected var path_:GraphicsPath = new GraphicsPath(new Vector.<int>(), new Vector.<Number>());
+    protected var uiWaiter:SignalWaiter = new SignalWaiter();
+    protected const graphicsData_:Vector.<IGraphicsData> = new <IGraphicsData>[
+        lineStyle_, backgroundFill_, path_, GraphicsUtil.END_FILL, GraphicsUtil.END_STROKE
+    ];
 
-      protected static const WIDTH:int = 300;
+    public function ErrorDialog(_arg_1:String) {
+        super();
+        var _local_2:String = ["An error has occured:", _arg_1].join("\n");
+        this.stageProxy = new StageProxy(this);
+        this._makeUIAndAdd(_local_2, "D'oh, this isn't good", "ErrorWindow.buttonOK", null);
+        this.makeUIAndAdd();
+        this.uiWaiter.complete.addOnce(this.onComplete);
+        addChild(this.box_);
+        this.ok = new NativeMappedSignal(this, Dialog.LEFT_BUTTON);
+    }
 
-      public var ok:Signal;
+    private function _makeUIAndAdd(_arg_1:String, _arg_2:String, _arg_3:String, _arg_4:String):void {
+        this.initText(_arg_1);
+        this.addTextFieldDisplay(this.textText_);
+        this.initNonNullTitleAndAdd(_arg_2);
+        this.makeNonNullButtons(_arg_3, _arg_4);
+    }
 
-      public var box_:Sprite;
+    protected function makeUIAndAdd():void {
+    }
 
-      public var rect_:Shape;
+    protected function initText(_arg_1:String):void {
+        this.textText_ = new TextFieldDisplayConcrete().setSize(14).setColor(GREY);
+        this.textText_.setTextWidth((WIDTH - 40));
+        this.textText_.x = 20;
+        this.textText_.setMultiLine(true).setWordWrap(true).setAutoSize(TextFieldAutoSize.CENTER);
+        this.textText_.setStringBuilder(new StaticStringBuilder(_arg_1));
+        this.textText_.mouseEnabled = true;
+        this.textText_.filters = [new DropShadowFilter(0, 0, 0, 1, 6, 6, 1)];
+    }
 
-      public var textText_:TextFieldDisplayConcrete;
+    private function addTextFieldDisplay(_arg_1:TextFieldDisplayConcrete):void {
+        this.box_.addChild(_arg_1);
+        this.uiWaiter.push(_arg_1.textChanged);
+    }
 
-      public var titleText_:TextFieldDisplayConcrete = null;
-
-      public var button1_:DeprecatedTextButton = null;
-
-      public var button2_:DeprecatedTextButton = null;
-
-      public var analyticsPageName_:String = null;
-
-      public var offsetX:Number = 0;
-
-      public var offsetY:Number = 0;
-
-      public var stageProxy:StageProxy;
-
-      private var outlineFill_:GraphicsSolidFill;
-
-      private var lineStyle_:GraphicsStroke;
-
-      private var backgroundFill_:GraphicsSolidFill;
-
-      protected var path_:GraphicsPath;
-
-      protected const graphicsData_:Vector.<IGraphicsData> = new <IGraphicsData>[lineStyle_,backgroundFill_,path_,GraphicsUtil.END_FILL,GraphicsUtil.END_STROKE];
-
-      protected var uiWaiter:SignalWaiter;
-
-      public function ErrorDialog(param1:String) {
-         this.box_ = new Sprite();
-         this.rect_ = new Shape();
-         this.outlineFill_ = new GraphicsSolidFill(16777215,1);
-         this.lineStyle_ = new GraphicsStroke(1,false,LineScaleMode.NORMAL,CapsStyle.NONE,JointStyle.ROUND,3,this.outlineFill_);
-         this.backgroundFill_ = new GraphicsSolidFill(3552822,1);
-         this.path_ = new GraphicsPath(new Vector.<int>(),new Vector.<Number>());
-         this.uiWaiter = new SignalWaiter();
-         super();
-         var _local2:String = ["LoE Corporation notify:",param1].join("\n");
-         this.stageProxy = new StageProxy(this);
-         this.analyticsPageName_ = "/error";
-         this._makeUIAndAdd(_local2,"ERROR!","Got it!",null);
-         this.makeUIAndAdd();
-         this.uiWaiter.complete.addOnce(this.onComplete);
-         addChild(this.box_);
-         this.ok = new NativeMappedSignal(this,Dialog.LEFT_BUTTON);
-      }
-
-      private function _makeUIAndAdd(param1:String, param2:String, param3:String, param4:String) : void {
-         this.initText(param1);
-         this.addTextFieldDisplay(this.textText_);
-         this.initNonNullTitleAndAdd(param2);
-         this.makeNonNullButtons(param3,param4);
-      }
-
-      protected function makeUIAndAdd() : void {
-      }
-
-      protected function initText(param1:String) : void {
-         this.textText_ = new TextFieldDisplayConcrete().setSize(14).setColor(GREY);
-         this.textText_.setTextWidth(WIDTH - 40);
-         this.textText_.x = 20;
-         this.textText_.setMultiLine(true).setWordWrap(true).setAutoSize(TextFieldAutoSize.CENTER);
-         this.textText_.setStringBuilder(new StaticStringBuilder(param1));
-         this.textText_.mouseEnabled = true;
-         this.textText_.filters = [new DropShadowFilter(0,0,0,1,6,6,1)];
-      }
-
-      private function addTextFieldDisplay(param1:TextFieldDisplayConcrete) : void {
-         this.box_.addChild(param1);
-         this.uiWaiter.push(param1.textChanged);
-      }
-
-      private function initNonNullTitleAndAdd(param1:String) : void {
-         if(param1 != null) {
+    private function initNonNullTitleAndAdd(_arg_1:String):void {
+        if (_arg_1 != null) {
             this.titleText_ = new TextFieldDisplayConcrete().setSize(18).setColor(5746018);
             this.titleText_.setTextWidth(WIDTH);
             this.titleText_.setBold(true);
             this.titleText_.setAutoSize(TextFieldAutoSize.CENTER);
-            this.titleText_.filters = [new DropShadowFilter(0,0,0,1,8,8,1)];
-            this.titleText_.setStringBuilder(new StaticStringBuilder(param1));
+            this.titleText_.filters = [new DropShadowFilter(0, 0, 0, 1, 8, 8, 1)];
+            this.titleText_.setStringBuilder(new StaticStringBuilder(_arg_1));
             this.addTextFieldDisplay(this.titleText_);
-         }
-      }
+        }
+    }
 
-      private function makeNonNullButtons(param1:String, param2:String) : void {
-         if(param1 != null) {
-            this.button1_ = new DeprecatedTextButton(16,param1,120);
-            this.button1_.addEventListener(MouseEvent.CLICK,this.onButton1Click);
-         }
-         if(param2 != null) {
-            this.button2_ = new DeprecatedTextButton(16,param2,120);
-            this.button2_.addEventListener(MouseEvent.CLICK,this.onButton2Click);
-         }
-      }
+    private function makeNonNullButtons(_arg_1:String, _arg_2:String):void {
+        if (_arg_1 != null) {
+            this.button1_ = new DeprecatedTextButton(16, _arg_1, 120);
+            this.button1_.addEventListener(MouseEvent.CLICK, this.onButton1Click);
+        }
+        if (_arg_2 != null) {
+            this.button2_ = new DeprecatedTextButton(16, _arg_2, 120);
+            this.button2_.addEventListener(MouseEvent.CLICK, this.onButton2Click);
+        }
+    }
 
-      private function onComplete() : void {
-         this.draw();
-         this.positionDialogAndTryAnalytics();
-      }
+    private function onComplete():void {
+        this.draw();
+        this.positionDialog();
+    }
 
-      private function positionDialogAndTryAnalytics() : void {
-         this.box_.x = this.offsetX + 800 / 2 - this.box_.width / 2;
-         this.box_.y = this.offsetY + 600 / 2 - this.getBoxHeight() / 2;
-         if(this.analyticsPageName_ != null) {
-            this.tryAnalytics();
-         }
-      }
+    private function positionDialog():void {
+        this.box_.x = ((this.offsetX + (this.stageProxy.getStageWidth() / 2)) - (this.box_.width / 2));
+        this.box_.y = ((this.offsetY + (this.stageProxy.getStageHeight() / 2)) - (this.getBoxHeight() / 2));
+    }
 
-      private function tryAnalytics() : void {
-         try {
-            GA.global().trackPageview(this.analyticsPageName_);
-            return;
-         }
-         catch(error:Error) {
-            return;
-         }
-      }
+    private function draw():void {
+        this.drawTitleAndText();
+        this.drawAdditionalUI();
+        this.drawButtonsAndBackground();
+    }
 
-      private function draw() : void {
-         this.drawTitleAndText();
-         this.drawAdditionalUI();
-         this.drawButtonsAndBackground();
-      }
+    protected function drawAdditionalUI():void {
+    }
 
-      protected function drawAdditionalUI() : void {
-      }
-
-      protected function drawButtonsAndBackground() : void {
-         if(this.box_.contains(this.rect_)) {
+    protected function drawButtonsAndBackground():void {
+        if (this.box_.contains(this.rect_)) {
             this.box_.removeChild(this.rect_);
-         }
-         this.removeButtonsIfAlreadyAdded();
-         this.addButtonsAndLayout();
-         this.drawBackground();
-         this.box_.addChildAt(this.rect_,0);
-         this.box_.filters = [new DropShadowFilter(0,0,0,1,16,16,1)];
-      }
+        }
+        this.removeButtonsIfAlreadyAdded();
+        this.addButtonsAndLayout();
+        this.drawBackground();
+        this.box_.addChildAt(this.rect_, 0);
+        this.box_.filters = [new DropShadowFilter(0, 0, 0, 1, 16, 16, 1)];
+    }
 
-      private function drawBackground() : void {
-         GraphicsUtil.clearPath(this.path_);
-         GraphicsUtil.drawCutEdgeRect(0,0,WIDTH,this.getBoxHeight() + 10,4,[1,1,1,1],this.path_);
-         var _local1:Graphics = this.rect_.graphics;
-         _local1.clear();
-         _local1.drawGraphicsData(this.graphicsData_);
-      }
+    private function drawBackground():void {
+        GraphicsUtil.clearPath(this.path_);
+        GraphicsUtil.drawCutEdgeRect(0, 0, WIDTH, (this.getBoxHeight() + 10), 4, [1, 1, 1, 1], this.path_);
+        var _local_1:Graphics = this.rect_.graphics;
+        _local_1.clear();
+        _local_1.drawGraphicsData(this.graphicsData_);
+    }
 
-      protected function getBoxHeight() : Number {
-         return this.box_.height;
-      }
+    protected function getBoxHeight():Number {
+        return (this.box_.height);
+    }
 
-      private function addButtonsAndLayout() : void {
-         var _local1:int = 0;
-         if(this.button1_ != null) {
-            _local1 = this.box_.height + 16;
+    private function addButtonsAndLayout():void {
+        var _local_1:int;
+        if (this.button1_ != null) {
+            _local_1 = (this.box_.height + 16);
             this.box_.addChild(this.button1_);
-            this.button1_.y = _local1;
-            if(this.button2_ == null) {
-               this.button1_.x = WIDTH / 2 - this.button1_.width / 2;
-            } else {
-               this.button1_.x = WIDTH / 4 - this.button1_.width / 2;
-               this.box_.addChild(this.button2_);
-               this.button2_.x = 3 * WIDTH / 4 - this.button2_.width / 2;
-               this.button2_.y = _local1;
+            this.button1_.y = _local_1;
+            if (this.button2_ == null) {
+                this.button1_.x = ((WIDTH / 2) - (this.button1_.width / 2));
             }
-         }
-      }
+            else {
+                this.button1_.x = ((WIDTH / 4) - (this.button1_.width / 2));
+                this.box_.addChild(this.button2_);
+                this.button2_.x = (((3 * WIDTH) / 4) - (this.button2_.width / 2));
+                this.button2_.y = _local_1;
+            }
+        }
+    }
 
-      private function removeButtonsIfAlreadyAdded() : void {
-         if(Boolean(this.button1_) && Boolean(this.box_.contains(this.button1_))) {
+    private function removeButtonsIfAlreadyAdded():void {
+        if (((this.button1_) && (this.box_.contains(this.button1_)))) {
             this.box_.removeChild(this.button1_);
-         }
-         if(Boolean(this.button2_) && Boolean(this.box_.contains(this.button2_))) {
+        }
+        if (((this.button2_) && (this.box_.contains(this.button2_)))) {
             this.box_.removeChild(this.button2_);
-         }
-      }
+        }
+    }
 
-      private function drawTitleAndText() : void {
-         if(this.titleText_ != null) {
+    private function drawTitleAndText():void {
+        if (this.titleText_ != null) {
             this.titleText_.y = 2;
-            this.textText_.y = this.titleText_.height + 8;
-         } else {
+            this.textText_.y = (this.titleText_.height + 8);
+        }
+        else {
             this.textText_.y = 4;
-         }
-      }
+        }
+    }
 
-      private function onButton1Click(param1:MouseEvent) : void {
-         dispatchEvent(new Event(Dialog.LEFT_BUTTON));
-      }
+    private function onButton1Click(_arg_1:MouseEvent):void {
+        dispatchEvent(new Event(Dialog.LEFT_BUTTON));
+    }
 
-      private function onButton2Click(param1:Event) : void {
-         dispatchEvent(new Event(Dialog.RIGHT_BUTTON));
-      }
+    private function onButton2Click(_arg_1:Event):void {
+        dispatchEvent(new Event(Dialog.RIGHT_BUTTON));
+    }
 
-      public function setBaseAlpha(param1:Number) : void {
-         this.rect_.alpha = param1 > 1?Number(1):param1 < 0?Number(0):Number(param1);
-      }
-   }
+    public function setBaseAlpha(_arg_1:Number):void {
+        this.rect_.alpha = (((_arg_1 > 1)) ? 1 : (((_arg_1 < 0)) ? 0 : _arg_1));
+    }
+
+
 }
+}//package com.company.assembleegameclient.ui.dialogs

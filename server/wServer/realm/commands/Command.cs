@@ -26,7 +26,7 @@ namespace wServer.realm.commands
 
         private static int GetPermissionLevel(Player player)
         {
-            if (player.Client.Account.Rank == 4)
+            if (player.Client.Account.Rank == 3)
                 return 1;
             return 0;
         }
@@ -52,10 +52,10 @@ namespace wServer.realm.commands
                 string[] a = args.Split(' ');
                 return Process(player, time, a);
             }
-            catch// (Exception ex)
+            catch (Exception ex)
             {
-                //.log.Error("Error when executing the command.", ex);
-                player.SendInfo("You don't have rights to use this command.");
+                log.Error("Error when executing the command.", ex);
+                player.SendError("Error when executing the command.");
                 return false;
             }
         }
@@ -96,7 +96,7 @@ namespace wServer.realm.commands
             Command command;
             if (!cmds.TryGetValue(cmd, out command))
             {
-                player.SendError("Sorry but isn't any command like: /" + args);
+                player.SendError("Unknown command!");
                 return false;
             }
             log.InfoFormat("[Command] <{0}> {1}", player.Name, text);

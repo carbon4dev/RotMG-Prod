@@ -191,7 +191,7 @@ namespace wServer.realm.entities.player
                     if (enemy.Owner == null) return;
                     w.BroadcastPacket(new ShowEffectPacket
                     {
-                        EffectType = EffectType.Flashing,
+                        EffectType = EffectType.Dead,
                         TargetId = enemy.Id,
                         Color = new ARGB(0xffddff00)
                     }, null);
@@ -313,16 +313,15 @@ namespace wServer.realm.entities.player
                     {
                         ProjectileDesc prjDesc = item.Projectiles[0]; //Assume only one
                         Packet[] batch = new Packet[21];
-                        List<Packet> pkts = new List<Packet>();
                         uint s = Random.CurrentSeed;
                         Random.CurrentSeed = (uint)(s * time.tickTimes);
-                        for (int i = 0; i < 5; i++)
+                        for (int i = 0; i < 20; i++)
                         {
                             Projectile proj = CreateProjectile(prjDesc, item.ObjectType,
                                 (int)StatsManager.GetAttackDamage(prjDesc.MinDamage, prjDesc.MaxDamage),
                                 time.tickTimes, target, (float)(i * (Math.PI * 2) / 20));
                             Owner.EnterWorld(proj);
-                            //FameCounter.Shoot(proj);
+                            FameCounter.Shoot(proj);
                             batch[i] = new Shoot2Packet()
                             {
                                 BulletId = proj.ProjectileId,
@@ -332,16 +331,16 @@ namespace wServer.realm.entities.player
                                 Angle = proj.Angle,
                                 Damage = (short)proj.Damage
                             };
-                            Random.CurrentSeed = s;
-                            //batch[20] = new ShowEffectPacket()
-                            //{
-                            //    EffectType = EffectType.Trail,
-                            //    PosA = target,
-                            //    TargetId = Id,
-                            //    Color = new ARGB(0xFFFF00AA)
-                            //};
-                            BroadcastSync(batch, p => this.Dist(p) < 25);
                         }
+                        Random.CurrentSeed = s;
+                        batch[20] = new ShowEffectPacket()
+                        {
+                            EffectType = EffectType.Trail,
+                            PosA = target,
+                            TargetId = Id,
+                            Color = new ARGB(0xFFFF00AA)
+                        };
+                        BroadcastSync(batch, p => this.Dist(p) < 35);
                     } break;
                     case ActivateEffects.Shoot:
                     {
@@ -735,69 +734,6 @@ namespace wServer.realm.entities.player
                     }
                         break;
 
-                    case ActivateEffects.LightningFulmi:
-                    {
-                        Enemy start = null;
-                        double angle = Math.Atan2(target.Y - Y, target.X - X);
-                        double diff = Math.PI/3;
-                        Owner.Aoe(target, 6, false, enemy =>
-                        {
-                            if (!(enemy is Enemy)) return;
-                            double x = Math.Atan2(enemy.Y - Y, enemy.X - X);
-                            if (Math.Abs(angle - x) < diff)
-                            {
-                                start = enemy as Enemy;
-                                diff = Math.Abs(angle - x);
-                            }
-                        });
-                        if (start == null)
-                            break;
-
-                        Enemy current = start;
-                        Enemy[] targets = new Enemy[eff.MaxTargets];
-                        for (int i = 0; i < targets.Length; i++)
-                        {
-                            targets[i] = current;
-                            Enemy next = current.GetNearestEntity(8, false,
-                                enemy =>
-                                    enemy is Enemy &&
-                                    Array.IndexOf(targets, enemy) == -1 &&
-                                    this.Dist(enemy) <= 6) as Enemy;
-
-                            if (next == null) break;
-                            current = next;
-                        }
-
-                        List<Packet> pkts = new List<Packet>();
-                        for (int i = 0; i < targets.Length; i++)
-                        {
-                            if (targets[i] == null) break;
-                            if(targets[i].HasConditionEffect(ConditionEffectIndex.Invincible)) continue;
-                            Entity prev = i == 0 ? (Entity) this : targets[i - 1];
-                            targets[i].Damage(this, time, eff.TotalDamage, false);
-                            if (eff.ConditionEffect != null)
-                                targets[i].ApplyConditionEffect(new ConditionEffect
-                                {
-                                    Effect = eff.ConditionEffect.Value,
-                                    DurationMS = (int) (eff.EffectDuration*1000)
-                                });
-                            pkts.Add(new ShowEffectPacket
-                            {
-                                EffectType = EffectType.Lightning,
-                                TargetId = prev.Id,
-                                Color = new ARGB(0x00ff9933),
-                                PosA = new Position
-                                {
-                                    X = targets[i].X,
-                                    Y = targets[i].Y
-                                },
-                                PosB = new Position {X = 350}
-                            });
-                        }
-                        BroadcastSync(pkts, p => this.Dist(p) < 25);
-                    }
-                        break;
-
                     case ActivateEffects.Lightning:
                     {
                         Enemy start = null;
@@ -872,12 +808,12 @@ namespace wServer.realm.entities.player
                                 TargetId = Id,
                                 PosA = target
                             }, p => this.Dist(p) < 25);
-                            Placeholder x = new Placeholder(Manager, 1000);
+                            Placeholder x = new Placeholder(Manager, 1500);
                             x.Move(target.X, target.Y);
                             Owner.EnterWorld(x);
                             try
                             {
-                                Owner.Timers.Add(new WorldTimer(1000, (world, t) =>
+                                Owner.Timers.Add(new WorldTimer(1500, (world, t) =>
                                 {
                                     world.BroadcastPacket(new ShowEffectPacket
                                     {
@@ -910,7 +846,7 @@ namespace wServer.realm.entities.player
                             TargetId = Id,
                             Color = new ARGB(0xffffffff),
                             PosA = new Position {X = eff.Range/2}
-                        }, p => this.Dist(p) < 12);
+                        }, p => this.Dist(p) < 25);
                     }
                         break;
 
@@ -925,29 +861,6 @@ namespace wServer.realm.entities.player
                             PosA = new Position {X = 1}
                         }, null);
                     }
-                        break;
-                        
-                    case ActivateEffects.TreasureActivate:
-                        {
-
-                            var db = new db.Database();
-                            int a = eff.Amount;
-
-                            Credits = db.UpdateCredit(Client.Account, a);
-                            UpdateCount++;
-                            db.Dispose();
-                        }
-                        break;
-                    case ActivateEffects.FameActivate:
-                        {
-
-                            var db = new db.Database();
-                            int a = eff.Amount;
-
-                            CurrentFame = db.UpdateFame(Client.Account, a);
-                            UpdateCount++;
-                            db.Dispose();
-                        }
                         break;
 
                     case ActivateEffects.IncrementStat:
@@ -974,69 +887,6 @@ namespace wServer.realm.entities.player
                             Stats[idx] = limit;
                         UpdateCount++;
                     }
-                        break;
-                        
-                    case ActivateEffects.OPBUFF:
-                        {
-                            if (!ninjaShoot)
-                            {
-                                ApplyConditionEffect(new ConditionEffect
-                                {
-                                    Effect = ConditionEffectIndex.Damaging,
-                                    DurationMS = -1
-                                });
-                                ninjaFreeTimer = true;
-                                ninjaShoot = true;
-                                Mp -= 20;
-                                UpdateCount++;
-                            }
-                            else
-                            {
-                                /*ApplyConditionEffect(new ConditionEffect
-                                {
-                                    Effect = ConditionEffectIndex.Armored,
-                                    DurationMS = -1
-                                });*/
-                                ApplyConditionEffect(new ConditionEffect
-                                {
-                                    Effect = ConditionEffectIndex.Damaging,
-                                    DurationMS = 0
-                                });
-                                ushort obj;
-                                Manager.GameData.IdToObjectType.TryGetValue(item.ObjectId, out obj);
-                                if (Mp >= item.MpEndCost)
-                                {
-                                    ActivateShoot(time, item, pkt.ItemUsePos);
-                                    Mp -= (int)item.MpEndCost*2;
-                                }
-                                targetlink = target;
-                                ninjaFreeTimer = false;
-                                ninjaShoot = false;
-                            }
-                        }
-                        break;
-
-                   case ActivateEffects.SpiderTrap:
-                        {
-                            BroadcastSync(new ShowEffectPacket
-                            {
-                                EffectType = EffectType.Throw,
-                                Color = new ARGB(0xFFFFFF),
-                                TargetId = Id,
-                                PosA = target
-                            }, p => this.Dist(p) < 25);
-                            Owner.Timers.Add(new WorldTimer(1500, (world, t) =>
-                            {
-                                Trap trap = new Trap(
-                                    this,
-                                    eff.Radius,
-                                    eff.TotalDamage,
-                                    eff.ConditionEffect ?? ConditionEffectIndex.Slowed,
-                                    eff.EffectDuration);
-                                trap.Move(target.X, target.Y);
-                                world.EnterWorld(trap);
-                            }));
-                        }
                         break;
 
                     case ActivateEffects.UnlockPortal:
@@ -1149,8 +999,6 @@ namespace wServer.realm.entities.player
                                 });
                                 ninjaFreeTimer = true;
                                 ninjaShoot = true;
-                                Mp -= 10;
-                                UpdateCount++;
                             }
                             else
                             {
@@ -1168,7 +1016,6 @@ namespace wServer.realm.entities.player
                                 }
                                 targetlink = target;
                                 ninjaShoot = false;
-                                ninjaFreeTimer = false;
                             }
                         }
                         break;

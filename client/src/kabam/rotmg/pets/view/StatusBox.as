@@ -1,4 +1,4 @@
-package kabam.rotmg.pets.view {
+﻿package kabam.rotmg.pets.view {
 import flash.display.Sprite;
 
 import kabam.rotmg.pets.util.PetsViewAssetFactory;
@@ -8,53 +8,49 @@ import kabam.rotmg.ui.view.SignalWaiter;
 
 public class StatusBox extends Sprite {
 
-      private const labelTextfield:TextFieldDisplayConcrete = PetsViewAssetFactory.returnTextfield(16777215,16,true);
+    private const labelTextfield:TextFieldDisplayConcrete = PetsViewAssetFactory.returnTextfield(0xFFFFFF, 16, true);
+    private const valueTextfield:TextFieldDisplayConcrete = PetsViewAssetFactory.returnTextfield(0xFFFFFF, 16, true);
+    private const WIDTH:uint = 238;
+    private const HEIGHT:uint = 30;
+    private const PADDING:uint = 10;
+    private const POS_Y:uint = 21;
 
-      private const valueTextfield:TextFieldDisplayConcrete = PetsViewAssetFactory.returnTextfield(16777215,16,true);
+    public function StatusBox() {
+        this.createBackground();
+        this.addChildren();
+        this.updateTextfields("Text", "Text");
+        this.waitForTextChanged();
+    }
 
-      private const WIDTH:uint = 238;
+    public function updateTextfields(_arg_1:String, _arg_2:String):void {
+        this.labelTextfield.setStringBuilder(new LineBuilder().setParams(_arg_1));
+        this.valueTextfield.setStringBuilder(new LineBuilder().setParams(_arg_2));
+    }
 
-      private const HEIGHT:uint = 30;
+    private function addChildren():void {
+        addChild(this.labelTextfield);
+        addChild(this.valueTextfield);
+    }
 
-      private const PADDING:uint = 10;
+    private function createBackground():void {
+        graphics.beginFill(0x999999);
+        graphics.drawRect(0, 0, this.WIDTH, this.HEIGHT);
+    }
 
-      private const POS_Y:uint = 21;
+    private function waitForTextChanged():void {
+        var _local_1:SignalWaiter = new SignalWaiter();
+        _local_1.push(this.labelTextfield.textChanged);
+        _local_1.push(this.valueTextfield.textChanged);
+        _local_1.complete.addOnce(this.positionTextField);
+    }
 
-      public function StatusBox() {
-         super();
-         this.createBackground();
-         this.addChildren();
-         this.updateTextfields("Text","Text");
-         this.waitForTextChanged();
-      }
+    private function positionTextField():void {
+        this.labelTextfield.x = this.PADDING;
+        this.labelTextfield.y = this.POS_Y;
+        this.valueTextfield.x = ((this.WIDTH - this.PADDING) - this.valueTextfield.width);
+        this.valueTextfield.y = this.POS_Y;
+    }
 
-      public function updateTextfields(param1:String, param2:String) : void {
-         this.labelTextfield.setStringBuilder(new LineBuilder().setParams(param1));
-         this.valueTextfield.setStringBuilder(new LineBuilder().setParams(param2));
-      }
 
-      private function addChildren() : void {
-         addChild(this.labelTextfield);
-         addChild(this.valueTextfield);
-      }
-
-      private function createBackground() : void {
-         graphics.beginFill(10066329);
-         graphics.drawRect(0,0,this.WIDTH,this.HEIGHT);
-      }
-
-      private function waitForTextChanged() : void {
-         var _local1:SignalWaiter = new SignalWaiter();
-         _local1.push(this.labelTextfield.textChanged);
-         _local1.push(this.valueTextfield.textChanged);
-         _local1.complete.addOnce(this.positionTextField);
-      }
-
-      private function positionTextField() : void {
-         this.labelTextfield.x = this.PADDING;
-         this.labelTextfield.y = this.POS_Y;
-         this.valueTextfield.x = this.WIDTH - this.PADDING - this.valueTextfield.width;
-         this.valueTextfield.y = this.POS_Y;
-      }
-   }
 }
+}//package kabam.rotmg.pets.view

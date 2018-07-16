@@ -1,59 +1,52 @@
-package com.company.assembleegameclient.ui.tooltip.slotcomparisons {
+﻿package com.company.assembleegameclient.ui.tooltip.slotcomparisons {
 import flash.utils.Dictionary;
 
 import kabam.rotmg.text.view.stringBuilder.AppendingLineBuilder;
 
 public class SlotComparison {
 
-      internal static const BETTER_COLOR:uint = 65280;
+    static const BETTER_COLOR:uint = 0xFF00;
+    static const WORSE_COLOR:uint = 0xFF0000;
+    static const NO_DIFF_COLOR:uint = 16777103;
+    static const LABEL_COLOR:uint = 0xB3B3B3;
+    static const UNTIERED_COLOR:uint = 9055202;
 
-      internal static const WORSE_COLOR:uint = 16711680;
+    public var processedTags:Dictionary;
+    public var processedActivateOnEquipTags:AppendingLineBuilder;
+    public var comparisonStringBuilder:AppendingLineBuilder;
 
-      internal static const NO_DIFF_COLOR:uint = 16777103;
 
-      internal static const LABEL_COLOR:uint = 11776947;
+    public function compare(_arg_1:XML, _arg_2:XML):void {
+        this.resetFields();
+        this.compareSlots(_arg_1, _arg_2);
+    }
 
-      internal static const UNTIERED_COLOR:uint = 9055202;
+    protected function compareSlots(_arg_1:XML, _arg_2:XML):void {
+    }
 
-      public var processedTags:Dictionary;
+    private function resetFields():void {
+        this.processedTags = new Dictionary();
+        this.processedActivateOnEquipTags = new AppendingLineBuilder();
+    }
 
-      public var processedActivateOnEquipTags:AppendingLineBuilder;
+    protected function getTextColor(_arg_1:Number):uint {
+        if (_arg_1 < 0) {
+            return (WORSE_COLOR);
+        }
+        if (_arg_1 > 0) {
+            return (BETTER_COLOR);
+        }
+        return (NO_DIFF_COLOR);
+    }
 
-      public var comparisonStringBuilder:AppendingLineBuilder;
+    protected function wrapInColoredFont(_arg_1:String, _arg_2:uint = 16777103):String {
+        return ((((('<font color="#' + _arg_2.toString(16)) + '">') + _arg_1) + "</font>"));
+    }
 
-      public function SlotComparison() {
-         super();
-      }
+    protected function getMpCostText(_arg_1:String):String {
+        return (((this.wrapInColoredFont("MP Cost: ", LABEL_COLOR) + this.wrapInColoredFont(_arg_1, NO_DIFF_COLOR)) + "\n"));
+    }
 
-      public function compare(param1:XML, param2:XML) : void {
-         this.resetFields();
-         this.compareSlots(param1,param2);
-      }
 
-      protected function compareSlots(param1:XML, param2:XML) : void {
-      }
-
-      private function resetFields() : void {
-         this.processedTags = new Dictionary();
-         this.processedActivateOnEquipTags = new AppendingLineBuilder();
-      }
-
-      protected function getTextColor(param1:Number) : uint {
-         if(param1 < 0) {
-            return WORSE_COLOR;
-         }
-         if(param1 > 0) {
-            return BETTER_COLOR;
-         }
-         return NO_DIFF_COLOR;
-      }
-
-      protected function wrapInColoredFont(param1:String, param2:uint = 16777103) : String {
-         return "<font color=\"#" + param2.toString(16) + "\">" + param1 + "</font>";
-      }
-
-      protected function getMpCostText(param1:String) : String {
-         return this.wrapInColoredFont("MP Cost: ",LABEL_COLOR) + this.wrapInColoredFont(param1,NO_DIFF_COLOR) + "\n";
-      }
-   }
 }
+}//package com.company.assembleegameclient.ui.tooltip.slotcomparisons

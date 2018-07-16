@@ -16,7 +16,8 @@ namespace wServer.networking.handlers
 
         protected override void HandlePacket(Client client, ReskinPacket packet)
         {
-            //client.Manager.Logic.AddPendingAction(t =>{
+            client.Manager.Logic.AddPendingAction(t =>
+            {
                 if (packet.SkinId == 0)
                     client.Player.PlayerSkin = 0;
                 else if (client.Account.OwnedSkins.Contains(packet.SkinId))
@@ -26,7 +27,7 @@ namespace wServer.networking.handlers
                 client.Player.UpdateCount++;
                 client.Player.SaveToCharacter();
                 client.Save();
-            //}, PendingPriority.Networking);
+            }, PendingPriority.Networking);
         }
     }
 }

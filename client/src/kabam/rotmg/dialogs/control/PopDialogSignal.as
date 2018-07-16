@@ -1,10 +1,8 @@
-package kabam.rotmg.dialogs.control {
+﻿package kabam.rotmg.dialogs.control {
 import org.osflash.signals.Signal;
 
 public class PopDialogSignal extends Signal {
 
-      public function PopDialogSignal() {
-         super();
-      }
-   }
+
 }
+}//package kabam.rotmg.dialogs.control

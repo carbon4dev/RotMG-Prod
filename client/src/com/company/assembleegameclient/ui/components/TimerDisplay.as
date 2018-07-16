@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.ui.components {
+﻿package com.company.assembleegameclient.ui.components {
 import flash.display.Sprite;
 
 import kabam.lib.util.TimeWriter;
@@ -7,22 +7,23 @@ import kabam.rotmg.text.view.stringBuilder.StaticStringBuilder;
 
 public class TimerDisplay extends Sprite {
 
-      private var _textField:TextFieldDisplayConcrete;
+    private var _textField:TextFieldDisplayConcrete;
+    private var stringifier:TimeWriter;
 
-      private var stringifier:TimeWriter;
+    public function TimerDisplay(_arg_1:TextFieldDisplayConcrete) {
+        this.stringifier = new TimeWriter();
+        super();
+        this.initTextField(_arg_1);
+    }
 
-      public function TimerDisplay(param1:TextFieldDisplayConcrete) {
-         this.stringifier = new TimeWriter();
-         super();
-         this.initTextField(param1);
-      }
+    private function initTextField(_arg_1:TextFieldDisplayConcrete):void {
+        addChild((this._textField = _arg_1));
+    }
 
-      private function initTextField(param1:TextFieldDisplayConcrete) : void {
-         addChild(this._textField = param1);
-      }
+    public function update(_arg_1:Number):void {
+        this._textField.setStringBuilder(new StaticStringBuilder(this.stringifier.parseTime(_arg_1)));
+    }
 
-      public function update(param1:Number) : void {
-         this._textField.setStringBuilder(new StaticStringBuilder(this.stringifier.parseTime(param1)));
-      }
-   }
+
 }
+}//package com.company.assembleegameclient.ui.components

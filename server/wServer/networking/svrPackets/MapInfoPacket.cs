@@ -13,7 +13,6 @@
         public bool ShowDisplays { get; set; }
         public string[] ClientXML { get; set; }
         public string[] ExtraXML { get; set; }
-        public string Music { get; set; }
 
         public override PacketID ID
         {
@@ -36,7 +35,6 @@
             Difficulty = rdr.ReadInt32();
             AllowTeleport = rdr.ReadBoolean();
             ShowDisplays = rdr.ReadBoolean();
-            Music = rdr.ReadUTF();
 
             ClientXML = new string[rdr.ReadInt16()];
             for (int i = 0; i < ClientXML.Length; i++)
@@ -58,7 +56,6 @@
             wtr.Write(Difficulty);
             wtr.Write(AllowTeleport);
             wtr.Write(ShowDisplays);
-            wtr.WriteUTF(Music);
 
             wtr.Write((ushort) ClientXML.Length);
             foreach (string i in ClientXML)

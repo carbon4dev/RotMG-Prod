@@ -1,8 +1,9 @@
-package kabam.rotmg.fame.model {
-   public interface FameVO {
+﻿package kabam.rotmg.fame.model {
+public interface FameVO {
 
-      function getAccountId() : String;
+    function getAccountId():String;
 
-      function getCharacterId() : int;
-   }
+    function getCharacterId():int;
+
 }
+}//package kabam.rotmg.fame.model

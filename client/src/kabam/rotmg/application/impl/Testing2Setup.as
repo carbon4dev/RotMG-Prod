@@ -1,76 +1,53 @@
-package kabam.rotmg.application.impl
-{
-import kabam.rotmg.application.api.ApplicationSetup;
-import kabam.rotmg.errors.control.LOEBUILD_5c3fafb478917eee32f80d979a87cb36;
-import com.google.analytics.v4.LOEBUILD_9e66824be5912020ae4304d695ae300a;
+﻿package kabam.rotmg.application.impl {
+import com.company.assembleegameclient.parameters.Parameters;
 
-public class Testing2Setup implements ApplicationSetup
-{
+import kabam.rotmg.application.api.ApplicationSetup;
+
+public class Testing2Setup implements ApplicationSetup {
 
     private const SERVER:String = "realmtesting2.appspot.com";
+    private const UNENCRYPTED:String = ("http://" + SERVER);
+    private const ENCRYPTED:String = ("https://" + SERVER);
+    private const BUILD_LABEL:String = "<font color='#FF0000'>TESTING 2 </font> #{VERSION}";
 
-    private const UNENCRYPTED:String = "http://" + SERVER;
 
-    private const ENCRYPTED:String = "https://" + SERVER;
-
-    private const ANALYTICS:String = "UA-11236645-6";
-
-    private const BUILD_LABEL:String = "<font color=\'#FF0000\'>TESTING 2 </font> #{VERSION}";
-
-    public function Testing2Setup()
-    {
-        super();
+    public function getAppEngineUrl(_arg_1:Boolean = false):String {
+        return (((_arg_1) ? this.UNENCRYPTED : this.ENCRYPTED));
     }
 
-    public function getAppEngineUrl(param1:Boolean = false) : String
-    {
-        return param1?this.UNENCRYPTED:this.ENCRYPTED;
+    public function getBuildLabel():String {
+        var _local_1:String = ((Parameters.BUILD_VERSION + ".") + Parameters.MINOR_VERSION);
+        return (this.BUILD_LABEL.replace("{VERSION}", _local_1));
     }
 
-    public function getAnalyticsCode() : String
-    {
-        return this.ANALYTICS;
+    public function useLocalTextures():Boolean {
+        return (true);
     }
 
-    public function getBuildLabel() : String
-    {
-        var _local1:String = LOEBUILD_9e66824be5912020ae4304d695ae300a.LOEBUILD_f80f1ecc62a94ff993708804db5bbdbd + "." + LOEBUILD_9e66824be5912020ae4304d695ae300a.LOEBUILD_bcd70d36f5cceaccaf0481d68e756080;
-        return this.BUILD_LABEL.replace("{VERSION}",_local1);
+    public function isToolingEnabled():Boolean {
+        return (true);
     }
 
-    public function useLocalTextures() : Boolean
-    {
-        return true;
+    public function isGameLoopMonitored():Boolean {
+        return (true);
     }
 
-    public function isToolingEnabled() : Boolean
-    {
-        return true;
+    public function areErrorsReported():Boolean {
+        return (false);
     }
 
-    public function isGameLoopMonitored() : Boolean
-    {
-        return true;
+    public function useProductionDialogs():Boolean {
+        return (true);
     }
 
-    public function areErrorsReported() : Boolean
-    {
-        return false;
+    public function areDeveloperHotkeysEnabled():Boolean {
+        return (false);
     }
 
-    public function useProductionDialogs() : Boolean
-    {
-        return true;
+    public function isDebug():Boolean {
+        return (false);
     }
 
-    public function areDeveloperHotkeysEnabled() : Boolean
-    {
-        return false;
-    }
 
-    public function isDebug() : Boolean
-    {
-        return false;
-    }
 }
-}
+}//package kabam.rotmg.application.impl

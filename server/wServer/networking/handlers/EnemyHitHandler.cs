@@ -17,15 +17,18 @@ namespace wServer.networking.handlers
 
         protected override void HandlePacket(Client client, EnemyHitPacket packet)
         {
-            var realmtime = new RealmTime();
             if (client.Player.Owner == null) return;
-            Entity entity = client.Player.Owner.GetEntity(packet.TargetId);
-            if (entity != null)
+
+            client.Manager.Logic.AddPendingAction(t =>
             {
-                Projectile prj = (client.Player as IProjectileOwner).Projectiles[packet.BulletId];
-                if (prj != null)
-                    prj.ForceHit(entity, realmtime);
-            }
+                Entity entity = client.Player.Owner.GetEntity(packet.TargetId);
+                if (entity != null) //Tolerance
+                {
+                    Projectile prj = (client.Player as IProjectileOwner).Projectiles[packet.BulletId];
+                    if (prj != null)
+                        prj.ForceHit(entity, t);
+                }
+            }, PendingPriority.Networking);
         }
     }
 }

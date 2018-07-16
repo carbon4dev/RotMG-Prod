@@ -14,20 +14,9 @@ namespace wServer.logic
         private _ OryxCastle = () => Behav()
             .Init("Oryx Stone Guardian Right",
                 new State(
-                    new HpLessTransition(0.1, "ripperino"),
                     new State("Idle",
                         new ConditionalEffect(ConditionEffectIndex.Invulnerable, true),
                         new PlayerWithinTransition(2, "Order")
-                    ),
-                    new State("ripperino",
-                        new ConditionalEffect(ConditionEffectIndex.Invulnerable),
-                        //new CopyDamageOnDeath("shtrs Loot Balloon Bridge"),
-                        new Taunt("I tried to protect you Oryx... I have failed."),
-                        new TimedTransition(2000, "pizza")
-                        ),
-                    new State("pizza",
-                        new Shoot(35, projectileIndex: 2, count: 30),
-                        new Suicide()
                     ),
                     new State("Order",
                         new Order(10, "Oryx Stone Guardian Left", "Start"),
@@ -39,7 +28,7 @@ namespace wServer.logic
                         new TimedTransition(1500, "Lets go")
                     ),
                     new State("Together is better",
-                        //new EntityNotExistsTransition("Oryx Stone Guardian Left", 100, "Forever Alone"),
+                        new EntityNotExistsTransition("Oryx Stone Guardian Left", 100, "Forever Alone"),
                         new State("Lets go",
                             new TimedTransition(10000, "Circle"),
                             new State("Imma Follow",
@@ -159,44 +148,13 @@ namespace wServer.logic
                         )
                     ),
                     new State("Forever Alone")
-                ),
-                new MostDamagers(10,
-                    new OnlyOne(
-                        new ItemLoot("Ancient Vanguard Stone Sword", blackbag),
-                        new ItemLoot("Ancient Stone Sword", whitebag)
-                        ),
-                    new ItemLoot("Potion of Defense", 1),
-                    new ItemLoot("Wine Cellar Incantation", winecellar),
-                    new TierLoot(8, ItemType.Armor, mediumloot),
-                    new TierLoot(9, ItemType.Armor, mediumloot),
-                    new TierLoot(10, ItemType.Armor, normalloot),
-                    new TierLoot(3, ItemType.Ring, mediumloot),
-                    new TierLoot(4, ItemType.Ring, normalloot),
-                    new TierLoot(7, ItemType.Weapon, poorloot),
-                    new TierLoot(8, ItemType.Weapon, mediumloot),
-                    new TierLoot(9, ItemType.Weapon, normalloot),
-                    new TierLoot(10, ItemType.Weapon, goodloot),
-                    new TierLoot(3, ItemType.Ability, mediumloot),
-                    new TierLoot(4, ItemType.Ability, normalloot)
-                    )
-            
+                )
             )
             .Init("Oryx Stone Guardian Left",
                 new State(
-                    new HpLessTransition(0.1, "ripperino"),
                     new State("Idle",
                         new ConditionalEffect(ConditionEffectIndex.Invulnerable, true),
                         new PlayerWithinTransition(2, "Order")
-                    ),
-                    new State("ripperino",
-                        new ConditionalEffect(ConditionEffectIndex.Invulnerable),
-                        //new CopyDamageOnDeath("shtrs Loot Balloon Bridge"),
-                        new Taunt("I tried to protect you Oryx... I have failed."),
-                        new TimedTransition(2000, "pizza")
-                        ),
-                    new State("pizza",
-                        new Shoot(35, projectileIndex: 2, count: 30),
-                        new Suicide()
                     ),
                     new State("Order",
                         new Order(10, "Oryx Stone Guardian Right", "Start"),
@@ -208,7 +166,7 @@ namespace wServer.logic
                         new TimedTransition(1500, "Together is better")
                     ),
                     new State("Together is better",
-                        //new EntityNotExistsTransition("Oryx Stone Guardian Right", 100, "Forever Alone"),
+                        new EntityNotExistsTransition("Oryx Stone Guardian Right", 100, "Forever Alone"),
                         new State("Lets go",
                             new TimedTransition(10000, "Circle"),
                             new State("Imma Follow",
@@ -328,26 +286,7 @@ namespace wServer.logic
                         )
                     ),
                     new State("Forever Alone")
-                ),
-                new MostDamagers(10,
-                    new OnlyOne(
-                        new ItemLoot("Ancient Vanguard Stone Sword", blackbag),
-                        new ItemLoot("Ancient Stone Sword", whitebag)
-                        ),
-                    new ItemLoot("Potion of Defense", 1),
-                    new ItemLoot("Wine Cellar Incantation", winecellar),
-                    new TierLoot(8, ItemType.Armor, mediumloot),
-                    new TierLoot(9, ItemType.Armor, mediumloot),
-                    new TierLoot(10, ItemType.Armor, normalloot),
-                    new TierLoot(3, ItemType.Ring, mediumloot),
-                    new TierLoot(4, ItemType.Ring, normalloot),
-                    new TierLoot(7, ItemType.Weapon, poorloot),
-                    new TierLoot(8, ItemType.Weapon, mediumloot),
-                    new TierLoot(9, ItemType.Weapon, normalloot),
-                    new TierLoot(10, ItemType.Weapon, goodloot),
-                    new TierLoot(3, ItemType.Ability, mediumloot),
-                    new TierLoot(4, ItemType.Ability, normalloot)
-                    )
+                )
             )
             .Init("Oryx Guardian TaskMaster",
                 new State(
@@ -356,27 +295,8 @@ namespace wServer.logic
                         new EntitiesNotExistsTransition(100, "Death", "Oryx Stone Guardian Right", "Oryx Stone Guardian Left")
                     ),
                     new State("Death",
-                        new Taunt(true, "Oryx's Chamber has been opened!"),
                         new Spawn("Oryx's Chamber Portal", 1, 1),
                         new Suicide()
-                    )
-                )
-            )
-            .Init("Oryx's Living Floor",
-                new State(
-                    new State("Idle",
-                        new PlayerWithinTransition(20, "Toss")
-                    ),
-                    new State("Toss",
-                        new TossObject("Quiet Bomb", 10, coolDown: 1000),
-                        new NoPlayerWithinTransition(21, "Idle"),
-                        new PlayerWithinTransition(5, "Shoot and Toss")
-                    ),
-                    new State("Shoot and Toss",
-                        new NoPlayerWithinTransition(21, "Idle"),
-                        new NoPlayerWithinTransition(6, "Toss"),
-                        new Shoot(0, 18, fixedAngle: 0, coolDown: new Cooldown(750, 250)),
-                        new TossObject("Quiet Bomb", 10, coolDown: 1000)
                     )
                 )
             )
@@ -399,136 +319,136 @@ namespace wServer.logic
                 )
             )
             .Init("Oryx Knight",
-                new State(
-                      new State("waiting for u bae <3",
-                          new PlayerWithinTransition(10, "tim 4 rekkings")
-                          ),
-                      new State("tim 4 rekkings",
-                          new Prioritize(
-                              new Wander(0.2),
-                              new Follow(0.6, 10, 3, -1, 0)
-                             ),
-                          new Shoot(10, 3, 20, 0, coolDown: 350),
-                          new TimedTransition(5000, "tim 4 singular rekt")
-                          ),
-                      new State("tim 4 singular rekt",
-                          new Prioritize(
-                                 new Wander(0.2),
-                              new Follow(0.7, 10, 3, -1, 0)
-                              ),
-                          new Shoot(10, 1, projectileIndex: 0, coolDown: 1000),//was 50
-                          new Shoot(10, 1, projectileIndex: 1, coolDown: 3000),//was 1k
-                          new Shoot(10, 1, projectileIndex: 2, coolDown: 2450),//was 450
-                          new TimedTransition(2500, "tim 4 rekkings")
-                         )
-                  )
-            )
-            .Init("Oryx Pet",
-                new State(
-                      new State("swagoo baboon",
-                          new PlayerWithinTransition(10, "anuspiddle")
-                          ),
-                      new State("anuspiddle",
-                          new Prioritize(
-                              new Wander(0.2),
-                              new Follow(0.6, 10, 0, -1, 0)
-                              ),
-                          new Shoot(10, 2, shootAngle: 20, projectileIndex: 0, coolDown: 4000),//was 1
-                        new Shoot(10, 1, projectileIndex: 0, coolDown: 2000)//was 1
-                         )
-                  )
-            )
-            .Init("Oryx Insect Commander",
-                new State(
-                      new State("lol jordan is a nub",
-                          new Prioritize(
-                              new Wander(0.2)
-                              ),
-                          new Reproduce("Oryx Insect Minion", 2, 4, 1, 10000),//was 50
-                          new Shoot(10, 1, projectileIndex: 0, coolDown: 3500)//was 900
-                         )
-                  )
-            )
-            .Init("Oryx Insect Minion",
-                new State(
-                      new State("its SWARMING time",
-                          new Prioritize(
-                              new Wander(0.2),
-                              new StayCloseToSpawn(0.4, 8),
-                                 new Follow(0.8, 10, 1, -1, 0)
-                              ),
-                          new Shoot(10, 5, projectileIndex: 0, coolDown: 4500),//was 1500
-                          new Shoot(10, 1, projectileIndex: 0, coolDown: 2230)//was 230
-                          )
-                  )
-            )
-            .Init("Oryx Suit of Armor",
-                new State(
-                      new State("idle",
-                          new PlayerWithinTransition(8, "attack me pl0x")
-                          ),
-                      new State("attack me pl0x",
-                          new DamageTakenTransition(1, "jordan is stanking")
-                          ),
-                      new State("jordan is stanking",
-                          new Prioritize(
-                               new Wander(0.2),
-                               new Follow(0.4, 10, 2, -1, 0)
-                              ),
-                          new SetAltTexture(1),
-                          new Shoot(10, 2, 15, 0, coolDown: 600),
-                          new HpLessTransition(0.2, "heal")
-                          ),
-                      new State("heal",
-                          new ConditionalEffect(ConditionEffectIndex.Invulnerable),
-                          new SetAltTexture(0),
-                          new Shoot(10, 6, projectileIndex: 0, coolDown: 4000),//was 200
-                          new SpecificHeal(1, 200, "Self", 1),
-                          new TimedTransition(1500, "jordan is stanking")
-                         )
-                  )
-            )
-            .Init("Oryx Eye Warrior",
-                new State(
-                    new State("swaggin",
-                        new PlayerWithinTransition(10, "penispiddle")
-                        ),
-                    new State("penispiddle",
-                          new Prioritize(
-                              new Follow(0.6, 10, 0, -1, 0)
-                              ),
-                          new Shoot(10, 5, projectileIndex: 0, coolDown: 4000),//was 1k
-                          new Shoot(10, 1, projectileIndex: 1, coolDown: 2500)//was 500
-                         )
-                  )
-            )
-            .Init("Oryx Brute",
-                new State(
-                      new State("swaggin",
-                          new PlayerWithinTransition(10, "piddle")
-                        ),
-                      new State("piddle",
-                          new Prioritize(
-                              new Wander(0.2),
-                              new Follow(0.4, 10, 1, -1, 0)
-                              ),
-                          new Shoot(10, 5, projectileIndex: 1, coolDown: 4000),//was 1k
-                          new Reproduce("Oryx Eye Warrior", 25, 2, 2, 6750),//was 1750
-                          new TimedTransition(5000, "charge")
-                          ),
-                      new State("charge",
-                          new Prioritize(
-                              new Wander(0.3),
-                              new Follow(1.2, 10, 1, -1, 0)
-                              ),
-                          new Shoot(10, 5, projectileIndex: 1, coolDown: 6000),//was 1k
-                          new Shoot(10, 5, projectileIndex: 2, coolDown: 4750),//was 750
-                          new Reproduce("Oryx Eye Warrior", 25, 2, 2, 8750),//was 1750
-                          new Shoot(10, 3, 10, projectileIndex: 0, coolDown: 3300),//was 300
-                          new TimedTransition(4000, "piddle")
-                         )
-                  )
-            )
+        	    new State(
+        	      	new State("waiting for u bae <3",
+        	      	    new PlayerWithinTransition(10, "tim 4 rekkings")
+        	      	    ),
+        	      	new State("tim 4 rekkings",
+        	      	    new Prioritize(
+        	      	        new Wander(0.2),
+        	      	        new Follow(0.6, 10, 3, -1, 0)
+        	      	       ),
+        	      	    new Shoot(10, 3, 20, 0, coolDown: 350),
+        	      	    new TimedTransition(5000, "tim 4 singular rekt")
+        	      	    ),
+        	      	new State("tim 4 singular rekt",
+        	      	    new Prioritize(
+        	      	       	new Wander(0.2),
+        	      	        new Follow(0.7, 10, 3, -1, 0)
+        	      	        ),
+        	      	    new Shoot(10, 1, projectileIndex: 0, coolDown: 50),
+        	      	    new Shoot(10, 1, projectileIndex: 1, coolDown: 1000),
+        	      	    new Shoot(10, 1, projectileIndex: 2, coolDown: 450),
+        	      	    new TimedTransition(2500, "tim 4 rekkings")
+        	      	   )
+        	      )
+        	)
+        	.Init("Oryx Pet",
+        	    new State(
+        	      	new State("swagoo baboon",
+        	      	    new PlayerWithinTransition(10, "anuspiddle")
+        	      	    ),
+        	      	new State("anuspiddle",
+        	      	    new Prioritize(
+        	      	        new Wander(0.2),
+        	      	        new Follow(0.6, 10, 0, -1, 0)
+        	      	        ),
+        	      	    new Shoot(10, 2, shootAngle: 20, projectileIndex: 0, coolDown: 1),
+						new Shoot(10, 1, projectileIndex: 0, coolDown: 1)
+        	      	   )
+        	      )
+        	)
+        	.Init("Oryx Insect Commander",
+        	    new State(
+        	      	new State("lol jordan is a nub",
+        	      	    new Prioritize(
+        	      	    	new Wander(0.2)
+        	      	        ),
+        	      	    new Reproduce("Oryx Insect Minion", 10, 20, 1, 50),
+        	      	    new Shoot(10, 1, projectileIndex: 0, coolDown: 900)
+        	      	   )
+        	      )
+        	)
+        	.Init("Oryx Insect Minion",
+        	    new State(
+        	      	new State("its SWARMING time",
+        	      	    new Prioritize(
+        	      	        new Wander(0.2),
+        	      	        new StayCloseToSpawn(0.4, 8),
+        	      	       	new Follow(0.8, 10, 1, -1, 0)
+        	      	        ),
+        	      	    new Shoot(10, 5, projectileIndex: 0, coolDown: 1500),
+        	      	    new Shoot(10, 1, projectileIndex: 0, coolDown: 230)
+        	      	    )
+        	      )
+        	)
+        	.Init("Oryx Suit of Armor",
+        	    new State(
+        	      	new State("idle",
+        	      	    new PlayerWithinTransition(8, "attack me pl0x")
+        	      	    ),
+        	      	new State("attack me pl0x",
+    	      	        new DamageTakenTransition(1, "jordan is stanking")
+    	      	        ),
+        	      	new State("jordan is stanking",
+        	      	    new Prioritize(
+        	      	     	new Wander(0.2),
+        	      	     	new Follow(0.4, 10, 2, -1, 0)
+        	      	        ),
+        	      	    new SetAltTexture(1),
+        	      	    new Shoot(10, 2, 15, 0, coolDown: 600),
+        	      	    new HpLessTransition(0.2, "heal")
+        	      	    ),
+        	      	new State("heal",
+        	      	    new ConditionalEffect(ConditionEffectIndex.Invulnerable),
+        	      	    new SetAltTexture(0),
+        	      	    new Shoot(10, 6, projectileIndex: 0, coolDown: 200),
+        	      	    new SpecificHeal(1, 200, "Self", 1),
+        	      	    new TimedTransition(1500, "jordan is stanking")
+        	      	   )
+        	      )
+        	)
+			.Init("Oryx Eye Warrior",
+			    new State(
+				    new State("swaggin",
+					    new PlayerWithinTransition(10, "penispiddle")
+						),
+				    new State("penispiddle",
+        	      	    new Prioritize(
+        	      	        new Follow(0.6, 10, 0, -1, 0)
+        	      	        ),
+        	      	    new Shoot(10, 5, projectileIndex: 0, coolDown: 1000),
+        	      	    new Shoot(10, 1, projectileIndex: 1, coolDown: 500)
+        	      	   )
+        	      )
+        	)
+        	.Init("Oryx Brute",
+        	    new State(
+        	      	new State("swaggin",
+        	      	    new PlayerWithinTransition(10, "piddle")
+        	            ),   	      	    
+        	      	new State("piddle",
+        	      	    new Prioritize(
+        	      	        new Wander(0.2),
+        	      	        new Follow(0.4, 10, 1, -1, 0)
+        	      	        ),
+        	      	    new Shoot(10, 5, projectileIndex: 1, coolDown: 1000),
+        	      	    new Reproduce("Oryx Eye Warrior", 10, 4, 2, 1750),
+        	      	    new TimedTransition(5000, "charge")
+        	      	    ),
+        	      	new State("charge",
+        	      	    new Prioritize(
+        	      	        new Wander(0.3),
+        	      	        new Follow(1.2, 10, 1, -1, 0)
+        	      	        ),
+        	      	    new Shoot(10, 5, projectileIndex: 1, coolDown: 1000),
+        	      	    new Shoot(10, 5, projectileIndex: 2, coolDown: 750),
+        	      	    new Reproduce("Oryx Eye Warrior", 10, 4, 2, 1750),
+        	      	    new Shoot(10, 3, 10, projectileIndex: 0, coolDown: 300),
+        	      	    new TimedTransition(4000, "piddle")
+        	      	   )
+        	      )
+        	)
             .Init("Quiet Bomb",
                 new State(
                     new ConditionalEffect(ConditionEffectIndex.Invincible, true),

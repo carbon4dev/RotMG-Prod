@@ -1,52 +1,56 @@
-package com.company.util {
+﻿package com.company.util {
 import flash.geom.Point;
 
 public class LineSegmentUtil {
 
-      public function LineSegmentUtil() {
-         super();
-      }
 
-      public static function intersection(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number, param8:Number) : Point {
-         var _local9:Number = (param8 - param6) * (param3 - param1) - (param7 - param5) * (param4 - param2);
-         if(_local9 == 0) {
-            return null;
-         }
-         var _local10:Number = ((param7 - param5) * (param2 - param6) - (param8 - param6) * (param1 - param5)) / _local9;
-         var _local11:Number = ((param3 - param1) * (param2 - param6) - (param4 - param2) * (param1 - param5)) / _local9;
-         if(_local10 > 1 || _local10 < 0 || _local11 > 1 || _local11 < 0) {
-            return null;
-         }
-         var _local12:Point = new Point(param1 + _local10 * (param3 - param1),param2 + _local10 * (param4 - param2));
-         return _local12;
-      }
+    public static function intersection(_arg_1:Number, _arg_2:Number, _arg_3:Number, _arg_4:Number, _arg_5:Number, _arg_6:Number, _arg_7:Number, _arg_8:Number):Point {
+        var _local_9:Number = (((_arg_8 - _arg_6) * (_arg_3 - _arg_1)) - ((_arg_7 - _arg_5) * (_arg_4 - _arg_2)));
+        if (_local_9 == 0) {
+            return (null);
+        }
+        var _local_10:Number = ((((_arg_7 - _arg_5) * (_arg_2 - _arg_6)) - ((_arg_8 - _arg_6) * (_arg_1 - _arg_5))) / _local_9);
+        var _local_11:Number = ((((_arg_3 - _arg_1) * (_arg_2 - _arg_6)) - ((_arg_4 - _arg_2) * (_arg_1 - _arg_5))) / _local_9);
+        if ((((((((_local_10 > 1)) || ((_local_10 < 0)))) || ((_local_11 > 1)))) || ((_local_11 < 0)))) {
+            return (null);
+        }
+        var _local_12:Point = new Point((_arg_1 + (_local_10 * (_arg_3 - _arg_1))), (_arg_2 + (_local_10 * (_arg_4 - _arg_2))));
+        return (_local_12);
+    }
 
-      public static function pointDistance(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number) : Number {
-         var _local10:Number = NaN;
-         var _local11:Number = NaN;
-         var _local12:Number = NaN;
-         var _local7:Number = param5 - param3;
-         var _local8:Number = param6 - param4;
-         var _local9:Number = _local7 * _local7 + _local8 * _local8;
-         if(_local9 < 0.001) {
-            _local10 = param3;
-            _local11 = param4;
-         } else {
-            _local12 = ((param1 - param3) * _local7 + (param2 - param4) * _local8) / _local9;
-            if(_local12 < 0) {
-               _local10 = param3;
-               _local11 = param4;
-            } else if(_local12 > 1) {
-               _local10 = param5;
-               _local11 = param6;
-            } else {
-               _local10 = param3 + _local12 * _local7;
-               _local11 = param4 + _local12 * _local8;
+    public static function pointDistance(_arg_1:Number, _arg_2:Number, _arg_3:Number, _arg_4:Number, _arg_5:Number, _arg_6:Number):Number {
+        var _local_10:Number;
+        var _local_11:Number;
+        var _local_12:Number;
+        var _local_7:Number = (_arg_5 - _arg_3);
+        var _local_8:Number = (_arg_6 - _arg_4);
+        var _local_9:Number = ((_local_7 * _local_7) + (_local_8 * _local_8));
+        if (_local_9 < 0.001) {
+            _local_10 = _arg_3;
+            _local_11 = _arg_4;
+        }
+        else {
+            _local_12 = ((((_arg_1 - _arg_3) * _local_7) + ((_arg_2 - _arg_4) * _local_8)) / _local_9);
+            if (_local_12 < 0) {
+                _local_10 = _arg_3;
+                _local_11 = _arg_4;
             }
-         }
-         _local7 = param1 - _local10;
-         _local8 = param2 - _local11;
-         return Math.sqrt(_local7 * _local7 + _local8 * _local8);
-      }
-   }
+            else {
+                if (_local_12 > 1) {
+                    _local_10 = _arg_5;
+                    _local_11 = _arg_6;
+                }
+                else {
+                    _local_10 = (_arg_3 + (_local_12 * _local_7));
+                    _local_11 = (_arg_4 + (_local_12 * _local_8));
+                }
+            }
+        }
+        _local_7 = (_arg_1 - _local_10);
+        _local_8 = (_arg_2 - _local_11);
+        return (Math.sqrt(((_local_7 * _local_7) + (_local_8 * _local_8))));
+    }
+
+
 }
+}//package com.company.util

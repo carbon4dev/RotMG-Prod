@@ -12,16 +12,15 @@ namespace wServer.realm.worlds
         public SnakePit()
         {
             Name = "Snake Pit";
-            ClientWorldName = "Snake Pit";
+            ClientWorldName = "dungeons.Snake_Pit";
             Dungeon = true;
             Background = 0;
             AllowTeleport = true;
-            SetMusic("snakepit");
         }
 
         protected override void Init()
         {
-            LoadMap("wServer.realm.worlds.maps.snakepitnew2.jm", MapType.Json);
+            LoadMap("wServer.realm.worlds.maps.snakepit.wmap", MapType.Wmap);
         }
 
         public override World GetInstance(Client client)

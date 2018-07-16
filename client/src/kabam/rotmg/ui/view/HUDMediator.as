@@ -1,5 +1,5 @@
-package kabam.rotmg.ui.view {
-import kabam.rotmg.assets.model.Player;
+﻿package kabam.rotmg.ui.view {
+import com.company.assembleegameclient.objects.Player;
 
 import flash.display.Sprite;
 import flash.events.MouseEvent;
@@ -13,88 +13,82 @@ import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class HUDMediator extends Mediator {
 
-      [Inject]
-      public var view:HUDView;
+    [Inject]
+    public var view:HUDView;
+    [Inject]
+    public var hudModel:HUDModel;
+    [Inject]
+    public var updateHUD:UpdateHUDSignal;
+    [Inject]
+    public var statsUndocked:StatsUndockedSignal;
+    [Inject]
+    public var statsDocked:StatsDockedSignal;
+    private var stats:Sprite;
 
-      [Inject]
-      public var hudModel:HUDModel;
 
-      [Inject]
-      public var updateHUD:UpdateHUDSignal;
+    override public function initialize():void {
+        this.updateHUD.addOnce(this.onInitializeHUD);
+        this.updateHUD.add(this.onUpdateHUD);
+        this.statsUndocked.add(this.onStatsUndocked);
+    }
 
-      [Inject]
-      public var statsUndocked:StatsUndockedSignal;
+    private function onStatsUndocked(_arg_1:StatsView):void {
+        this.stats = _arg_1;
+        this.view.addChild(_arg_1);
+        _arg_1.x = (this.view.mouseX - (_arg_1.width / 2));
+        _arg_1.y = (this.view.mouseY - (_arg_1.height / 2));
+        this.startDraggingStatsAsset(_arg_1);
+    }
 
-      [Inject]
-      public var statsDocked:StatsDockedSignal;
+    private function startDraggingStatsAsset(_arg_1:StatsView):void {
+        _arg_1.startDrag();
+        _arg_1.addEventListener(MouseEvent.MOUSE_UP, this.onStatsMouseUp);
+    }
 
-      private var stats:Sprite;
+    private function onStatsMouseUp(_arg_1:MouseEvent):void {
+        var _local_2:Sprite = StatsView(_arg_1.target);
+        this.stopDraggingStatsAsset(_local_2);
+        if (_local_2.hitTestObject(this.view.tabStrip)) {
+            this.dockStats(_local_2);
+        }
+    }
 
-      public function HUDMediator() {
-         super();
-      }
+    private function dockStats(_arg_1:Sprite):void {
+        this.statsDocked.dispatch();
+        this.view.removeChild(_arg_1);
+        _arg_1.stopDrag();
+    }
 
-      override public function initialize() : void {
-         this.updateHUD.addOnce(this.onInitializeHUD);
-         this.updateHUD.add(this.onUpdateHUD);
-         this.statsUndocked.add(this.onStatsUndocked);
-      }
+    private function stopDraggingStatsAsset(_arg_1:Sprite):void {
+        _arg_1.removeEventListener(MouseEvent.MOUSE_UP, this.onStatsMouseUp);
+        _arg_1.addEventListener(MouseEvent.MOUSE_DOWN, this.onStatsMouseDown);
+        _arg_1.stopDrag();
+    }
 
-      private function onStatsUndocked(param1:StatsView) : void {
-         this.stats = param1;
-         this.view.addChild(param1);
-         param1.x = this.view.mouseX - param1.width / 2;
-         param1.y = this.view.mouseY - param1.height / 2;
-         this.startDraggingStatsAsset(param1);
-      }
+    private function onStatsMouseDown(_arg_1:MouseEvent):void {
+        var _local_2:Sprite = Sprite(_arg_1.target);
+        this.stats = _local_2;
+        _local_2.removeEventListener(MouseEvent.MOUSE_DOWN, this.onStatsMouseDown);
+        _local_2.addEventListener(MouseEvent.MOUSE_UP, this.onStatsMouseUp);
+        _local_2.startDrag();
+    }
 
-      private function startDraggingStatsAsset(param1:StatsView) : void {
-         param1.startDrag();
-         param1.addEventListener(MouseEvent.MOUSE_UP,this.onStatsMouseUp);
-      }
+    override public function destroy():void {
+        this.updateHUD.remove(this.onUpdateHUD);
+        this.statsUndocked.remove(this.onStatsUndocked);
+        if (((this.stats) && (this.stats.hasEventListener(MouseEvent.MOUSE_DOWN)))) {
+            this.stats.removeEventListener(MouseEvent.MOUSE_DOWN, this.onStatsMouseDown);
+        }
+    }
 
-      private function onStatsMouseUp(param1:MouseEvent) : void {
-         var _local2:Sprite = StatsView(param1.target);
-         this.stopDraggingStatsAsset(_local2);
-         if(_local2.hitTestObject(this.view.tabStrip)) {
-            this.dockStats(_local2);
-         }
-      }
+    private function onUpdateHUD(_arg_1:Player):void {
+        this.view.draw();
+    }
 
-      private function dockStats(param1:Sprite) : void {
-         this.statsDocked.dispatch();
-         this.view.removeChild(param1);
-         param1.stopDrag();
-      }
+    private function onInitializeHUD(_arg_1:Player):void {
+        this.view.setPlayerDependentAssets(this.hudModel.gameSprite);
+    }
 
-      private function stopDraggingStatsAsset(param1:Sprite) : void {
-         param1.removeEventListener(MouseEvent.MOUSE_UP,this.onStatsMouseUp);
-         param1.addEventListener(MouseEvent.MOUSE_DOWN,this.onStatsMouseDown);
-         param1.stopDrag();
-      }
 
-      private function onStatsMouseDown(param1:MouseEvent) : void {
-         var _local2:Sprite = Sprite(param1.target);
-         this.stats = _local2;
-         _local2.removeEventListener(MouseEvent.MOUSE_DOWN,this.onStatsMouseDown);
-         _local2.addEventListener(MouseEvent.MOUSE_UP,this.onStatsMouseUp);
-         _local2.startDrag();
-      }
-
-      override public function destroy() : void {
-         this.updateHUD.remove(this.onUpdateHUD);
-         this.statsUndocked.remove(this.onStatsUndocked);
-         if(Boolean(this.stats) && Boolean(this.stats.hasEventListener(MouseEvent.MOUSE_DOWN))) {
-            this.stats.removeEventListener(MouseEvent.MOUSE_DOWN,this.onStatsMouseDown);
-         }
-      }
-
-      private function onUpdateHUD(param1:Player) : void {
-         this.view.draw();
-      }
-
-      private function onInitializeHUD(param1:Player) : void {
-         this.view.setPlayerDependentAssets(this.hudModel.gameSprite);
-      }
-   }
 }
+}//package kabam.rotmg.ui.view

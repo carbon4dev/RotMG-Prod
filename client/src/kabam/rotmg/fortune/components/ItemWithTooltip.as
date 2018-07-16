@@ -1,6 +1,6 @@
-package kabam.rotmg.fortune.components {
-import com.company.assembleegameclient.LOEBUILD_93fb40ec02c008121fa9199899b31202.LOEBUILD_420e0eb99409a66597f19d612d12594f;
-import com.company.assembleegameclient.LOEBUILD_5891da2d64975cae48d175d1e001f5da.LOEBUILD_efda783509bc93eea698457c87bbee3f;
+﻿package kabam.rotmg.fortune.components {
+import com.company.assembleegameclient.constants.InventoryOwnerTypes;
+import com.company.assembleegameclient.objects.ObjectLibrary;
 import com.company.assembleegameclient.ui.tooltip.EquipmentToolTip;
 import com.company.assembleegameclient.ui.tooltip.ToolTip;
 
@@ -19,93 +19,90 @@ import org.osflash.signals.Signal;
 
 public class ItemWithTooltip extends Sprite implements TooltipAble {
 
-      private var itemId:int;
+    private var itemId:int;
+    public var hoverTooltipDelegate:HoverTooltipDelegate;
+    private var tooltip:ToolTip;
+    public var onMouseOver:Signal;
+    public var onMouseOut:Signal;
+    public var itemBitmap:Bitmap;
 
-      public var hoverTooltipDelegate:HoverTooltipDelegate;
+    public function ItemWithTooltip(_arg_1:int, _arg_2:int = 100, _arg_3:Boolean = false) {
+        this.hoverTooltipDelegate = new HoverTooltipDelegate();
+        this.onMouseOver = new Signal();
+        this.onMouseOut = new Signal();
+        super();
+        this.itemId = _arg_1;
+        var _local_4:BitmapData = ObjectLibrary.getRedrawnTextureFromType(_arg_1, _arg_2, true, false);
+        var _local_5:BitmapData = ObjectLibrary.getRedrawnTextureFromType(_arg_1, _arg_2, true, false);
+        this.itemBitmap = new Bitmap(_local_5);
+        addChild(this.itemBitmap);
+        this.hoverTooltipDelegate.setDisplayObject(this);
+        this.tooltip = new EquipmentToolTip(_arg_1, null, -1, InventoryOwnerTypes.NPC);
+        this.tooltip.forcePostionLeft();
+        this.hoverTooltipDelegate.tooltip = this.tooltip;
+        if (_arg_3) {
+            addEventListener(Event.REMOVED_FROM_STAGE, this.onDestruct);
+            addEventListener(MouseEvent.ROLL_OVER, this.onRollOver);
+            addEventListener(MouseEvent.ROLL_OUT, this.onRollOut);
+        }
+    }
 
-      private var tooltip:ToolTip;
+    public function disableTooltip():void {
+        this.hoverTooltipDelegate.removeDisplayObject();
+    }
 
-      public var onMouseOver:Signal;
+    public function enableTooltip():void {
+        this.hoverTooltipDelegate.setDisplayObject(this);
+    }
 
-      public var onMouseOut:Signal;
+    private function onDestruct(_arg_1:Event):void {
+        removeEventListener(Event.REMOVED_FROM_STAGE, this.onDestruct);
+        removeEventListener(MouseEvent.ROLL_OVER, this.onRollOver);
+        removeEventListener(MouseEvent.ROLL_OUT, this.onRollOut);
+        this.onMouseOver.removeAll();
+        this.onMouseOut.removeAll();
+    }
 
-      public var itemBitmap:Bitmap;
+    private function onRollOver(_arg_1:MouseEvent):void {
+        this.onMouseOver.dispatch();
+    }
 
-      public function ItemWithTooltip(param1:int, param2:int = 100, param3:Boolean = false) {
-         this.hoverTooltipDelegate = new HoverTooltipDelegate();
-         this.onMouseOver = new Signal();
-         this.onMouseOut = new Signal();
-         super();
-         this.itemId = param1;
-         var _local4:BitmapData = LOEBUILD_efda783509bc93eea698457c87bbee3f.getRedrawnTextureFromType(param1,param2,true,false);
-         var _local5:BitmapData = LOEBUILD_efda783509bc93eea698457c87bbee3f.getRedrawnTextureFromType(param1,param2,true,false);
-         this.itemBitmap = new Bitmap(_local5);
-         addChild(this.itemBitmap);
-         this.hoverTooltipDelegate.setDisplayObject(this);
-         this.tooltip = new EquipmentToolTip(param1,null,-1,LOEBUILD_420e0eb99409a66597f19d612d12594f.NPC);
-         this.tooltip.forcePostionLeft();
-         this.hoverTooltipDelegate.tooltip = this.tooltip;
-         if(param3) {
-            addEventListener(Event.REMOVED_FROM_STAGE,this.onDestruct);
-            addEventListener(MouseEvent.ROLL_OVER,this.onRollOver);
-            addEventListener(MouseEvent.ROLL_OUT,this.onRollOut);
-         }
-      }
+    private function onRollOut(_arg_1:MouseEvent):void {
+        this.onMouseOut.dispatch();
+    }
 
-      public function disableTooltip() : void {
-         this.hoverTooltipDelegate.removeDisplayObject();
-      }
+    public function setShowToolTipSignal(_arg_1:ShowTooltipSignal):void {
+        this.hoverTooltipDelegate.setShowToolTipSignal(_arg_1);
+    }
 
-      public function enableTooltip() : void {
-         this.hoverTooltipDelegate.setDisplayObject(this);
-      }
+    public function getShowToolTip():ShowTooltipSignal {
+        return (this.hoverTooltipDelegate.getShowToolTip());
+    }
 
-      private function onDestruct(param1:Event) : void {
-         removeEventListener(Event.REMOVED_FROM_STAGE,this.onDestruct);
-         removeEventListener(MouseEvent.ROLL_OVER,this.onRollOver);
-         removeEventListener(MouseEvent.ROLL_OUT,this.onRollOut);
-         this.onMouseOver.removeAll();
-         this.onMouseOut.removeAll();
-      }
+    public function setHideToolTipsSignal(_arg_1:HideTooltipsSignal):void {
+        this.hoverTooltipDelegate.setHideToolTipsSignal(_arg_1);
+    }
 
-      private function onRollOver(param1:MouseEvent) : void {
-         this.onMouseOver.dispatch();
-      }
+    public function getHideToolTips():HideTooltipsSignal {
+        return (this.hoverTooltipDelegate.getHideToolTips());
+    }
 
-      private function onRollOut(param1:MouseEvent) : void {
-         this.onMouseOut.dispatch();
-      }
+    public function setXPos(_arg_1:Number):void {
+        this.x = (_arg_1 - (this.width / 2));
+    }
 
-      public function setShowToolTipSignal(param1:ShowTooltipSignal) : void {
-         this.hoverTooltipDelegate.setShowToolTipSignal(param1);
-      }
+    public function setYPos(_arg_1:Number):void {
+        this.y = (_arg_1 - (this.height / 2));
+    }
 
-      public function getShowToolTip() : ShowTooltipSignal {
-         return this.hoverTooltipDelegate.getShowToolTip();
-      }
+    public function getCenterX():Number {
+        return ((this.x + (this.width / 2)));
+    }
 
-      public function setHideToolTipsSignal(param1:HideTooltipsSignal) : void {
-         this.hoverTooltipDelegate.setHideToolTipsSignal(param1);
-      }
+    public function getCenterY():Number {
+        return ((this.y + (this.height / 2)));
+    }
 
-      public function getHideToolTips() : HideTooltipsSignal {
-         return this.hoverTooltipDelegate.getHideToolTips();
-      }
 
-      public function setXPos(param1:Number) : void {
-         this.x = param1 - this.width / 2;
-      }
-
-      public function setYPos(param1:Number) : void {
-         this.y = param1 - this.height / 2;
-      }
-
-      public function getCenterX() : Number {
-         return this.x + this.width / 2;
-      }
-
-      public function getCenterY() : Number {
-         return this.y + this.height / 2;
-      }
-   }
 }
+}//package kabam.rotmg.fortune.components

@@ -26,14 +26,16 @@ namespace wServer.networking.handlers
         {
             if (client.Player.Owner == null) return;
 
-            //No more autistic bug in pet yard
-            if ((client.Player.Owner is PetYard) || (client.Player.Owner.Name == "Pet Yard"))
+            if (client.Player.Owner is PetYard)
             {
-                client.Player.SendInfo("You can't swap items in Pet Yard. We did it to avoid loosing items when players are feeding pets.");
-                return;
+                client.SendPacket(new InvResultPacket
+                {
+                    Result = 0
+                });
             }
 
-            //client.Manager.Logic.AddPendingAction(t => {
+            client.Manager.Logic.AddPendingAction(t =>
+            {
                 Entity en1 = client.Player.Owner.GetEntity(packet.SlotObject1.ObjectId);
                 Entity en2 = client.Player.Owner.GetEntity(packet.SlotObject2.ObjectId);
                 IContainer con1 = en1 as IContainer;
@@ -43,13 +45,13 @@ namespace wServer.networking.handlers
                     packet.SlotObject2.SlotId == 254 || packet.SlotObject2.SlotId == 255)
                 {
                     if (packet.SlotObject2.SlotId == 254)
-                        if (client.Player.HealthPotions <= 12)
+                        if (client.Player.HealthPotions < 6)
                         {
                             client.Player.HealthPotions++;
                             con1.Inventory[packet.SlotObject1.SlotId] = null;
                         }
                     if (packet.SlotObject2.SlotId == 255)
-                        if (client.Player.MagicPotions <= 12)
+                        if (client.Player.MagicPotions < 6)
                         {
                             client.Player.MagicPotions++;
                             con1.Inventory[packet.SlotObject1.SlotId] = null;
@@ -70,11 +72,6 @@ namespace wServer.networking.handlers
                         (en1 as Player).Client.SendPacket(new InvResultPacket {Result = 0});
                     else if (en2 is Player)
                         (en2 as Player).Client.SendPacket(new InvResultPacket {Result = 0});
-                    //Block player to move items at Pet Yard [inventory only]
-                    //if(client.Player.Owner is PetYard)
-                    //    (en1 as Player).Client.SendPacket(new InvResultPacket {Result = 0});
-                    //else if(client.Player.Owner is PetYard)
-                    //    (en2 as Player).Client.SendPacket(new InvResultPacket {Result = 0});
                     return;
                 }
                 //TODO: locker
@@ -142,9 +139,9 @@ namespace wServer.networking.handlers
                             cmd.Parameters.AddWithValue("@gifts", Utils.GetCommaSepString(acc.Gifts.ToArray()));
                             cmd.ExecuteNonQuery();
                         }
-                        catch// (Exception ex)
+                        catch (Exception ex)
                         {
-                            //log.Error(ex);
+                            log.Error(ex);
                         }
                     }
                     con1.Inventory[packet.SlotObject1.SlotId] = null;
@@ -208,7 +205,7 @@ namespace wServer.networking.handlers
 
                 client.Player.SaveToCharacter();
                 client.Save();
-            //}, PendingPriority.Networking);
+            }, PendingPriority.Networking);
         }
 
         private bool IsValid(Item item1, Item item2, IContainer con1, IContainer con2, InvSwapPacket packet, Client client)

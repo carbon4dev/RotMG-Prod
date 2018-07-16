@@ -1,4 +1,4 @@
-package kabam.rotmg.pets.view {
+﻿package kabam.rotmg.pets.view {
 import com.company.assembleegameclient.ui.dialogs.DialogCloser;
 
 import kabam.rotmg.pets.data.PetRarityEnum;
@@ -20,103 +20,95 @@ import org.osflash.signals.Signal;
 
 public class FusePetView extends PetInteractionView implements DialogCloser {
 
-      private static const closeDialogSignal:Signal = new Signal();
+    private static const closeDialogSignal:Signal = new Signal();
 
-      public const buttonBar:FameOrGoldBuyButtons = PetsViewAssetFactory.returnFameOrGoldButtonBar(TextKey.PET_FUSER_BUTTON_BAR_PREFIX,PetsConstants.FUSER_WINDOW_BACKGROUND_HEIGHT - 39);
+    public const buttonBar:FameOrGoldBuyButtons = PetsViewAssetFactory.returnFameOrGoldButtonBar(TextKey.PET_FUSER_BUTTON_BAR_PREFIX, (PetsConstants.FUSER_WINDOW_BACKGROUND_HEIGHT - 39));
+    private const background:PopupWindowBackground = PetsViewAssetFactory.returnFuserWindowBackground();
+    private const titleTextfield:TextFieldDisplayConcrete = PetsViewAssetFactory.returnTopAlignedTextfield(0xB3B3B3, 18, true);
+    private const descriptionTextfield:TextFieldDisplayConcrete = PetsViewAssetFactory.returnFuseDescriptionTextfield();
+    private const petFuser:PetFuser = PetsViewAssetFactory.returnPetFuser();
+    private const closeButton:DialogCloseButton = PetsViewAssetFactory.returnCloseButton(PetsConstants.WINDOW_BACKGROUND_WIDTH);
+    private const fusionStrength:FusionStrength = PetsViewAssetFactory.returnFusionStrength();
+    public const closed:Signal = new Signal();
 
-      private const background:PopupWindowBackground = PetsViewAssetFactory.returnFuserWindowBackground();
+    public var openPetPicker:Signal;
+    public var goldPurchase:Signal;
+    public var famePurchase:Signal;
 
-      private const titleTextfield:TextFieldDisplayConcrete = PetsViewAssetFactory.returnTopAlignedTextfield(11776947,18,true);
+    public function FusePetView() {
+        this.buttonBar.clicked.addOnce(this.onFameOrGoldClicked);
+    }
 
-      private const descriptionTextfield:TextFieldDisplayConcrete = PetsViewAssetFactory.returnFuseDescriptionTextfield();
+    public function init(_arg_1:PetSlotsState):void {
+        this.titleTextfield.setStringBuilder(new LineBuilder().setParams(TextKey.PET_FUSER_TITLE));
+        this.openPetPicker = this.petFuser.openPetPicker;
+        this.goldPurchase = this.buttonBar.goldButtonClicked;
+        this.famePurchase = this.buttonBar.fameButtonClicked;
+        this.buttonBar.setDisabled(!(_arg_1.isAcceptableFuseState()));
+        this.buttonBar.setPrefix(((_arg_1.isAcceptableFuseState()) ? TextKey.PET_FUSER_BUTTON_BAR_PREFIX : TextKey.PET_SELECT_PET));
+        if (_arg_1.isAcceptableFuseState()) {
+            this.buttonBar.setGoldPrice(FeedFuseCostModel.getFuseGoldCost(PetRarityEnum.selectByValue(_arg_1.leftSlotPetVO.getRarity())));
+            this.buttonBar.setFamePrice(FeedFuseCostModel.getFuseFameCost(PetRarityEnum.selectByValue(_arg_1.leftSlotPetVO.getRarity())));
+        }
+        this.closeButton.clicked.add(this.onClose);
+        this.waitForTextChanged();
+        this.addChildren();
+        this.positionAssets();
+    }
 
-      private const petFuser:PetFuser = PetsViewAssetFactory.returnPetFuser();
+    private function onFameOrGoldClicked():void {
+        closeDialogSignal.dispatch();
+    }
 
-      private const closeButton:DialogCloseButton = PetsViewAssetFactory.returnCloseButton(PetsConstants.WINDOW_BACKGROUND_WIDTH);
+    public function destroy():void {
+        this.buttonBar.positioned.remove(this.positionButtonBar);
+    }
 
-      private const fusionStrength:FusionStrength = PetsViewAssetFactory.returnFusionStrength();
+    private function addChildren():void {
+        addChild(this.background);
+        addChild(this.titleTextfield);
+        addChild(this.descriptionTextfield);
+        addChild(this.buttonBar);
+        addChild(this.petFuser);
+        addChild(this.fusionStrength);
+        addChild(this.closeButton);
+    }
 
-      public const closed:Signal = new Signal();
+    private function positionAssets():void {
+        positionThis();
+        this.positionPetFeeder();
+    }
 
-      public var openPetPicker:Signal;
+    private function positionPetFeeder():void {
+        this.petFuser.x = Math.round(((PetsConstants.WINDOW_BACKGROUND_WIDTH - this.petFuser.width) * 0.5));
+    }
 
-      public var goldPurchase:Signal;
+    private function waitForTextChanged():void {
+        var _local_1:SignalWaiter = new SignalWaiter();
+        _local_1.push(this.titleTextfield.textChanged);
+        _local_1.push(this.descriptionTextfield.textChanged);
+        _local_1.complete.addOnce(this.positionTextField);
+        this.buttonBar.positioned.add(this.positionButtonBar);
+    }
 
-      public var famePurchase:Signal;
+    private function positionTextField():void {
+        this.titleTextfield.y = 5;
+        this.titleTextfield.x = ((PetsConstants.WINDOW_BACKGROUND_WIDTH - this.titleTextfield.width) * 0.5);
+        this.descriptionTextfield.x = ((PetsConstants.WINDOW_BACKGROUND_WIDTH - this.descriptionTextfield.width) * 0.5);
+    }
 
-      public function FusePetView() {
-         super();
-         this.buttonBar.clicked.addOnce(this.onFameOrGoldClicked);
-      }
+    private function positionButtonBar():void {
+        this.buttonBar.x = ((PetsConstants.WINDOW_BACKGROUND_WIDTH - this.buttonBar.width) / 2);
+    }
 
-      public function init(param1:PetSlotsState) : void {
-         this.titleTextfield.setStringBuilder(new LineBuilder().setParams(TextKey.PET_FUSER_TITLE));
-         this.openPetPicker = this.petFuser.openPetPicker;
-         this.goldPurchase = this.buttonBar.goldButtonClicked;
-         this.famePurchase = this.buttonBar.fameButtonClicked;
-         this.buttonBar.setDisabled(!param1.isAcceptableFuseState());
-         this.buttonBar.setPrefix(!!param1.isAcceptableFuseState()?TextKey.PET_FUSER_BUTTON_BAR_PREFIX:TextKey.PET_SELECT_PET);
-         if(param1.isAcceptableFuseState()) {
-            this.buttonBar.setGoldPrice(FeedFuseCostModel.getFuseGoldCost(PetRarityEnum.selectByValue(param1.leftSlotPetVO.getRarity())));
-            this.buttonBar.setFamePrice(FeedFuseCostModel.getFuseFameCost(PetRarityEnum.selectByValue(param1.leftSlotPetVO.getRarity())));
-         }
-         this.closeButton.clicked.add(this.onClose);
-         this.waitForTextChanged();
-         this.addChildren();
-         this.positionAssets();
-      }
+    private function onClose():void {
+        this.closed.dispatch();
+    }
 
-      private function onFameOrGoldClicked() : void {
-         closeDialogSignal.dispatch();
-      }
+    public function getCloseSignal():Signal {
+        return (closeDialogSignal);
+    }
 
-      public function destroy() : void {
-         this.buttonBar.positioned.remove(this.positionButtonBar);
-      }
 
-      private function addChildren() : void {
-         addChild(this.background);
-         addChild(this.titleTextfield);
-         addChild(this.descriptionTextfield);
-         addChild(this.buttonBar);
-         addChild(this.petFuser);
-         addChild(this.fusionStrength);
-         addChild(this.closeButton);
-      }
-
-      private function positionAssets() : void {
-         positionThis();
-         this.positionPetFeeder();
-      }
-
-      private function positionPetFeeder() : void {
-         this.petFuser.x = Math.round((PetsConstants.WINDOW_BACKGROUND_WIDTH - this.petFuser.width) * 0.5);
-      }
-
-      private function waitForTextChanged() : void {
-         var _local1:SignalWaiter = new SignalWaiter();
-         _local1.push(this.titleTextfield.textChanged);
-         _local1.push(this.descriptionTextfield.textChanged);
-         _local1.complete.addOnce(this.positionTextField);
-         this.buttonBar.positioned.add(this.positionButtonBar);
-      }
-
-      private function positionTextField() : void {
-         this.titleTextfield.y = 5;
-         this.titleTextfield.x = (PetsConstants.WINDOW_BACKGROUND_WIDTH - this.titleTextfield.width) * 0.5;
-         this.descriptionTextfield.x = (PetsConstants.WINDOW_BACKGROUND_WIDTH - this.descriptionTextfield.width) * 0.5;
-      }
-
-      private function positionButtonBar() : void {
-         this.buttonBar.x = (PetsConstants.WINDOW_BACKGROUND_WIDTH - this.buttonBar.width) / 2;
-      }
-
-      private function onClose() : void {
-         this.closed.dispatch();
-      }
-
-      public function getCloseSignal() : Signal {
-         return closeDialogSignal;
-      }
-   }
 }
+}//package kabam.rotmg.pets.view

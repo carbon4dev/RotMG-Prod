@@ -1,4 +1,4 @@
-package kabam.rotmg.news.view {
+﻿package kabam.rotmg.news.view {
 import flash.net.URLRequest;
 import flash.net.navigateToURL;
 
@@ -11,40 +11,38 @@ import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class NewsCellMediator extends Mediator {
 
-      [Inject]
-      public var view:NewsCell;
+    [Inject]
+    public var view:NewsCell;
+    [Inject]
+    public var openPackageSignal:OpenPackageSignal;
+    [Inject]
+    public var openSkinSignal:OpenSkinSignal;
 
-      [Inject]
-      public var openPackageSignal:OpenPackageSignal;
 
-      [Inject]
-      public var openSkinSignal:OpenSkinSignal;
+    override public function initialize():void {
+        this.view.clickSignal.add(this.onNewsClicked);
+    }
 
-      public function NewsCellMediator() {
-         super();
-      }
+    override public function destroy():void {
+        this.view.clickSignal.remove(this.onNewsClicked);
+    }
 
-      override public function initialize() : void {
-         this.view.clickSignal.add(this.onNewsClicked);
-      }
-
-      override public function destroy() : void {
-         this.view.clickSignal.remove(this.onNewsClicked);
-      }
-
-      private function onNewsClicked(param1:NewsCellVO) : void {
-         var _local2:URLRequest = null;
-         switch(param1.linkType) {
+    private function onNewsClicked(_arg_1:NewsCellVO):void {
+        var _local_2:URLRequest;
+        switch (_arg_1.linkType) {
             case NewsCellLinkType.OPENS_LINK:
-               _local2 = new URLRequest(param1.linkDetail);
-               navigateToURL(_local2,"_blank");
-               break;
+                _local_2 = new URLRequest(_arg_1.linkDetail);
+                navigateToURL(_local_2, "_blank");
+                return;
             case NewsCellLinkType.OPENS_PACKAGE:
-               this.openPackageSignal.dispatch(int(param1.linkDetail));
-               break;
+                this.openPackageSignal.dispatch(int(_arg_1.linkDetail));
+                return;
             case NewsCellLinkType.OPENS_SKIN:
-               this.openSkinSignal.dispatch(param1.linkDetail);
-         }
-      }
-   }
+                this.openSkinSignal.dispatch(_arg_1.linkDetail);
+                return;
+        }
+    }
+
+
 }
+}//package kabam.rotmg.news.view

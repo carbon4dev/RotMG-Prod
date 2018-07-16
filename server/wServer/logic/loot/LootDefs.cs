@@ -186,40 +186,6 @@ namespace wServer.logic.loot
             }
         }
     }
-    
-    internal class DmgAverage : ILootDef
-    {
-        private readonly ILootDef[] loots;
-        private readonly int amount;
-
-        public DmgAverage(int amount, params ILootDef[] loots)
-        {
-            this.amount = amount;
-            this.loots = loots;
-        }
-
-        public string Lootstate { get; set; }
-
-        public void Populate(RealmManager manager, Enemy enemy, Tuple<Player, int> playerDat, Random rand, string lootState, IList<LootDef> lootDefs)
-        {
-            var data = enemy.DamageCounter.GetPlayerData();
-            var mostDamage = GetAverage(data);
-            foreach (var loot in mostDamage.Where(pl => pl.Equals(playerDat)).SelectMany(pl => loots))
-                loot.Populate(manager, enemy, null, rand, lootState, lootDefs);
-        }
-
-        private IEnumerable<Tuple<Player, int>> GetAverage(IEnumerable<Tuple<Player, int>> data)
-        {
-            var damages = data.Select(_ => _.Item2).ToList();
-            var len = damages.Count <= amount ? damages.Count : amount;
-            for (var i = 0; i < len; i++)
-            {
-                var val = damages.Max();
-                yield return data.FirstOrDefault(_ => _.Item2 == val);
-                damages.Remove(val);
-            }
-        }
-    }
 
     internal class MostDamagers : ILootDef
     {

@@ -1,4 +1,4 @@
-package com.company.util {
+﻿package com.company.util {
 import flash.display.BitmapData;
 import flash.geom.Matrix;
 import flash.geom.Point;
@@ -7,179 +7,183 @@ import flash.utils.Dictionary;
 
 public class BitmapUtil {
 
-      public function BitmapUtil(param1:StaticEnforcer) {
-         super();
-      }
+    public function BitmapUtil(_arg_1:StaticEnforcer) {
+    }
 
-      public static function mirror(param1:BitmapData, param2:int = 0) : BitmapData {
-         var _local5:int = 0;
-         if(param2 == 0) {
-            param2 = param1.width;
-         }
-         var _local3:BitmapData = new BitmapData(param1.width,param1.height,true,0);
-         var _local4:int = 0;
-         while(_local4 < param2) {
-            _local5 = 0;
-            while(_local5 < param1.height) {
-               _local3.setPixel32(param2 - _local4 - 1,_local5,param1.getPixel32(_local4,_local5));
-               _local5++;
+    public static function mirror(_arg_1:BitmapData, _arg_2:int = 0):BitmapData {
+        var _local_5:int;
+        if (_arg_2 == 0) {
+            _arg_2 = _arg_1.width;
+        }
+        var _local_3:BitmapData = new BitmapData(_arg_1.width, _arg_1.height, true, 0);
+        var _local_4:int;
+        while (_local_4 < _arg_2) {
+            _local_5 = 0;
+            while (_local_5 < _arg_1.height) {
+                _local_3.setPixel32(((_arg_2 - _local_4) - 1), _local_5, _arg_1.getPixel32(_local_4, _local_5));
+                _local_5++;
             }
-            _local4++;
-         }
-         return _local3;
-      }
+            _local_4++;
+        }
+        return (_local_3);
+    }
 
-      public static function rotateBitmapData(param1:BitmapData, param2:int) : BitmapData {
-         var _local3:Matrix = new Matrix();
-         _local3.translate(-param1.width / 2,-param1.height / 2);
-         _local3.rotate(param2 * Math.PI / 2);
-         _local3.translate(param1.height / 2,param1.width / 2);
-         var _local4:BitmapData = new BitmapData(param1.height,param1.width,true,0);
-         _local4.draw(param1,_local3);
-         return _local4;
-      }
+    public static function rotateBitmapData(_arg_1:BitmapData, _arg_2:int):BitmapData {
+        var _local_3:Matrix = new Matrix();
+        _local_3.translate((-(_arg_1.width) / 2), (-(_arg_1.height) / 2));
+        _local_3.rotate(((_arg_2 * Math.PI) / 2));
+        _local_3.translate((_arg_1.height / 2), (_arg_1.width / 2));
+        var _local_4:BitmapData = new BitmapData(_arg_1.height, _arg_1.width, true, 0);
+        _local_4.draw(_arg_1, _local_3);
+        return (_local_4);
+    }
 
-      public static function cropToBitmapData(param1:BitmapData, param2:int, param3:int, param4:int, param5:int) : BitmapData {
-         var _local6:BitmapData = new BitmapData(param4,param5);
-         _local6.copyPixels(param1,new Rectangle(param2,param3,param4,param5),new Point(0,0));
-         return _local6;
-      }
+    public static function cropToBitmapData(_arg_1:BitmapData, _arg_2:int, _arg_3:int, _arg_4:int, _arg_5:int):BitmapData {
+        var _local_6:BitmapData = new BitmapData(_arg_4, _arg_5);
+        _local_6.copyPixels(_arg_1, new Rectangle(_arg_2, _arg_3, _arg_4, _arg_5), new Point(0, 0));
+        return (_local_6);
+    }
 
-      public static function amountTransparent(param1:BitmapData) : Number {
-         var _local4:int = 0;
-         var _local5:* = 0;
-         var _local2:int = 0;
-         var _local3:int = 0;
-         while(_local3 < param1.width) {
-            _local4 = 0;
-            while(_local4 < param1.height) {
-               _local5 = param1.getPixel32(_local3,_local4) & 4278190080;
-               if(_local5 == 0) {
-                  _local2++;
-               }
-               _local4++;
+    public static function amountTransparent(_arg_1:BitmapData):Number {
+        var _local_4:int;
+        var _local_5:int;
+        var _local_2:int;
+        var _local_3:int;
+        while (_local_3 < _arg_1.width) {
+            _local_4 = 0;
+            while (_local_4 < _arg_1.height) {
+                _local_5 = (_arg_1.getPixel32(_local_3, _local_4) & 0xFF000000);
+                if (_local_5 == 0) {
+                    _local_2++;
+                }
+                _local_4++;
             }
-            _local3++;
-         }
-         return _local2 / (param1.width * param1.height);
-      }
+            _local_3++;
+        }
+        return ((_local_2 / (_arg_1.width * _arg_1.height)));
+    }
 
-      public static function mostCommonColor(param1:BitmapData) : uint {
-         var _local3:uint = 0;
-         var _local7:* = null;
-         var _local8:int = 0;
-         var _local9:int = 0;
-         var _local2:Dictionary = new Dictionary();
-         var _local4:int = 0;
-         while(_local4 < param1.width) {
-            _local8 = 0;
-            while(_local8 < param1.width) {
-               _local3 = param1.getPixel32(_local4,_local8);
-               if((_local3 & 4278190080) != 0) {
-                  if(!_local2.hasOwnProperty(_local3)) {
-                     _local2[_local3] = 1;
-                  } else {
-                     _local2[_local3]++;
-                  }
-               }
-               _local8++;
+    public static function mostCommonColor(_arg_1:BitmapData):uint {
+        var _local_3:*;
+        var _local_7:String;
+        var _local_8:int;
+        var _local_9:int;
+        var _local_2:Dictionary = new Dictionary();
+        var _local_4:int;
+        while (_local_4 < _arg_1.width) {
+            _local_8 = 0;
+            while (_local_8 < _arg_1.width) {
+                _local_3 = _arg_1.getPixel32(_local_4, _local_8);
+                if ((_local_3 & 0xFF000000) != 0) {
+                    if (!_local_2.hasOwnProperty(_local_3)) {
+                        _local_2[_local_3] = 1;
+                    }
+                    else {
+                        var _local_10 = _local_2;
+                        var _local_11 = _local_3;
+                        var _local_12 = (_local_10[_local_11] + 1);
+                        _local_10[_local_11] = _local_12;
+                    }
+                }
+                _local_8++;
             }
-            _local4++;
-         }
-         var _local5:uint = 0;
-         var _local6:uint = 0;
-         for(_local7 in _local2) {
-            _local3 = uint(_local7);
-            _local9 = _local2[_local7];
-            if(_local9 > _local6 || _local9 == _local6 && _local3 > _local5) {
-               _local5 = _local3;
-               _local6 = _local9;
+            _local_4++;
+        }
+        var _local_5:uint;
+        var _local_6:uint;
+        for (_local_7 in _local_2) {
+            _local_3 = uint(_local_7);
+            _local_9 = _local_2[_local_7];
+            if ((((_local_9 > _local_6)) || ((((_local_9 == _local_6)) && ((_local_3 > _local_5)))))) {
+                _local_5 = _local_3;
+                _local_6 = _local_9;
             }
-         }
-         return _local5;
-      }
+        }
+        return (_local_5);
+    }
 
-      public static function lineOfSight(param1:BitmapData, param2:IntPoint, param3:IntPoint) : Boolean {
-         var _local11:int = 0;
-         var _local19:int = 0;
-         var _local20:int = 0;
-         var _local21:int = 0;
-         var _local4:int = param1.width;
-         var _local5:int = param1.height;
-         var _local6:int = param2.x();
-         var _local7:int = param2.y();
-         var _local8:int = param3.x();
-         var _local9:int = param3.y();
-         var _local10:* = (_local7 > _local9?_local7 - _local9:_local9 - _local7) > (_local6 > _local8?_local6 - _local8:_local8 - _local6);
-         if(_local10) {
-            _local11 = _local6;
-            _local6 = _local7;
-            _local7 = _local11;
-            _local11 = _local8;
-            _local8 = _local9;
-            _local9 = _local11;
-            _local11 = _local4;
-            _local4 = _local5;
-            _local5 = _local11;
-         }
-         if(_local6 > _local8) {
-            _local11 = _local6;
-            _local6 = _local8;
-            _local8 = _local11;
-            _local11 = _local7;
-            _local7 = _local9;
-            _local9 = _local11;
-         }
-         var _local12:int = _local8 - _local6;
-         var _local13:int = _local7 > _local9?int(_local7 - _local9):int(_local9 - _local7);
-         var _local14:int = -(_local12 + 1) / 2;
-         var _local15:int = _local7 > _local9?-1:1;
-         var _local16:int = _local8 > _local4 - 1?int(_local4 - 1):int(_local8);
-         var _local17:int = _local7;
-         var _local18:int = _local6;
-         if(_local18 < 0) {
-            _local14 = _local14 + _local13 * -_local18;
-            if(_local14 >= 0) {
-               _local19 = _local14 / _local12 + 1;
-               _local17 = _local17 + _local15 * _local19;
-               _local14 = _local14 - _local19 * _local12;
+    public static function lineOfSight(_arg_1:BitmapData, _arg_2:IntPoint, _arg_3:IntPoint):Boolean {
+        var _local_11:int;
+        var _local_19:int;
+        var _local_20:int;
+        var _local_21:int;
+        var _local_4:int = _arg_1.width;
+        var _local_5:int = _arg_1.height;
+        var _local_6:int = _arg_2.x();
+        var _local_7:int = _arg_2.y();
+        var _local_8:int = _arg_3.x();
+        var _local_9:int = _arg_3.y();
+        var _local_10 = ((((_local_7 > _local_9)) ? (_local_7 - _local_9) : (_local_9 - _local_7)) > (((_local_6 > _local_8)) ? (_local_6 - _local_8) : (_local_8 - _local_6)));
+        if (_local_10) {
+            _local_11 = _local_6;
+            _local_6 = _local_7;
+            _local_7 = _local_11;
+            _local_11 = _local_8;
+            _local_8 = _local_9;
+            _local_9 = _local_11;
+            _local_11 = _local_4;
+            _local_4 = _local_5;
+            _local_5 = _local_11;
+        }
+        if (_local_6 > _local_8) {
+            _local_11 = _local_6;
+            _local_6 = _local_8;
+            _local_8 = _local_11;
+            _local_11 = _local_7;
+            _local_7 = _local_9;
+            _local_9 = _local_11;
+        }
+        var _local_12:int = (_local_8 - _local_6);
+        var _local_13:int = (((_local_7 > _local_9)) ? (_local_7 - _local_9) : (_local_9 - _local_7));
+        var _local_14:int = (-((_local_12 + 1)) / 2);
+        var _local_15:int = (((_local_7) > _local_9) ? -1 : 1);
+        var _local_16:int = (((_local_8 > (_local_4 - 1))) ? (_local_4 - 1) : _local_8);
+        var _local_17:int = _local_7;
+        var _local_18:int = _local_6;
+        if (_local_18 < 0) {
+            _local_14 = (_local_14 + (_local_13 * -(_local_18)));
+            if (_local_14 >= 0) {
+                _local_19 = ((_local_14 / _local_12) + 1);
+                _local_17 = (_local_17 + (_local_15 * _local_19));
+                _local_14 = (_local_14 - (_local_19 * _local_12));
             }
-            _local18 = 0;
-         }
-         if(_local15 > 0 && _local17 < 0 || _local15 < 0 && _local17 >= _local5) {
-            _local20 = _local15 > 0?int(-_local17 - 1):int(_local17 - _local5);
-            _local14 = _local14 - _local12 * _local20;
-            _local21 = -_local14 / _local13;
-            _local18 = _local18 + _local21;
-            _local14 = _local14 + _local21 * _local13;
-            _local17 = _local17 + _local20 * _local15;
-         }
-         while(_local18 <= _local16) {
-            if(_local15 > 0 && _local17 >= _local5 || _local15 < 0 && _local17 < 0) {
-               break;
+            _local_18 = 0;
+        }
+        if ((((((_local_15 > 0)) && ((_local_17 < 0)))) || ((((_local_15 < 0)) && ((_local_17 >= _local_5)))))) {
+            _local_20 = (((_local_15 > 0)) ? (-(_local_17) - 1) : (_local_17 - _local_5));
+            _local_14 = (_local_14 - (_local_12 * _local_20));
+            _local_21 = (-(_local_14) / _local_13);
+            _local_18 = (_local_18 + _local_21);
+            _local_14 = (_local_14 + (_local_21 * _local_13));
+            _local_17 = (_local_17 + (_local_20 * _local_15));
+        }
+        while (_local_18 <= _local_16) {
+            if ((((((_local_15 > 0)) && ((_local_17 >= _local_5)))) || ((((_local_15 < 0)) && ((_local_17 < 0)))))) break;
+            if (_local_10) {
+                if ((((((_local_17 >= 0)) && ((_local_17 < _local_5)))) && ((_arg_1.getPixel(_local_17, _local_18) == 0)))) {
+                    return (false);
+                }
             }
-            if(_local10) {
-               if(_local17 >= 0 && _local17 < _local5 && param1.getPixel(_local17,_local18) == 0) {
-                  return false;
-               }
-            } else if(_local17 >= 0 && _local17 < _local5 && param1.getPixel(_local18,_local17) == 0) {
-               return false;
+            else {
+                if ((((((_local_17 >= 0)) && ((_local_17 < _local_5)))) && ((_arg_1.getPixel(_local_18, _local_17) == 0)))) {
+                    return (false);
+                }
             }
-            _local14 = _local14 + _local13;
-            if(_local14 >= 0) {
-               _local17 = _local17 + _local15;
-               _local14 = _local14 - _local12;
+            _local_14 = (_local_14 + _local_13);
+            if (_local_14 >= 0) {
+                _local_17 = (_local_17 + _local_15);
+                _local_14 = (_local_14 - _local_12);
             }
-            _local18++;
-         }
-         return true;
-      }
-   }
+            _local_18++;
+        }
+        return (true);
+    }
+
+
 }
+}//package com.company.util
 
 class StaticEnforcer {
 
-   function StaticEnforcer() {
-      super();
-   }
+
 }

@@ -1,4 +1,4 @@
-package kabam.rotmg.account.kongregate.commands {
+﻿package kabam.rotmg.account.kongregate.commands {
 import kabam.lib.tasks.BranchingTask;
 import kabam.lib.tasks.DispatchSignalTask;
 import kabam.lib.tasks.Task;
@@ -13,43 +13,37 @@ import kabam.rotmg.dialogs.control.OpenDialogSignal;
 
 public class KongregateRegisterAccountCommand {
 
-      [Inject]
-      public var data:AccountData;
+    [Inject]
+    public var data:AccountData;
+    [Inject]
+    public var task:RegisterAccountTask;
+    [Inject]
+    public var monitor:TaskMonitor;
+    [Inject]
+    public var update:UpdateAccountInfoSignal;
+    [Inject]
+    public var openDialog:OpenDialogSignal;
+    [Inject]
+    public var taskError:TaskErrorSignal;
 
-      [Inject]
-      public var task:RegisterAccountTask;
 
-      [Inject]
-      public var monitor:TaskMonitor;
+    public function execute():void {
+        var _local_1:BranchingTask = new BranchingTask(this.task, this.onSuccess(), this.onFailure());
+        this.monitor.add(_local_1);
+        _local_1.start();
+    }
 
-      [Inject]
-      public var update:UpdateAccountInfoSignal;
+    private function onSuccess():TaskSequence {
+        var _local_1:TaskSequence = new TaskSequence();
+        _local_1.add(new DispatchSignalTask(this.update));
+        _local_1.add(new DispatchSignalTask(this.openDialog, new KongregateAccountDetailDialog()));
+        return (_local_1);
+    }
 
-      [Inject]
-      public var openDialog:OpenDialogSignal;
+    private function onFailure():Task {
+        return (new DispatchSignalTask(this.taskError, this.task));
+    }
 
-      [Inject]
-      public var taskError:TaskErrorSignal;
 
-      public function KongregateRegisterAccountCommand() {
-         super();
-      }
-
-      public function execute() : void {
-         var _local1:BranchingTask = new BranchingTask(this.task,this.onSuccess(),this.onFailure());
-         this.monitor.add(_local1);
-         _local1.start();
-      }
-
-      private function onSuccess() : TaskSequence {
-         var _local1:TaskSequence = new TaskSequence();
-         _local1.add(new DispatchSignalTask(this.update));
-         _local1.add(new DispatchSignalTask(this.openDialog,new KongregateAccountDetailDialog()));
-         return _local1;
-      }
-
-      private function onFailure() : Task {
-         return new DispatchSignalTask(this.taskError,this.task);
-      }
-   }
 }
+}//package kabam.rotmg.account.kongregate.commands

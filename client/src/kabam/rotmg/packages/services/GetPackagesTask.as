@@ -1,4 +1,4 @@
-package kabam.rotmg.packages.services {
+﻿package kabam.rotmg.packages.services {
 import flash.events.TimerEvent;
 import flash.utils.Timer;
 
@@ -12,115 +12,111 @@ import robotlegs.bender.framework.api.ILogger;
 
 public class GetPackagesTask extends BaseTask {
 
-      private static const HOUR:int = 1000 * 60 * 60;
+    private static const HOUR:int = ((1000 * 60) * 60);//3600000
 
-      public var timer:Timer;
+    public var timer:Timer;
+    [Inject]
+    public var client:AppEngineClient;
+    [Inject]
+    public var packageModel:PackageModel;
+    [Inject]
+    public var account:Account;
+    [Inject]
+    public var logger:ILogger;
+    [Inject]
+    public var languageModel:LanguageModel;
 
-      [Inject]
-      public var client:AppEngineClient;
+    public function GetPackagesTask() {
+        this.timer = new Timer(HOUR);
+        super();
+    }
 
-      [Inject]
-      public var packageModel:PackageModel;
+    override protected function startTask():void {
+        var _local_1:Object = this.account.getCredentials();
+        _local_1.language = this.languageModel.getLanguage();
+        this.client.sendRequest("/package/getPackages", _local_1);
+        this.client.complete.addOnce(this.onComplete);
+    }
 
-      [Inject]
-      public var account:Account;
-
-      [Inject]
-      public var logger:ILogger;
-
-      [Inject]
-      public var languageModel:LanguageModel;
-
-      public function GetPackagesTask() {
-         this.timer = new Timer(HOUR);
-         super();
-      }
-
-      override protected function startTask() : void {
-         var _local1:Object = this.account.getCredentials();
-         _local1.language = this.languageModel.getLanguage();
-         this.client.sendRequest("/package/getPackages",_local1);
-         this.client.complete.addOnce(this.onComplete);
-      }
-
-      private function onComplete(param1:Boolean, param2:*) : void {
-         if(param1) {
-            this.handleOkay(param2);
-         } else {
+    private function onComplete(_arg_1:Boolean, _arg_2:*):void {
+        if (_arg_1) {
+            this.handleOkay(_arg_2);
+        }
+        else {
             this.logger.warn("GetPackageTask.onComplete: Request failed.");
             completeTask(false);
-         }
-      }
+        }
+    }
 
-      private function handleOkay(param1:*) : void {
-         var _local2:XML = null;
-         if(this.hasNoPackage(param1)) {
+    private function handleOkay(_arg_1:*):void {
+        var _local_2:XML;
+        if (this.hasNoPackage(_arg_1)) {
             this.logger.info("GetPackageTask.onComplete: No package available, retrying in 1 hour.");
-            this.timer.addEventListener(TimerEvent.TIMER,this.timer_timerHandler);
+            this.timer.addEventListener(TimerEvent.TIMER, this.timer_timerHandler);
             this.timer.start();
             this.packageModel.setPackages([]);
-         } else {
-            _local2 = XML(param1);
-            this.parse(_local2);
-         }
-         completeTask(true);
-      }
+        }
+        else {
+            _local_2 = XML(_arg_1);
+            this.parse(_local_2);
+        }
+        completeTask(true);
+    }
 
-      private function hasNoPackage(param1:*) : Boolean {
-         var _local2:XMLList = XML(param1).Packages;
-         var _local3:* = _local2.length() == 0;
-         return _local3;
-      }
+    private function hasNoPackage(_arg_1:*):Boolean {
+        var _local_2:XMLList = XML(_arg_1).Packages;
+        return ((_local_2.length() == 0));
+    }
 
-      private function parse(param1:XML) : void {
-         var _local3:XML = null;
-         var _local4:int = 0;
-         var _local5:String = null;
-         var _local6:int = 0;
-         var _local7:int = 0;
-         var _local8:int = 0;
-         var _local9:int = 0;
-         var _local10:Date = null;
-         var _local11:String = null;
-         var _local12:int = 0;
-         var _local13:PackageInfo = null;
-         var _local2:Array = [];
-         for each(_local3 in param1.Packages.Package) {
-            _local4 = int(_local3.@id);
-            _local5 = String(_local3.Name);
-            _local6 = int(_local3.Price);
-            _local7 = int(_local3.Quantity);
-            _local8 = int(_local3.MaxPurchase);
-            _local9 = int(_local3.Weight);
-            _local10 = new Date(String(_local3.EndDate));
-            _local11 = String(_local3.BgURL);
-            _local12 = this.getNumPurchased(param1,_local4);
-            _local13 = new PackageInfo();
-            _local13.setData(_local4,_local10,_local5,_local7,_local8,_local9,_local6,_local11,_local12);
-            _local2.push(_local13);
-         }
-         this.packageModel.setPackages(_local2);
-      }
+    private function parse(_arg_1:XML):void {
+        var _local_3:XML;
+        var _local_4:int;
+        var _local_5:String;
+        var _local_6:int;
+        var _local_7:int;
+        var _local_8:int;
+        var _local_9:int;
+        var _local_10:Date;
+        var _local_11:String;
+        var _local_12:int;
+        var _local_13:PackageInfo;
+        var _local_2:Array = [];
+        for each (_local_3 in _arg_1.Packages.Package) {
+            _local_4 = int(_local_3.@id);
+            _local_5 = String(_local_3.Name);
+            _local_6 = int(_local_3.Price);
+            _local_7 = int(_local_3.Quantity);
+            _local_8 = int(_local_3.MaxPurchase);
+            _local_9 = int(_local_3.Weight);
+            _local_10 = new Date(String(_local_3.EndDate));
+            _local_11 = String(_local_3.BgURL);
+            _local_12 = this.getNumPurchased(_arg_1, _local_4);
+            _local_13 = new PackageInfo();
+            _local_13.setData(_local_4, _local_10, _local_5, _local_7, _local_8, _local_9, _local_6, _local_11, _local_12);
+            _local_2.push(_local_13);
+        }
+        this.packageModel.setPackages(_local_2);
+    }
 
-      private function getNumPurchased(param1:XML, param2:int) : int {
-         var packageHistory:XMLList = null;
-         var packagesXML:XML = param1;
-         var packageID:int = param2;
-         var numPurchased:int = 0;
-         var history:XMLList = packagesXML.History;
-         if(history) {
+    private function getNumPurchased(packagesXML:XML, packageID:int):int {
+        var packageHistory:XMLList;
+        var numPurchased:int;
+        var history:XMLList = packagesXML.History;
+        if (history) {
             packageHistory = history.Package.(@id == packageID);
-            if(packageHistory) {
-               numPurchased = int(packageHistory.Count);
+            if (packageHistory) {
+                numPurchased = int(packageHistory.Count);
             }
-         }
-         return numPurchased;
-      }
+        }
+        return (numPurchased);
+    }
 
-      private function timer_timerHandler(param1:TimerEvent) : void {
-         this.timer.removeEventListener(TimerEvent.TIMER,this.timer_timerHandler);
-         this.timer.stop();
-         this.startTask();
-      }
-   }
+    private function timer_timerHandler(_arg_1:TimerEvent):void {
+        this.timer.removeEventListener(TimerEvent.TIMER, this.timer_timerHandler);
+        this.timer.stop();
+        this.startTask();
+    }
+
+
 }
+}//package kabam.rotmg.packages.services

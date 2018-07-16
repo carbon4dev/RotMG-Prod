@@ -1,4 +1,4 @@
-package kabam.rotmg.pets.view.dialogs {
+﻿package kabam.rotmg.pets.view.dialogs {
 import com.company.assembleegameclient.ui.DeprecatedTextButton;
 
 import flash.display.Bitmap;
@@ -17,99 +17,89 @@ import org.osflash.signals.Signal;
 
 public class EggHatchedDialog extends Sprite {
 
-      //private var EggHatchImage:Class;
+    private const background:PopupWindowBackground = PetsViewAssetFactory.returnEggHatchWindowBackground(289, 279);
+    private const titleTextfield:TextFieldDisplayConcrete = PetsViewAssetFactory.returnTextfield(0xFFFFFF, 18, true);
+    private const typeTextfield:TextFieldDisplayConcrete = PetsViewAssetFactory.returnTextfield(16777103, 16, true);
+    private const eggHatchImage:DisplayObject = new EggHatchedDialog_EggHatchImage();
+    private const sendToYardButton:DeprecatedTextButton = new DeprecatedTextButton(16, "Pets.sendToYard", 120);
+    public const closed:Signal = new Signal();
 
-      private const background:PopupWindowBackground = PetsViewAssetFactory.returnEggHatchWindowBackground(289,279);
+    var skinType:int;
+    private var petBitmap:Bitmap;
+    private var petName:String;
 
-      private const titleTextfield:TextFieldDisplayConcrete = PetsViewAssetFactory.returnTextfield(16777215,18,true);
+    public function EggHatchedDialog(_arg_1:String, _arg_2:int) {
+        super();
+        this.petName = _arg_1;
+        this.skinType = _arg_2;
+        this.sendToYardButton.addEventListener(MouseEvent.MOUSE_DOWN, this.onSendToYard);
+    }
 
-      private const typeTextfield:TextFieldDisplayConcrete = PetsViewAssetFactory.returnTextfield(16777103,16,true);
+    private function onSendToYard(_arg_1:MouseEvent):void {
+        this.closed.dispatch();
+    }
 
-      //private const eggHatchImage:DisplayObject = new EggHatchImage();
+    public function init(_arg_1:Bitmap):void {
+        this.petBitmap = _arg_1;
+        this.setTextValues();
+        this.waitForTextChanged();
+        this.addChildren();
+        this.positionAssets();
+    }
 
-      private const eggHatchImage:DisplayObject = new EggHatchedDialog_EggHatchImage();
+    private function setTextValues():void {
+        this.titleTextfield.setStringBuilder(new LineBuilder().setParams(TextKey.PET_EGG_HATCHED));
+        this.typeTextfield.setStringBuilder(new LineBuilder().setParams(this.petName));
+    }
 
-      private const sendToYardButton:DeprecatedTextButton = new DeprecatedTextButton(16,"Pets.sendToYard",120);
+    private function onClosed():void {
+        this.closed.dispatch();
+    }
 
-      public const closed:Signal = new Signal();
+    private function addChildren():void {
+        this.eggHatchImage.y = 31;
+        addChild(this.background);
+        addChild(this.titleTextfield);
+        addChild(this.typeTextfield);
+        addChild(this.eggHatchImage);
+        addChild(this.sendToYardButton);
+        addChild(this.petBitmap);
+    }
 
-      var skinType:int;
+    private function positionAssets():void {
+        this.positionThis();
+        this.petBitmap.x = ((287 - this.petBitmap.width) * 0.5);
+        this.eggHatchImage.x = 1;
+        this.eggHatchImage.y = 32;
+        this.petBitmap.x = (this.petBitmap.x - 5);
+        this.petBitmap.y = 41;
+    }
 
-      private var petBitmap:Bitmap;
+    private function positionThis():void {
+        this.x = ((stage.stageWidth - this.width) * 0.5);
+        this.y = ((stage.stageHeight - this.height) * 0.5);
+    }
 
-      private var petName:String;
+    private function waitForTextChanged():void {
+        var _local_1:SignalWaiter = new SignalWaiter();
+        _local_1.push(this.titleTextfield.textChanged);
+        _local_1.push(this.typeTextfield.textChanged);
+        _local_1.complete.addOnce(this.positionTextField);
+        this.sendToYardButton.textChanged.add(this.positionButtonBar);
+    }
 
-      public function EggHatchedDialog(param1:String, param2:int) {
-         //this.EggHatchImage = EggHatchedDialog_EggHatchImage;
-         super();
-         this.petName = param1;
-         this.skinType = param2;
-         this.sendToYardButton.addEventListener(MouseEvent.MOUSE_DOWN,this.onSendToYard);
-      }
+    private function positionButtonBar():void {
+        this.sendToYardButton.x = ((287 - this.sendToYardButton.width) * 0.5);
+        this.sendToYardButton.y = 240;
+    }
 
-      private function onSendToYard(param1:MouseEvent) : void {
-         this.closed.dispatch();
-      }
+    private function positionTextField():void {
+        this.titleTextfield.x = ((287 - this.titleTextfield.width) * 0.5);
+        this.titleTextfield.y = 23;
+        this.typeTextfield.x = ((287 - this.typeTextfield.width) * 0.5);
+        this.typeTextfield.y = 230;
+    }
 
-      public function init(param1:Bitmap) : void {
-         this.petBitmap = param1;
-         this.setTextValues();
-         this.waitForTextChanged();
-         this.addChildren();
-         this.positionAssets();
-      }
 
-      private function setTextValues() : void {
-         this.titleTextfield.setStringBuilder(new LineBuilder().setParams(TextKey.PET_EGG_HATCHED));
-         this.typeTextfield.setStringBuilder(new LineBuilder().setParams(this.petName));
-      }
-
-      private function onClosed() : void {
-         this.closed.dispatch();
-      }
-
-      private function addChildren() : void {
-         this.eggHatchImage.y = 31;
-         addChild(this.background);
-         addChild(this.titleTextfield);
-         addChild(this.typeTextfield);
-         addChild(this.eggHatchImage);
-         addChild(this.sendToYardButton);
-         addChild(this.petBitmap);
-      }
-
-      private function positionAssets() : void {
-         this.positionThis();
-         this.petBitmap.x = (287 - this.petBitmap.width) * 0.5;
-         this.eggHatchImage.x = 1;
-         this.eggHatchImage.y = 32;
-         this.petBitmap.x = this.petBitmap.x - 5;
-         this.petBitmap.y = 41;
-      }
-
-      private function positionThis() : void {
-         this.x = (stage.stageWidth - this.width) * 0.5;
-         this.y = (stage.stageHeight - this.height) * 0.5;
-      }
-
-      private function waitForTextChanged() : void {
-         var _local1:SignalWaiter = new SignalWaiter();
-         _local1.push(this.titleTextfield.textChanged);
-         _local1.push(this.typeTextfield.textChanged);
-         _local1.complete.addOnce(this.positionTextField);
-         this.sendToYardButton.textChanged.add(this.positionButtonBar);
-      }
-
-      private function positionButtonBar() : void {
-         this.sendToYardButton.x = (287 - this.sendToYardButton.width) * 0.5;
-         this.sendToYardButton.y = 240;
-      }
-
-      private function positionTextField() : void {
-         this.titleTextfield.x = (287 - this.titleTextfield.width) * 0.5;
-         this.titleTextfield.y = 23;
-         this.typeTextfield.x = (287 - this.typeTextfield.width) * 0.5;
-         this.typeTextfield.y = 230;
-      }
-   }
 }
+}//package kabam.rotmg.pets.view.dialogs

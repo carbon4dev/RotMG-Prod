@@ -1,4 +1,4 @@
-package kabam.rotmg.ui.view {
+﻿package kabam.rotmg.ui.view {
 import com.company.assembleegameclient.screens.GraveyardLine;
 
 import kabam.rotmg.fame.control.ShowFameViewSignal;
@@ -8,26 +8,24 @@ import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class NewsLineMediator extends Mediator {
 
-      [Inject]
-      public var view:GraveyardLine;
+    [Inject]
+    public var view:GraveyardLine;
+    [Inject]
+    public var showFameView:ShowFameViewSignal;
 
-      [Inject]
-      public var showFameView:ShowFameViewSignal;
 
-      public function NewsLineMediator() {
-         super();
-      }
+    override public function initialize():void {
+        this.view.viewCharacterFame.add(this.onViewFame);
+    }
 
-      override public function initialize() : void {
-         this.view.viewCharacterFame.add(this.onViewFame);
-      }
+    override public function destroy():void {
+        this.view.viewCharacterFame.remove(this.onViewFame);
+    }
 
-      override public function destroy() : void {
-         this.view.viewCharacterFame.remove(this.onViewFame);
-      }
+    private function onViewFame(_arg_1:int):void {
+        this.showFameView.dispatch(new SimpleFameVO(this.view.accountId, _arg_1));
+    }
 
-      private function onViewFame(param1:int) : void {
-         this.showFameView.dispatch(new SimpleFameVO(this.view.accountId,param1));
-      }
-   }
+
 }
+}//package kabam.rotmg.ui.view

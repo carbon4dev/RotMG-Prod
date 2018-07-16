@@ -11,17 +11,15 @@ namespace wServer.realm.worlds
         public OceanTrench()
         {
             Name = "Ocean Trench";
-            ClientWorldName = "Ocean Trench";
+            ClientWorldName = "server.Ocean_Trench";
             Dungeon = true;
             Background = 0;
             AllowTeleport = true;
-            SetMusic("oceantrench");
         }
 
         protected override void Init()
         {
-            // was oceantrench.wmap
-            LoadMap("wServer.realm.worlds.maps.newot.jm", MapType.Json);
+            LoadMap("wServer.realm.worlds.maps.oceantrench.wmap", MapType.Wmap);
         }
 
         public override World GetInstance(Client psr)

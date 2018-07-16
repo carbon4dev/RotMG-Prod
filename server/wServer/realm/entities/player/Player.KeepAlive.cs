@@ -22,22 +22,23 @@ namespace wServer.realm.entities.player
         {
             try
             {
-                /*if (Random.Next(-999999999, 999999999) == 1)
-                    Client.GiftCodeReceived("Pong");*/
+                if (Random.Next(1, 100000) == 1)
+                    Client.GiftCodeReceived("Pong");
 
-                /*updateLastSeen++;
-                if (updateLastSeen >= 300)
+                updateLastSeen++;
+
+                if (updateLastSeen >= 60)
                 {
                     Manager.Database.DoActionAsync(db =>
                     {
                         db.UpdateLastSeen(Client.Account.AccountId, Client.Character.CharacterId, WorldInstance.Name);
                         updateLastSeen = 0;
                     });
-                }*/
+                }
             }
-            catch// (Exception e)
+            catch (Exception e)
             {
-                //log.Error(e);
+                log.Error(e);
             }
         }
 

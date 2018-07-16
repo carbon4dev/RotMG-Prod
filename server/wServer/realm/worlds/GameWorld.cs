@@ -27,7 +27,6 @@ namespace wServer.realm.worlds
             Difficulty = -1;
             this.oryxPresent = oryxPresent;
             this.mapId = mapId;
-            SetMusic("rotmg");
         }
 
         public Oryx Overseer { get; private set; }

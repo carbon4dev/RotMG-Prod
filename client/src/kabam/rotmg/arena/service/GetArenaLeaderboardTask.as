@@ -1,4 +1,4 @@
-package kabam.rotmg.arena.service {
+﻿package kabam.rotmg.arena.service {
 import com.company.util.MoreObjectUtil;
 
 import kabam.lib.tasks.BaseTask;
@@ -10,46 +10,41 @@ import kabam.rotmg.arena.model.ArenaLeaderboardFilter;
 
 public class GetArenaLeaderboardTask extends BaseTask {
 
-      private static const REQUEST:String = "arena/getRecords";
+    private static const REQUEST:String = "arena/getRecords";
 
-      [Inject]
-      public var account:Account;
+    [Inject]
+    public var account:Account;
+    [Inject]
+    public var client:AppEngineClient;
+    [Inject]
+    public var factory:ArenaLeaderboardFactory;
+    [Inject]
+    public var reloadLeaderboard:ReloadLeaderboard;
+    public var filter:ArenaLeaderboardFilter;
 
-      [Inject]
-      public var client:AppEngineClient;
 
-      [Inject]
-      public var factory:ArenaLeaderboardFactory;
+    override protected function startTask():void {
+        this.client.complete.addOnce(this.onComplete);
+        this.client.sendRequest(REQUEST, this.makeRequestObject());
+    }
 
-      [Inject]
-      public var reloadLeaderboard:ReloadLeaderboard;
+    private function onComplete(_arg_1:Boolean, _arg_2:*):void {
+        ((_arg_1) && (this.updateLeaderboard(_arg_2)));
+        completeTask(_arg_1, _arg_2);
+    }
 
-      public var filter:ArenaLeaderboardFilter;
+    private function updateLeaderboard(_arg_1:String):void {
+        var _local_2:Vector.<ArenaLeaderboardEntry> = this.factory.makeEntries(XML(_arg_1).Record);
+        this.filter.setEntries(_local_2);
+        this.reloadLeaderboard.dispatch();
+    }
 
-      public function GetArenaLeaderboardTask() {
-         super();
-      }
+    private function makeRequestObject():Object {
+        var _local_1:Object = {"type": this.filter.getKey()};
+        MoreObjectUtil.addToObject(_local_1, this.account.getCredentials());
+        return (_local_1);
+    }
 
-      override protected function startTask() : void {
-         this.client.complete.addOnce(this.onComplete);
-         this.client.sendRequest(REQUEST,this.makeRequestObject());
-      }
 
-      private function onComplete(param1:Boolean, param2:*) : void {
-         param1 && this.updateLeaderboard(param2);
-         completeTask(param1,param2);
-      }
-
-      private function updateLeaderboard(param1:String) : void {
-         var _local2:Vector.<ArenaLeaderboardEntry> = this.factory.makeEntries(XML(param1).Record);
-         this.filter.setEntries(_local2);
-         this.reloadLeaderboard.dispatch();
-      }
-
-      private function makeRequestObject() : Object {
-         var _local1:Object = {"type":this.filter.getKey()};
-         MoreObjectUtil.addToObject(_local1,this.account.getCredentials());
-         return _local1;
-      }
-   }
 }
+}//package kabam.rotmg.arena.service

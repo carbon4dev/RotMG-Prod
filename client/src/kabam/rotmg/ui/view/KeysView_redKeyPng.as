@@ -1,3 +1,4 @@
+﻿//Created by Action Script Viewer - http://www.buraks.com/asv
 package kabam.rotmg.ui.view {
 import mx.core.BitmapAsset;
 
@@ -5,8 +6,5 @@ import mx.core.BitmapAsset;
 public class KeysView_redKeyPng extends BitmapAsset {
 
 
-      public function KeysView_redKeyPng() {
-         super();
-      }
-   }
 }
+}//package kabam.rotmg.ui.view

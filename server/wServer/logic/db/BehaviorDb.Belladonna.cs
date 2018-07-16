@@ -335,34 +335,16 @@ namespace wServer.logic
                     ),
                     new State("UnsetEffect")
                 ),
-                new MostDamagers(4,
-                    new OnlyOne(
-                        new ItemLoot("Bashing Bride Skin", whitebag),
-                        new ItemLoot("Eligible Bachelor Skin", whitebag)
-                        ),
-                    new ItemLoot("Diamond Bladed Katana", normalloot),
-                    new ItemLoot("Cupid's Bow", normalloot),
-                    new ItemLoot("Staff of Adoration", normalloot),
-                    new ItemLoot("Wand of Budding Romance", normalloot),
-                    new ItemLoot("Heartfind Dagger", normalloot),
-                    new ItemLoot("Vinesword", normalloot)
-                    )
-            /*
-            Belladona (Prod Loot):
-            - init white bag loot
-            - Bashing Bride Skin
-            - Eligible Bachelor Skin
-            -- end white bag loot
-
-            -- init normal loot
-            - diamond bladed katana
-            - cupid's bow
-            - staff of adoration
-            - wand of budding romance
-            - heartfind dagger
-            - vinesword
-            -- end normal loot
-            */
+                new Threshold(0.1,
+                    new ItemLoot("Diamond Bladed Katana", 0.1),
+                    new ItemLoot("Cupid's Bow", 0.1),
+                    new ItemLoot("Staff of Adoration", 0.1),
+                    new ItemLoot("Wand of Budding Romance", 0.1),
+                    new ItemLoot("Heartfind Dagger", 0.1),
+                    new ItemLoot("Vinesword", 0.1),
+                    new ItemLoot("Bashing Bride Skin", 0.02),
+                    new ItemLoot("Eligible Bachelor Skin", 0.02)
+                )
             );
     }
 }

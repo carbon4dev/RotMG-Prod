@@ -1,4 +1,4 @@
-package kabam.rotmg.account.web.view {
+﻿package kabam.rotmg.account.web.view {
 import kabam.lib.tasks.Task;
 import kabam.rotmg.account.core.signals.LoginSignal;
 import kabam.rotmg.account.web.model.AccountData;
@@ -10,61 +10,56 @@ import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class WebLoginMediator extends Mediator {
 
-      [Inject]
-      public var view:WebLoginDialog;
+    [Inject]
+    public var view:WebLoginDialog;
+    [Inject]
+    public var login:LoginSignal;
+    [Inject]
+    public var openDialog:OpenDialogSignal;
+    [Inject]
+    public var closeDialog:CloseDialogsSignal;
+    [Inject]
+    public var loginError:TaskErrorSignal;
 
-      [Inject]
-      public var login:LoginSignal;
 
-      [Inject]
-      public var openDialog:OpenDialogSignal;
+    override public function initialize():void {
+        this.view.signIn.add(this.onSignIn);
+        this.view.register.add(this.onRegister);
+        this.view.cancel.add(this.onCancel);
+        this.view.forgot.add(this.onForgot);
+        this.loginError.add(this.onLoginError);
+    }
 
-      [Inject]
-      public var closeDialog:CloseDialogsSignal;
+    override public function destroy():void {
+        this.view.signIn.remove(this.onSignIn);
+        this.view.register.remove(this.onRegister);
+        this.view.cancel.remove(this.onCancel);
+        this.view.forgot.remove(this.onForgot);
+        this.loginError.remove(this.onLoginError);
+    }
 
-      [Inject]
-      public var loginError:TaskErrorSignal;
+    private function onSignIn(_arg_1:AccountData):void {
+        this.view.disable();
+        this.login.dispatch(_arg_1);
+    }
 
-      public function WebLoginMediator() {
-         super();
-      }
+    private function onRegister():void {
+        this.openDialog.dispatch(new WebRegisterDialog());
+    }
 
-      override public function initialize() : void {
-         this.view.signIn.add(this.onSignIn);
-         this.view.register.add(this.onRegister);
-         this.view.cancel.add(this.onCancel);
-         this.view.forgot.add(this.onForgot);
-         this.loginError.add(this.onLoginError);
-      }
+    private function onCancel():void {
+        this.closeDialog.dispatch();
+    }
 
-      override public function destroy() : void {
-         this.view.signIn.remove(this.onSignIn);
-         this.view.register.remove(this.onRegister);
-         this.view.cancel.remove(this.onCancel);
-         this.view.forgot.remove(this.onForgot);
-         this.loginError.remove(this.onLoginError);
-      }
+    private function onForgot():void {
+        this.openDialog.dispatch(new WebForgotPasswordDialog());
+    }
 
-      private function onSignIn(param1:AccountData) : void {
-         this.view.disable();
-         this.login.dispatch(param1);
-      }
+    private function onLoginError(_arg_1:Task):void {
+        this.view.setError(_arg_1.error);
+        this.view.enable();
+    }
 
-      private function onRegister() : void {
-         this.openDialog.dispatch(new WebRegisterDialog());
-      }
 
-      private function onCancel() : void {
-         this.closeDialog.dispatch();
-      }
-
-      private function onForgot() : void {
-         this.openDialog.dispatch(new WebForgotPasswordDialog());
-      }
-
-      private function onLoginError(param1:Task) : void {
-         this.view.setError(param1.error);
-         this.view.enable();
-      }
-   }
 }
+}//package kabam.rotmg.account.web.view

@@ -41,7 +41,7 @@ namespace wServer.networking.handlers
                         });
                         return;
                     }
-                    if (/*!target.NameChosen || */player.Dist(target) > 99999)
+                    if (!target.NameChosen || player.Dist(target) > 20)
                     {
                         player.SendInfoWithTokens("server.invite_notfound", new KeyValuePair<string, object>[1]
                         {

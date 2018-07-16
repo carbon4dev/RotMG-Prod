@@ -1,4 +1,4 @@
-package kabam.rotmg.account.kongregate {
+﻿package kabam.rotmg.account.kongregate {
 import kabam.rotmg.account.core.Account;
 import kabam.rotmg.account.core.model.MoneyConfig;
 import kabam.rotmg.account.core.services.LoadAccountTask;
@@ -42,55 +42,52 @@ import robotlegs.bender.framework.api.IConfig;
 
 public class KongregateAccountConfig implements IConfig {
 
-      [Inject]
-      public var injector:Injector;
+    [Inject]
+    public var injector:Injector;
+    [Inject]
+    public var mediatorMap:IMediatorMap;
+    [Inject]
+    public var commandMap:ISignalCommandMap;
 
-      [Inject]
-      public var mediatorMap:IMediatorMap;
 
-      [Inject]
-      public var commandMap:ISignalCommandMap;
+    public function configure():void {
+        this.mapModel();
+        this.mapCommands();
+        this.mapServices();
+        this.mapMediators();
+    }
 
-      public function KongregateAccountConfig() {
-         super();
-      }
+    protected function mapModel():void {
+        this.injector.map(Account).toSingleton(KongregateAccount);
+        this.injector.map(KongregateSharedObject).asSingleton();
+        this.injector.map(MoneyConfig).toSingleton(KongregateMoneyConfig);
+        this.injector.map(CharListDataSignal).asSingleton();
+    }
 
-      public function configure() : void {
-         this.mapModel();
-         this.mapCommands();
-         this.mapServices();
-         this.mapMediators();
-      }
+    protected function mapCommands():void {
+        this.commandMap.map(OpenAccountInfoSignal).toCommand(KongregateOpenAccountInfoCommand);
+        this.commandMap.map(RegisterAccountSignal).toCommand(KongregateRegisterAccountCommand);
+        this.commandMap.map(RelayApiLoginSignal).toCommand(KongregateRelayApiLoginCommand);
+        this.commandMap.map(KongregateAlreadyRegisteredSignal).toCommand(KongregateHandleAlreadyRegisteredCommand);
+    }
 
-      protected function mapModel() : void {
-         this.injector.map(Account).toSingleton(KongregateAccount);
-         this.injector.map(KongregateSharedObject).asSingleton();
-         this.injector.map(MoneyConfig).toSingleton(KongregateMoneyConfig);
-         this.injector.map(CharListDataSignal).asSingleton();
-      }
+    protected function mapMediators():void {
+        this.mediatorMap.map(KongregateAccountInfoView).toMediator(KongregateAccountInfoMediator);
+        this.mediatorMap.map(KongregateAccountDetailDialog).toMediator(KongregateAccountDetailMediator);
+        this.mediatorMap.map(RegisterWebAccountDialog).toMediator(KongregateRegisterWebAccountMediator);
+    }
 
-      protected function mapCommands() : void {
-         this.commandMap.map(OpenAccountInfoSignal).toCommand(KongregateOpenAccountInfoCommand);
-         this.commandMap.map(RegisterAccountSignal).toCommand(KongregateRegisterAccountCommand);
-         this.commandMap.map(RelayApiLoginSignal).toCommand(KongregateRelayApiLoginCommand);
-         this.commandMap.map(KongregateAlreadyRegisteredSignal).toCommand(KongregateHandleAlreadyRegisteredCommand);
-      }
+    protected function mapServices():void {
+        this.injector.map(KongregateApi).toSingleton(LiveKongregateApi);
+        this.injector.map(LoadAccountTask).toType(KongregateLoadAccountTask);
+        this.injector.map(KongregateLoadApiTask);
+        this.injector.map(LoginTask).toType(KongregateLoginTask);
+        this.injector.map(RelayLoginTask).toType(KongregateRelayAPILoginTask);
+        this.injector.map(MakePaymentTask).toType(KongregateMakePaymentTask);
+        this.injector.map(PurchaseGoldTask).toType(KongregatePurchaseGoldTask);
+        this.injector.map(RegisterAccountTask).toType(KongregateRegisterAccountTask);
+    }
 
-      protected function mapMediators() : void {
-         this.mediatorMap.map(KongregateAccountInfoView).toMediator(KongregateAccountInfoMediator);
-         this.mediatorMap.map(KongregateAccountDetailDialog).toMediator(KongregateAccountDetailMediator);
-         this.mediatorMap.map(RegisterWebAccountDialog).toMediator(KongregateRegisterWebAccountMediator);
-      }
 
-      protected function mapServices() : void {
-         this.injector.map(KongregateApi).toSingleton(LiveKongregateApi);
-         this.injector.map(LoadAccountTask).toType(KongregateLoadAccountTask);
-         this.injector.map(KongregateLoadApiTask);
-         this.injector.map(LoginTask).toType(KongregateLoginTask);
-         this.injector.map(RelayLoginTask).toType(KongregateRelayAPILoginTask);
-         this.injector.map(MakePaymentTask).toType(KongregateMakePaymentTask);
-         this.injector.map(PurchaseGoldTask).toType(KongregatePurchaseGoldTask);
-         this.injector.map(RegisterAccountTask).toType(KongregateRegisterAccountTask);
-      }
-   }
 }
+}//package kabam.rotmg.account.kongregate

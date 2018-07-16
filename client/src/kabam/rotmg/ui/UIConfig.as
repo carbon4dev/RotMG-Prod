@@ -1,13 +1,13 @@
-package kabam.rotmg.ui {
-import com.company.assembleegameclient.account.ui.LOEBUILD_74a13e89b510f04db8bb32dcec0faa62;
-import com.company.assembleegameclient.account.ui.LOEBUILD_fd4258db927c50c805af8b7b06140ba2;
+﻿package kabam.rotmg.ui {
+import com.company.assembleegameclient.account.ui.ChooseNameFrame;
+import com.company.assembleegameclient.account.ui.ChooseNameFrameMediator;
 import com.company.assembleegameclient.account.ui.CreateGuildFrame;
 import com.company.assembleegameclient.account.ui.NewChooseNameFrame;
-import com.company.assembleegameclient.account.ui.LOEBUILD_4f0354bebd75d2538b9cdb2035dd45bb;
-import com.company.assembleegameclient.account.ui.LOEBUILD_4725dcf446a342f1473a8228e42dfa48.LOEBUILD_2da1ee845b10c15736671c54b1090099;
-import com.company.assembleegameclient.map.LOEBUILD_8640380935243b4a9c3cbd5e4ae3bef6.LOEBUILD_4a59873dd40437adf7708a4430a17690;
-import com.company.assembleegameclient.LOEBUILD_96062b2d312b581d94ca7a4e277ffe2a.LOEBUILD_81ade24e8daf8d0d9cbf110052ac9011;
-import com.company.assembleegameclient.LOEBUILD_5891da2d64975cae48d175d1e001f5da.LOEBUILD_40c3a70d9b65b7746c3c75968cc48941;
+import com.company.assembleegameclient.account.ui.NewChooseNameFrameMediator;
+import com.company.assembleegameclient.account.ui.components.CreateGuildFrameMediator;
+import com.company.assembleegameclient.map.partyoverlay.GameObjectArrow;
+import com.company.assembleegameclient.mapeditor.MapEditor;
+import com.company.assembleegameclient.objects.ImageFactory;
 import com.company.assembleegameclient.screens.AccountScreen;
 import com.company.assembleegameclient.screens.CharacterSelectionAndNewsScreen;
 import com.company.assembleegameclient.screens.CreditsScreen;
@@ -53,7 +53,7 @@ import kabam.rotmg.ui.commands.EnterGameCommand;
 import kabam.rotmg.ui.commands.HUDInitCommand;
 import kabam.rotmg.ui.commands.RefreshScreenAfterLoginCommand;
 import kabam.rotmg.ui.commands.ShowHideKeyUICommand;
-import com.google.analytics.ecommerce.LOEBUILD_0d284c1a945e7f9811176ffdbf9091e6;
+import kabam.rotmg.ui.commands.ShowLoadingUICommand;
 import kabam.rotmg.ui.commands.ShowTitleUICommand;
 import kabam.rotmg.ui.controller.GameObjectArrowMediator;
 import kabam.rotmg.ui.controller.UnFocusAbleMediator;
@@ -119,106 +119,102 @@ import robotlegs.bender.framework.api.IConfig;
 
 public class UIConfig implements IConfig {
 
-      [Inject]
-      public var injector:Injector;
+    [Inject]
+    public var injector:Injector;
+    [Inject]
+    public var mediatorMap:IMediatorMap;
+    [Inject]
+    public var commandMap:ISignalCommandMap;
+    [Inject]
+    public var setup:ApplicationSetup;
+    [Inject]
+    public var startup:StartupSequence;
 
-      [Inject]
-      public var mediatorMap:IMediatorMap;
 
-      [Inject]
-      public var commandMap:ISignalCommandMap;
+    public function configure():void {
+        this.injector.map(NameChangedSignal).asSingleton();
+        this.injector.map(PotionInventoryModel).asSingleton();
+        this.injector.map(UpdatePotionInventorySignal).asSingleton();
+        this.injector.map(UpdateBackpackTabSignal).asSingleton();
+        this.injector.map(StatsUndockedSignal).asSingleton();
+        this.injector.map(StatsDockedSignal).asSingleton();
+        this.injector.map(StatsTabHotKeyInputSignal).asSingleton();
+        this.injector.map(IconButtonFactory).asSingleton();
+        this.injector.map(ImageFactory).asSingleton();
+        this.commandMap.map(ShowLoadingUISignal).toCommand(ShowLoadingUICommand);
+        this.commandMap.map(ShowTitleUISignal).toCommand(ShowTitleUICommand);
+        this.commandMap.map(ChooseNameSignal).toCommand(ChooseNameCommand);
+        this.commandMap.map(EnterGameSignal).toCommand(EnterGameCommand);
+        this.mediatorMap.map(LoadingScreen).toMediator(LoadingMediator);
+        this.mediatorMap.map(ServersScreen).toMediator(ServersMediator);
+        this.mediatorMap.map(CreditsScreen).toMediator(CreditsMediator);
+        this.mediatorMap.map(CharacterSelectionAndNewsScreen).toMediator(CurrentCharacterMediator);
+        this.mediatorMap.map(AccountInfoView).toMediator(AccountInfoMediator);
+        this.mediatorMap.map(AccountScreen).toMediator(AccountScreenMediator);
+        this.mediatorMap.map(TitleView).toMediator(TitleMediator);
+        this.mediatorMap.map(NewCharacterScreen).toMediator(NewCharacterMediator);
+        this.mediatorMap.map(MapEditor).toMediator(MapEditorMediator);
+        this.mediatorMap.map(CurrentCharacterRect).toMediator(CurrentCharacterRectMediator);
+        this.mediatorMap.map(CharacterRectList).toMediator(CharacterRectListMediator);
+        this.mediatorMap.map(ErrorDialog).toMediator(ErrorDialogMediator);
+        this.mediatorMap.map(GraveyardLine).toMediator(NewsLineMediator);
+        this.mediatorMap.map(NotEnoughGoldDialog).toMediator(NotEnoughGoldMediator);
+        this.mediatorMap.map(InteractPanel).toMediator(InteractPanelMediator);
+        this.mediatorMap.map(TextPanel).toMediator(TextPanelMediator);
+        this.mediatorMap.map(ItemGrid).toMediator(ItemGridMediator);
+        this.mediatorMap.map(ChooseNameRegisterDialog).toMediator(ChooseNameRegisterMediator);
+        this.mediatorMap.map(CharacterSlotRegisterDialog).toMediator(CharacterSlotRegisterMediator);
+        this.mediatorMap.map(RegisterPromptDialog).toMediator(RegisterPromptDialogMediator);
+        this.mediatorMap.map(CharacterSlotNeedGoldDialog).toMediator(CharacterSlotNeedGoldMediator);
+        this.mediatorMap.map(NameChangerPanel).toMediator(NameChangerPanelMediator);
+        this.mediatorMap.map(GuildRegisterPanel).toMediator(GuildRegisterPanelMediator);
+        this.mediatorMap.map(ChooseNameFrame).toMediator(ChooseNameFrameMediator);
+        this.mediatorMap.map(CreateGuildFrame).toMediator(CreateGuildFrameMediator);
+        this.mediatorMap.map(NewChooseNameFrame).toMediator(NewChooseNameFrameMediator);
+        this.mediatorMap.map(PlayerGroupMenu).toMediator(PlayerGroupMenuMediator);
+        this.mediatorMap.map(AgeVerificationDialog).toMediator(AgeVerificationMediator);
+        this.mediatorMap.map(LanguageOptionOverlay).toMediator(LanguageOptionOverlayMediator);
+        this.mediatorMap.map(ArenaPortalPanel).toMediator(ArenaPortalPanelMediator);
+        this.mediatorMap.map(StatMetersView).toMediator(StatMetersMediator);
+        this.mediatorMap.map(HUDView).toMediator(HUDMediator);
+        this.mediatorMap.map(PotionSlotView).toMediator(PotionSlotMediator);
+        this.mediatorMap.map(ResurrectionView).toMediator(ResurrectionViewMediator);
+        this.mediatorMap.map(GameObjectArrow).toMediator(GameObjectArrowMediator);
+        this.mediatorMap.map(UnFocusAble).toMediator(UnFocusAbleMediator);
+        this.setupKeyUI();
+        this.mapNoServersDialogFactory();
+        this.setupCharacterWindow();
+        this.startup.addSignal(ShowLoadingUISignal, -1);
+        this.startup.addTask(LoadAccountTask);
+        this.startup.addTask(GetCharListTask);
+        this.startup.addSignal(ShowTitleUISignal, StartupSequence.LAST);
+    }
 
-      [Inject]
-      public var setup:ApplicationSetup;
+    private function setupKeyUI():void {
+        this.injector.map(ShowKeySignal).toValue(new ShowKeySignal());
+        this.injector.map(HideKeySignal).toValue(new HideKeySignal());
+        this.commandMap.map(ShowHideKeyUISignal).toCommand(ShowHideKeyUICommand);
+        this.commandMap.map(RefreshScreenAfterLoginSignal).toCommand(RefreshScreenAfterLoginCommand);
+        this.mediatorMap.map(KeysView).toMediator(KeysMediator);
+    }
 
-      [Inject]
-      public var startup:StartupSequence;
-
-      public function UIConfig() {
-         super();
-      }
-
-      public function configure() : void {
-         this.injector.map(NameChangedSignal).asSingleton();
-         this.injector.map(PotionInventoryModel).asSingleton();
-         this.injector.map(UpdatePotionInventorySignal).asSingleton();
-         this.injector.map(UpdateBackpackTabSignal).asSingleton();
-         this.injector.map(StatsUndockedSignal).asSingleton();
-         this.injector.map(StatsDockedSignal).asSingleton();
-         this.injector.map(StatsTabHotKeyInputSignal).asSingleton();
-         this.injector.map(IconButtonFactory).asSingleton();
-         this.injector.map(LOEBUILD_40c3a70d9b65b7746c3c75968cc48941).asSingleton();
-         this.commandMap.map(ShowLoadingUISignal).toCommand(LOEBUILD_0d284c1a945e7f9811176ffdbf9091e6);
-         this.commandMap.map(ShowTitleUISignal).toCommand(ShowTitleUICommand);
-         this.commandMap.map(ChooseNameSignal).toCommand(ChooseNameCommand);
-         this.commandMap.map(EnterGameSignal).toCommand(EnterGameCommand);
-         this.mediatorMap.map(LoadingScreen).toMediator(LoadingMediator);
-         this.mediatorMap.map(ServersScreen).toMediator(ServersMediator);
-         this.mediatorMap.map(CreditsScreen).toMediator(CreditsMediator);
-         this.mediatorMap.map(CharacterSelectionAndNewsScreen).toMediator(CurrentCharacterMediator);
-         this.mediatorMap.map(AccountInfoView).toMediator(AccountInfoMediator);
-         this.mediatorMap.map(AccountScreen).toMediator(AccountScreenMediator);
-         this.mediatorMap.map(TitleView).toMediator(TitleMediator);
-         this.mediatorMap.map(NewCharacterScreen).toMediator(NewCharacterMediator);
-         this.mediatorMap.map(LOEBUILD_81ade24e8daf8d0d9cbf110052ac9011).toMediator(MapEditorMediator);
-         this.mediatorMap.map(CurrentCharacterRect).toMediator(CurrentCharacterRectMediator);
-         this.mediatorMap.map(CharacterRectList).toMediator(CharacterRectListMediator);
-         this.mediatorMap.map(ErrorDialog).toMediator(ErrorDialogMediator);
-         this.mediatorMap.map(GraveyardLine).toMediator(NewsLineMediator);
-         this.mediatorMap.map(NotEnoughGoldDialog).toMediator(NotEnoughGoldMediator);
-         this.mediatorMap.map(InteractPanel).toMediator(InteractPanelMediator);
-         this.mediatorMap.map(TextPanel).toMediator(TextPanelMediator);
-         this.mediatorMap.map(ItemGrid).toMediator(ItemGridMediator);
-         this.mediatorMap.map(ChooseNameRegisterDialog).toMediator(ChooseNameRegisterMediator);
-         this.mediatorMap.map(CharacterSlotRegisterDialog).toMediator(CharacterSlotRegisterMediator);
-         this.mediatorMap.map(RegisterPromptDialog).toMediator(RegisterPromptDialogMediator);
-         this.mediatorMap.map(CharacterSlotNeedGoldDialog).toMediator(CharacterSlotNeedGoldMediator);
-         this.mediatorMap.map(NameChangerPanel).toMediator(NameChangerPanelMediator);
-         this.mediatorMap.map(GuildRegisterPanel).toMediator(GuildRegisterPanelMediator);
-         this.mediatorMap.map(LOEBUILD_74a13e89b510f04db8bb32dcec0faa62).toMediator(LOEBUILD_fd4258db927c50c805af8b7b06140ba2);
-         this.mediatorMap.map(CreateGuildFrame).toMediator(LOEBUILD_2da1ee845b10c15736671c54b1090099);
-         this.mediatorMap.map(NewChooseNameFrame).toMediator(LOEBUILD_4f0354bebd75d2538b9cdb2035dd45bb);
-         this.mediatorMap.map(PlayerGroupMenu).toMediator(PlayerGroupMenuMediator);
-         this.mediatorMap.map(AgeVerificationDialog).toMediator(AgeVerificationMediator);
-         this.mediatorMap.map(LanguageOptionOverlay).toMediator(LanguageOptionOverlayMediator);
-         this.mediatorMap.map(ArenaPortalPanel).toMediator(ArenaPortalPanelMediator);
-         this.mediatorMap.map(StatMetersView).toMediator(StatMetersMediator);
-         this.mediatorMap.map(HUDView).toMediator(HUDMediator);
-         this.mediatorMap.map(PotionSlotView).toMediator(PotionSlotMediator);
-         this.mediatorMap.map(ResurrectionView).toMediator(ResurrectionViewMediator);
-         this.mediatorMap.map(LOEBUILD_4a59873dd40437adf7708a4430a17690).toMediator(GameObjectArrowMediator);
-         this.mediatorMap.map(UnFocusAble).toMediator(UnFocusAbleMediator);
-         this.setupKeyUI();
-         this.mapNoServersDialogFactory();
-         this.setupCharacterWindow();
-         this.startup.addSignal(ShowLoadingUISignal,-1);
-         this.startup.addTask(LoadAccountTask);
-         this.startup.addTask(GetCharListTask);
-         this.startup.addSignal(ShowTitleUISignal,StartupSequence.LAST);
-      }
-
-      private function setupKeyUI() : void {
-         this.injector.map(ShowKeySignal).toValue(new ShowKeySignal());
-         this.injector.map(HideKeySignal).toValue(new HideKeySignal());
-         this.commandMap.map(ShowHideKeyUISignal).toCommand(ShowHideKeyUICommand);
-         this.commandMap.map(RefreshScreenAfterLoginSignal).toCommand(RefreshScreenAfterLoginCommand);
-         this.mediatorMap.map(KeysView).toMediator(KeysMediator);
-      }
-
-      private function mapNoServersDialogFactory() : void {
-         if(this.setup.useProductionDialogs()) {
+    private function mapNoServersDialogFactory():void {
+        if (this.setup.useProductionDialogs()) {
             this.injector.map(NoServersDialogFactory).toSingleton(ProductionNoServersDialogFactory);
-         } else {
+        }
+        else {
             this.injector.map(NoServersDialogFactory).toSingleton(TestingNoServersDialogFactory);
-         }
-      }
+        }
+    }
 
-      private function setupCharacterWindow() : void {
-         this.injector.map(HUDModel).asSingleton();
-         this.injector.map(UpdateHUDSignal).asSingleton();
-         this.injector.map(HUDModelInitialized).asSingleton();
-         this.commandMap.map(HUDSetupStarted).toCommand(HUDInitCommand);
-         this.mediatorMap.map(CharacterDetailsView).toMediator(CharacterDetailsMediator);
-      }
-   }
+    private function setupCharacterWindow():void {
+        this.injector.map(HUDModel).asSingleton();
+        this.injector.map(UpdateHUDSignal).asSingleton();
+        this.injector.map(HUDModelInitialized).asSingleton();
+        this.commandMap.map(HUDSetupStarted).toCommand(HUDInitCommand);
+        this.mediatorMap.map(CharacterDetailsView).toMediator(CharacterDetailsMediator);
+    }
+
+
 }
+}//package kabam.rotmg.ui

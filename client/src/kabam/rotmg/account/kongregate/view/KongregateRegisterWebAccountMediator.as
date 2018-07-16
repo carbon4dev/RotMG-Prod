@@ -1,4 +1,4 @@
-package kabam.rotmg.account.kongregate.view {
+﻿package kabam.rotmg.account.kongregate.view {
 import kabam.rotmg.account.core.signals.RegisterAccountSignal;
 import kabam.rotmg.account.core.view.RegisterWebAccountDialog;
 import kabam.rotmg.account.web.model.AccountData;
@@ -7,26 +7,24 @@ import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class KongregateRegisterWebAccountMediator extends Mediator {
 
-      [Inject]
-      public var view:RegisterWebAccountDialog;
+    [Inject]
+    public var view:RegisterWebAccountDialog;
+    [Inject]
+    public var register:RegisterAccountSignal;
 
-      [Inject]
-      public var register:RegisterAccountSignal;
 
-      public function KongregateRegisterWebAccountMediator() {
-         super();
-      }
+    override public function initialize():void {
+        this.view.register.add(this.onRegister);
+    }
 
-      override public function initialize() : void {
-         this.view.register.add(this.onRegister);
-      }
+    override public function destroy():void {
+        this.view.register.remove(this.onRegister);
+    }
 
-      override public function destroy() : void {
-         this.view.register.remove(this.onRegister);
-      }
+    private function onRegister(_arg_1:AccountData):void {
+        this.register.dispatch(_arg_1);
+    }
 
-      private function onRegister(param1:AccountData) : void {
-         this.register.dispatch(param1);
-      }
-   }
+
 }
+}//package kabam.rotmg.account.kongregate.view

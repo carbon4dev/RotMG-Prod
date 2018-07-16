@@ -1,4 +1,4 @@
-package kabam.rotmg.classes.view {
+﻿package kabam.rotmg.classes.view {
 import kabam.rotmg.classes.control.BuyCharacterSkinSignal;
 import kabam.rotmg.classes.control.FocusCharacterSkinSignal;
 import kabam.rotmg.classes.model.CharacterSkin;
@@ -8,52 +8,48 @@ import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class CharacterSkinListItemMediator extends Mediator {
 
-      [Inject]
-      public var view:CharacterSkinListItem;
+    [Inject]
+    public var view:CharacterSkinListItem;
+    [Inject]
+    public var model:ClassesModel;
+    [Inject]
+    public var buyCharacterSkin:BuyCharacterSkinSignal;
+    [Inject]
+    public var focusCharacterSkin:FocusCharacterSkinSignal;
 
-      [Inject]
-      public var model:ClassesModel;
 
-      [Inject]
-      public var buyCharacterSkin:BuyCharacterSkinSignal;
+    override public function initialize():void {
+        this.view.buy.add(this.onBuy);
+        this.view.over.add(this.onOver);
+        this.view.out.add(this.onOut);
+        this.view.selected.add(this.onSelected);
+    }
 
-      [Inject]
-      public var focusCharacterSkin:FocusCharacterSkinSignal;
+    override public function destroy():void {
+        this.view.buy.remove(this.onBuy);
+        this.view.over.remove(this.onOver);
+        this.view.out.remove(this.onOut);
+        this.view.selected.remove(this.onSelected);
+        this.view.setModel(null);
+    }
 
-      public function CharacterSkinListItemMediator() {
-         super();
-      }
+    private function onOver():void {
+        this.focusCharacterSkin.dispatch(this.view.getModel());
+    }
 
-      override public function initialize() : void {
-         this.view.buy.add(this.onBuy);
-         this.view.over.add(this.onOver);
-         this.view.out.add(this.onOut);
-         this.view.selected.add(this.onSelected);
-      }
+    private function onOut():void {
+        this.focusCharacterSkin.dispatch(null);
+    }
 
-      override public function destroy() : void {
-         this.view.buy.remove(this.onBuy);
-         this.view.over.remove(this.onOver);
-         this.view.out.remove(this.onOut);
-         this.view.selected.remove(this.onSelected);
-         this.view.setModel(null);
-      }
+    private function onBuy():void {
+        var _local_1:CharacterSkin = this.view.getModel();
+        this.buyCharacterSkin.dispatch(_local_1);
+    }
 
-      private function onOver() : void {
-         this.focusCharacterSkin.dispatch(this.view.getModel());
-      }
+    private function onSelected(_arg_1:Boolean):void {
+        this.view.getModel().setIsSelected(_arg_1);
+    }
 
-      private function onOut() : void {
-         this.focusCharacterSkin.dispatch(null);
-      }
 
-      private function onBuy() : void {
-         var _local1:CharacterSkin = this.view.getModel();
-         this.buyCharacterSkin.dispatch(_local1);
-      }
-
-      private function onSelected(param1:Boolean) : void {
-         this.view.getModel().setIsSelected(param1);
-      }
-   }
 }
+}//package kabam.rotmg.classes.view

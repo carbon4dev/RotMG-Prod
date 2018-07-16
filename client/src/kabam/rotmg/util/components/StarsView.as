@@ -1,4 +1,4 @@
-package kabam.rotmg.util.components {
+﻿package kabam.rotmg.util.components {
 import com.company.rotmg.graphics.StarGraphic;
 
 import flash.display.Graphics;
@@ -7,82 +7,75 @@ import flash.geom.ColorTransform;
 
 public class StarsView extends Sprite {
 
-      private static const TOTAL:int = 5;
+    private static const TOTAL:int = 5;
+    private static const MARGIN:int = 4;
+    private static const CORNER:int = 15;
+    private static const BACKGROUND_COLOR:uint = 0x252525;
+    private static const EMPTY_STAR_COLOR:uint = 0x838383;
+    private static const FILLED_STAR_COLOR:uint = 0xFFFFFF;
 
-      private static const MARGIN:int = 4;
+    private const stars:Vector.<StarGraphic> = makeStars();
+    private const background:Sprite = makeBackground();
 
-      private static const CORNER:int = 15;
 
-      private static const BACKGROUND_COLOR:uint = 2434341;
+    private function makeStars():Vector.<StarGraphic> {
+        var _local_1:Vector.<StarGraphic> = this.makeStarList();
+        this.layoutStars(_local_1);
+        return (_local_1);
+    }
 
-      private static const EMPTY_STAR_COLOR:uint = 8618883;
+    private function makeStarList():Vector.<StarGraphic> {
+        var _local_1:Vector.<StarGraphic> = new Vector.<StarGraphic>(TOTAL, true);
+        var _local_2:int;
+        while (_local_2 < TOTAL) {
+            _local_1[_local_2] = new StarGraphic();
+            addChild(_local_1[_local_2]);
+            _local_2++;
+        }
+        return (_local_1);
+    }
 
-      private static const FILLED_STAR_COLOR:uint = 16777215;
+    private function layoutStars(_arg_1:Vector.<StarGraphic>):void {
+        var _local_2:int;
+        while (_local_2 < TOTAL) {
+            _arg_1[_local_2].x = (MARGIN + (_arg_1[0].width * _local_2));
+            _arg_1[_local_2].y = MARGIN;
+            _local_2++;
+        }
+    }
 
-      private const stars:Vector.<StarGraphic> = makeStars();
+    private function makeBackground():Sprite {
+        var _local_1:Sprite = new Sprite();
+        this.drawBackground(_local_1.graphics);
+        addChildAt(_local_1, 0);
+        return (_local_1);
+    }
 
-      private const background:Sprite = makeBackground();
+    private function drawBackground(_arg_1:Graphics):void {
+        var _local_2:StarGraphic = this.stars[0];
+        var _local_3:int = ((_local_2.width * TOTAL) + (2 * MARGIN));
+        var _local_4:int = (_local_2.height + (2 * MARGIN));
+        _arg_1.clear();
+        _arg_1.beginFill(BACKGROUND_COLOR);
+        _arg_1.drawRoundRect(0, 0, _local_3, _local_4, CORNER, CORNER);
+        _arg_1.endFill();
+    }
 
-      public function StarsView() {
-         super();
-      }
+    public function setStars(_arg_1:int):void {
+        var _local_2:int;
+        while (_local_2 < TOTAL) {
+            this.updateStar(_local_2, _arg_1);
+            _local_2++;
+        }
+    }
 
-      private function makeStars() : Vector.<StarGraphic> {
-         var _local1:Vector.<StarGraphic> = this.makeStarList();
-         this.layoutStars(_local1);
-         return _local1;
-      }
+    private function updateStar(_arg_1:int, _arg_2:int):void {
+        var _local_3:StarGraphic = this.stars[_arg_1];
+        var _local_4:ColorTransform = _local_3.transform.colorTransform;
+        _local_4.color = (((_arg_1 < _arg_2)) ? FILLED_STAR_COLOR : EMPTY_STAR_COLOR);
+        _local_3.transform.colorTransform = _local_4;
+    }
 
-      private function makeStarList() : Vector.<StarGraphic> {
-         var _local1:Vector.<StarGraphic> = new Vector.<StarGraphic>(TOTAL,true);
-         var _local2:int = 0;
-         while(_local2 < TOTAL) {
-            _local1[_local2] = new StarGraphic();
-            addChild(_local1[_local2]);
-            _local2++;
-         }
-         return _local1;
-      }
 
-      private function layoutStars(param1:Vector.<StarGraphic>) : void {
-         var _local2:int = 0;
-         while(_local2 < TOTAL) {
-            param1[_local2].x = MARGIN + param1[0].width * _local2;
-            param1[_local2].y = MARGIN;
-            _local2++;
-         }
-      }
-
-      private function makeBackground() : Sprite {
-         var _local1:Sprite = new Sprite();
-         this.drawBackground(_local1.graphics);
-         addChildAt(_local1,0);
-         return _local1;
-      }
-
-      private function drawBackground(param1:Graphics) : void {
-         var _local2:StarGraphic = this.stars[0];
-         var _local3:int = _local2.width * TOTAL + 2 * MARGIN;
-         var _local4:int = _local2.height + 2 * MARGIN;
-         param1.clear();
-         param1.beginFill(BACKGROUND_COLOR);
-         param1.drawRoundRect(0,0,_local3,_local4,CORNER,CORNER);
-         param1.endFill();
-      }
-
-      public function setStars(param1:int) : void {
-         var _local2:int = 0;
-         while(_local2 < TOTAL) {
-            this.updateStar(_local2,param1);
-            _local2++;
-         }
-      }
-
-      private function updateStar(param1:int, param2:int) : void {
-         var _local3:StarGraphic = this.stars[param1];
-         var _local4:ColorTransform = _local3.transform.colorTransform;
-         _local4.color = param1 < param2?uint(FILLED_STAR_COLOR):uint(EMPTY_STAR_COLOR);
-         _local3.transform.colorTransform = _local4;
-      }
-   }
 }
+}//package kabam.rotmg.util.components

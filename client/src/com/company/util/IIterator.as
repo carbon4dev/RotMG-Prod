@@ -1,10 +1,11 @@
-package com.company.util {
-   public interface IIterator {
+﻿package com.company.util {
+public interface IIterator {
 
-      function reset() : void;
+    function reset():void;
 
-      function next() : Object;
+    function next():Object;
 
-      function hasNext() : Boolean;
-   }
+    function hasNext():Boolean;
+
 }
+}//package com.company.util

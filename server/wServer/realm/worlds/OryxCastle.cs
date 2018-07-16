@@ -11,11 +11,9 @@ namespace wServer.realm.worlds
         public OryxCastle()
         {
             Name = "Oryx's Castle";
-            ClientWorldName = "Oryx's Castle";
+            ClientWorldName = "server.Oryx's_Castle";
             Background = 0;
-            Dungeon = true;
             AllowTeleport = false;
-            SetMusic("oryxcastle");
         }
 
         public override bool NeedsPortalKey => true;

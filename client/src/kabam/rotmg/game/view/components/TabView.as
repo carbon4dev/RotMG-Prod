@@ -1,16 +1,17 @@
-package kabam.rotmg.game.view.components {
+﻿package kabam.rotmg.game.view.components {
 import flash.display.Sprite;
 
 public class TabView extends Sprite {
 
-      public var index:int;
+    public var index:int;
 
-      public function TabView(param1:int) {
-         super();
-         this.index = param1;
-      }
+    public function TabView(_arg_1:int):void {
+        this.index = _arg_1;
+    }
 
-      public function setSelected(param1:Boolean) : void {
-      }
-   }
+    public function setSelected(_arg_1:Boolean):void {
+    }
+
+
 }
+}//package kabam.rotmg.game.view.components

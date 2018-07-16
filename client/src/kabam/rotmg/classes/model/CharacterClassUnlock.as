@@ -1,12 +1,9 @@
-package kabam.rotmg.classes.model {
-   public class CharacterClassUnlock {
+﻿package kabam.rotmg.classes.model {
+public class CharacterClassUnlock {
 
-      public var level:int;
+    public var level:int;
+    public var character:CharacterClass;
 
-      public var character:CharacterClass;
 
-      public function CharacterClassUnlock() {
-         super();
-      }
-   }
 }
+}//package kabam.rotmg.classes.model

@@ -1,6 +1,6 @@
-package kabam.rotmg.minimap.view {
-import com.company.assembleegameclient.LOEBUILD_5891da2d64975cae48d175d1e001f5da.GameObject;
-import kabam.rotmg.assets.model.Player;
+﻿package kabam.rotmg.minimap.view {
+import com.company.assembleegameclient.objects.GameObject;
+import com.company.assembleegameclient.objects.Player;
 
 import flash.utils.Dictionary;
 
@@ -19,98 +19,92 @@ import robotlegs.bender.extensions.mediatorMap.api.IMediator;
 
 public class MiniMapMediator implements IMediator {
 
-      [Inject]
-      public var view:MiniMap;
+    [Inject]
+    public var view:MiniMap;
+    [Inject]
+    public var model:HUDModel;
+    [Inject]
+    public var setFocus:SetGameFocusSignal;
+    [Inject]
+    public var updateGroundTileSignal:UpdateGroundTileSignal;
+    [Inject]
+    public var updateGameObjectTileSignal:UpdateGameObjectTileSignal;
+    [Inject]
+    public var miniMapZoomSignal:MiniMapZoomSignal;
+    [Inject]
+    public var updateHUD:UpdateHUDSignal;
+    [Inject]
+    public var exitGameSignal:ExitGameSignal;
+    [Inject]
+    public var layers:Layers;
 
-      [Inject]
-      public var model:HUDModel;
 
-      [Inject]
-      public var setFocus:SetGameFocusSignal;
+    public function initialize():void {
+        this.view.setMap(this.model.gameSprite.map);
+        this.setFocus.add(this.onSetFocus);
+        this.updateHUD.add(this.onUpdateHUD);
+        this.updateGameObjectTileSignal.add(this.onUpdateGameObjectTile);
+        this.updateGroundTileSignal.add(this.onUpdateGroundTile);
+        this.miniMapZoomSignal.add(this.onMiniMapZoom);
+        this.exitGameSignal.add(this.onExitGame);
+        this.view.menuLayer = this.layers.top;
+    }
 
-      [Inject]
-      public var updateGroundTileSignal:UpdateGroundTileSignal;
+    private function onExitGame():void {
+        this.view.deactivate();
+    }
 
-      [Inject]
-      public var updateGameObjectTileSignal:UpdateGameObjectTileSignal;
+    public function destroy():void {
+        this.setFocus.remove(this.onSetFocus);
+        this.updateHUD.remove(this.onUpdateHUD);
+        this.updateGameObjectTileSignal.remove(this.onUpdateGameObjectTile);
+        this.updateGroundTileSignal.remove(this.onUpdateGroundTile);
+        this.miniMapZoomSignal.remove(this.onMiniMapZoom);
+        this.exitGameSignal.remove(this.onExitGame);
+    }
 
-      [Inject]
-      public var miniMapZoomSignal:MiniMapZoomSignal;
+    private function onSetFocus(_arg_1:String):void {
+        var _local_2:GameObject = this.getFocusById(_arg_1);
+        this.view.setFocus(_local_2);
+    }
 
-      [Inject]
-      public var updateHUD:UpdateHUDSignal;
-
-      [Inject]
-      public var exitGameSignal:ExitGameSignal;
-
-      [Inject]
-      public var layers:Layers;
-
-      public function MiniMapMediator() {
-         super();
-      }
-
-      public function initialize() : void {
-         this.view.setMap(this.model.gameSprite.map);
-         this.setFocus.add(this.onSetFocus);
-         this.updateHUD.add(this.onUpdateHUD);
-         this.updateGameObjectTileSignal.add(this.onUpdateGameObjectTile);
-         this.updateGroundTileSignal.add(this.onUpdateGroundTile);
-         this.miniMapZoomSignal.add(this.onMiniMapZoom);
-         this.exitGameSignal.add(this.onExitGame);
-         this.view.menuLayer = this.layers.top;
-      }
-
-      private function onExitGame() : void {
-         this.view.deactivate();
-      }
-
-      public function destroy() : void {
-         this.setFocus.remove(this.onSetFocus);
-         this.updateHUD.remove(this.onUpdateHUD);
-         this.updateGameObjectTileSignal.remove(this.onUpdateGameObjectTile);
-         this.updateGroundTileSignal.remove(this.onUpdateGroundTile);
-         this.miniMapZoomSignal.remove(this.onMiniMapZoom);
-         this.exitGameSignal.remove(this.onExitGame);
-      }
-
-      private function onSetFocus(param1:String) : void {
-         var _local2:GameObject = this.getFocusById(param1);
-         this.view.setFocus(_local2);
-      }
-
-      private function getFocusById(param1:String) : GameObject {
-         var _local3:GameObject = null;
-         if(param1 == "") {
-            return this.view.map.player_;
-         }
-         var _local2:Dictionary = this.view.map.goDict_;
-         for each(_local3 in _local2) {
-            if(_local3.name_ == param1) {
-               return _local3;
+    private function getFocusById(_arg_1:String):GameObject {
+        var _local_3:GameObject;
+        if (_arg_1 == "") {
+            return (this.view.map.player_);
+        }
+        var _local_2:Dictionary = this.view.map.goDict_;
+        for each (_local_3 in _local_2) {
+            if (_local_3.name_ == _arg_1) {
+                return (_local_3);
             }
-         }
-         return this.view.map.player_;
-      }
+        }
+        return (this.view.map.player_);
+    }
 
-      private function onUpdateGroundTile(param1:UpdateGroundTileVO) : void {
-         this.view.setGroundTile(param1.tileX,param1.tileY,param1.tileType);
-      }
+    private function onUpdateGroundTile(_arg_1:UpdateGroundTileVO):void {
+        this.view.setGroundTile(_arg_1.tileX, _arg_1.tileY, _arg_1.tileType);
+    }
 
-      private function onUpdateGameObjectTile(param1:UpdateGameObjectTileVO) : void {
-         this.view.setGameObjectTile(param1.tileX,param1.tileY,param1.gameObject);
-      }
+    private function onUpdateGameObjectTile(_arg_1:UpdateGameObjectTileVO):void {
+        this.view.setGameObjectTile(_arg_1.tileX, _arg_1.tileY, _arg_1.gameObject);
+    }
 
-      private function onMiniMapZoom(param1:String) : void {
-         if(param1 == MiniMapZoomSignal.IN) {
+    private function onMiniMapZoom(_arg_1:String):void {
+        if (_arg_1 == MiniMapZoomSignal.IN) {
             this.view.zoomIn();
-         } else if(param1 == MiniMapZoomSignal.OUT) {
-            this.view.zoomOut();
-         }
-      }
+        }
+        else {
+            if (_arg_1 == MiniMapZoomSignal.OUT) {
+                this.view.zoomOut();
+            }
+        }
+    }
 
-      private function onUpdateHUD(param1:Player) : void {
-         this.view.draw();
-      }
-   }
+    private function onUpdateHUD(_arg_1:Player):void {
+        this.view.draw();
+    }
+
+
 }
+}//package kabam.rotmg.minimap.view

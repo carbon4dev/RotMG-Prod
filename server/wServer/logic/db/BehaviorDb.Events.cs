@@ -15,39 +15,31 @@ namespace wServer.logic
 
             .Init("Skull Shrine",
                 new State(
-                    new DropPortalOnDeath("The Ether", percent: 65, dropDelaySec: 2, XAdjustment: 0, YAdjustment: 2, PortalDespawnTimeSec: 70),
-                    new Shoot(25, 10, 10, predictive: 1, coolDown: 250),
+                    new Shoot(25, 9, 10, predictive: 1),
                     new Spawn("Red Flaming Skull", 8, coolDown: 5000),
                     new Spawn("Blue Flaming Skull", 10, coolDown: 1000),
                     new Reproduce("Red Flaming Skull", 10, 8, 5000),
                     new Reproduce("Blue Flaming Skull", 10, 10, 1000)
                 ),
-                new MostDamagers(5,
+                new MostDamagers(3,
                     LootTemplates.StatIncreasePotionsLoot()
                 ),
-                new MostDamagers(3,
-                    new OnlyOne(
-                        new ItemLoot("Orb of Conflict", whitebag)
-                        ),
-                    new EggLoot(EggRarity.Common, eggbag + goodloot),
-                    new EggLoot(EggRarity.Uncommon, eggbag + greatloot),
-                    new EggLoot(EggRarity.Rare, eggbag + awesomeloot),
-                    new EggLoot(EggRarity.Legendary, eggbag),
-                    new TierLoot(3, ItemType.Ring, mediumloot),
-                    new TierLoot(4, ItemType.Ring, normalloot),
-                    new TierLoot(5, ItemType.Ring, goodloot),
-                    new TierLoot(8, ItemType.Weapon, mediumloot),
-                    new TierLoot(9, ItemType.Weapon, normalloot),
-                    new TierLoot(10, ItemType.Weapon, goodloot),
-                    new TierLoot(11, ItemType.Weapon, goodloot),
-                    new TierLoot(7, ItemType.Armor, poorloot),
-                    new TierLoot(8, ItemType.Armor, mediumloot),
-                    new TierLoot(9, ItemType.Armor, mediumloot),
-                    new TierLoot(10, ItemType.Armor, normalloot),
-                    new TierLoot(11, ItemType.Armor, normalloot),
-                    new TierLoot(12, ItemType.Armor, goodloot),
-                    new TierLoot(4, ItemType.Ability, normalloot),
-                    new TierLoot(5, ItemType.Ability, goodloot)
+                new Threshold(0.05,
+                    new TierLoot(8, ItemType.Weapon, 0.2),
+                    new TierLoot(9, ItemType.Weapon, 0.03),
+                    new TierLoot(10, ItemType.Weapon, 0.02),
+                    new TierLoot(11, ItemType.Weapon, 0.01),
+                    new TierLoot(3, ItemType.Ring, 0.2),
+                    new TierLoot(4, ItemType.Ring, 0.05),
+                    new TierLoot(5, ItemType.Ring, 0.01),
+                    new TierLoot(7, ItemType.Armor, 0.2),
+                    new TierLoot(8, ItemType.Armor, 0.1),
+                    new TierLoot(9, ItemType.Armor, 0.03),
+                    new TierLoot(10, ItemType.Armor, 0.02),
+                    new TierLoot(11, ItemType.Armor, 0.01),
+                    new TierLoot(4, ItemType.Ability, 0.1),
+                    new TierLoot(5, ItemType.Ability, 0.03),
+                    new ItemLoot("Orb of Conflict", 0.005)
                 )
             )
             .Init("Red Flaming Skull",
@@ -177,7 +169,6 @@ namespace wServer.logic
             )
             .Init("Hermit God Drop",
                 new State(
-                    new DropPortalOnDeath("Ocean Trench Portal", 100),
                     new State("idle",
                         new ConditionalEffect(ConditionEffectIndex.Invincible),
                         new EntityNotExistsTransition("Hermit God", 10, "despawn")
@@ -186,22 +177,16 @@ namespace wServer.logic
                         new Suicide()
                         )
                     ),
-                new MostDamagers(10,
-                    new ItemLoot("Potion of Dexterity", 1)
-                    ),
-                new MostDamagers(5,
+                new MostDamagers(3,
                     new OnlyOne(
-                        new ItemLoot("Potion of Vitality", 1),
-                        new ItemLoot("Helm of the Great Juggernaut", blackbag),
-                        new ItemLoot("Helm of the Juggernaut", whitebag)
-                    ),
-                    new EggLoot(EggRarity.Common, eggbag + goodloot),
-                    new EggLoot(EggRarity.Uncommon, eggbag + greatloot),
-                    new EggLoot(EggRarity.Rare, eggbag + awesomeloot),
-                    new EggLoot(EggRarity.Legendary, eggbag)
+                        new ItemLoot("Potion of Dexterity", 1),
+                        new ItemLoot("Potion of Vitality", 1)
+                    )
+                ),
+                new Threshold(0.05,
+                    new ItemLoot("Helm of the Juggernaut", 0.005)
                 )
             );
-        #endregion
-
+            #endregion
     }
 }

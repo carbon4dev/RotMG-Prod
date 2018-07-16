@@ -1,41 +1,41 @@
-package com.company.assembleegameclient.ui.options {
-import com.company.assembleegameclient.LOEBUILD_166e64f6c3677d0c513901242a3e702d.LOEBUILD_3225a10b07f1580f10dee4abc3779e6c;
+﻿package com.company.assembleegameclient.ui.options {
+import com.company.assembleegameclient.parameters.Parameters;
 
 import flash.events.Event;
 
 public class SliderOption extends BaseOption {
 
-      private var sliderBar:VolumeSliderBar;
+    private var sliderBar:VolumeSliderBar;
+    private var disabled_:Boolean;
+    private var callbackFunc:Function;
 
-      private var disabled_:Boolean;
+    public function SliderOption(_arg_1:String, _arg_2:Function = null, _arg_3:Boolean = false) {
+        super(_arg_1, "", "");
+        this.sliderBar = new VolumeSliderBar(Parameters.data_[paramName_]);
+        this.sliderBar.addEventListener(Event.CHANGE, this.onChange);
+        this.callbackFunc = _arg_2;
+        addChild(this.sliderBar);
+        this.setDisabled(_arg_3);
+    }
 
-      private var callbackFunc:Function;
+    public function setDisabled(_arg_1:Boolean):void {
+        this.disabled_ = _arg_1;
+        mouseEnabled = !(this.disabled_);
+        mouseChildren = !(this.disabled_);
+    }
 
-      public function SliderOption(param1:String, param2:Function = null, param3:Boolean = false) {
-         super(param1,"","");
-         this.sliderBar = new VolumeSliderBar(LOEBUILD_3225a10b07f1580f10dee4abc3779e6c.data_[paramName_]);
-         this.sliderBar.addEventListener(Event.CHANGE,this.onChange);
-         this.callbackFunc = param2;
-         addChild(this.sliderBar);
-         this.setDisabled(param3);
-      }
+    override public function refresh():void {
+        this.sliderBar.currentVolume = Parameters.data_[paramName_];
+    }
 
-      public function setDisabled(param1:Boolean) : void {
-         this.disabled_ = param1;
-         mouseEnabled = !this.disabled_;
-         mouseChildren = !this.disabled_;
-      }
-
-      override public function refresh() : void {
-         this.sliderBar.currentVolume = LOEBUILD_3225a10b07f1580f10dee4abc3779e6c.data_[paramName_];
-      }
-
-      private function onChange(param1:Event) : void {
-         LOEBUILD_3225a10b07f1580f10dee4abc3779e6c.data_[paramName_] = this.sliderBar.currentVolume;
-         if(this.callbackFunc != null) {
+    private function onChange(_arg_1:Event):void {
+        Parameters.data_[paramName_] = this.sliderBar.currentVolume;
+        if (this.callbackFunc != null) {
             this.callbackFunc(this.sliderBar.currentVolume);
-         }
-         LOEBUILD_3225a10b07f1580f10dee4abc3779e6c.save();
-      }
-   }
+        }
+        Parameters.save();
+    }
+
+
 }
+}//package com.company.assembleegameclient.ui.options

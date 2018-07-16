@@ -44,12 +44,11 @@ namespace wServer.logic
                 else
                     host.StateStorage[this] = state;
             }
-            catch { }
-            //(Exception e)
-            //{
-            //    log.ErrorFormat("BehaviorException:\nHost: {0}\nState: {1}\nInternalExeption:\n{2}",
-            //        host.Manager.GameData.ObjectTypeToId[host.ObjectType], state, e);
-            //}
+            catch (Exception e)
+            {
+                log.ErrorFormat("BehaviorException:\nHost: {0}\nState: {1}\nInternalExeption:\n{2}",
+                    host.Manager.GameData.ObjectTypeToId[host.ObjectType], state, e);
+            }
         }
 
         protected abstract void TickCore(Entity host, RealmTime time, ref object state);

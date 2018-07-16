@@ -1,4 +1,4 @@
-package kabam.rotmg.text.view {
+﻿package kabam.rotmg.text.view {
 import flash.filters.DropShadowFilter;
 import flash.text.TextFieldAutoSize;
 import flash.text.TextFormatAlign;
@@ -8,71 +8,72 @@ import kabam.rotmg.text.view.stringBuilder.StaticStringBuilder;
 
 public class TextFieldConcreteBuilder {
 
-      private var _containerWidth:int = -1;
+    private var _containerWidth:int = -1;
+    private var _containerMargin:int = -1;
 
-      private var _containerMargin:int = -1;
 
-      public function TextFieldConcreteBuilder() {
-         super();
-      }
+    public function getLocalizedTextObject(_arg_1:String, _arg_2:int = -1, _arg_3:int = -1, _arg_4:int = 16, _arg_5:int = 0xFFFFFF, _arg_6:int = -1, _arg_7:int = -1):TextFieldDisplayConcrete {
+        var _local_8:TextFieldDisplayConcrete = new TextFieldDisplayConcrete();
+        _local_8.setStringBuilder(new LineBuilder().setParams(_arg_1));
+        return (this.defaultFormatTFDC(_local_8, _arg_2, _arg_3, _arg_4, _arg_5, _arg_6, _arg_7));
+    }
 
-      public function getLocalizedTextObject(param1:String, param2:int = -1, param3:int = -1, param4:int = 16, param5:int = 16777215, param6:int = -1, param7:int = -1) : TextFieldDisplayConcrete {
-         var _local8:TextFieldDisplayConcrete = new TextFieldDisplayConcrete();
-         _local8.setStringBuilder(new LineBuilder().setParams(param1));
-         return this.defaultFormatTFDC(_local8,param2,param3,param4,param5,param6,param7);
-      }
+    public function getLiteralTextObject(_arg_1:String, _arg_2:int = -1, _arg_3:int = -1, _arg_4:int = 16, _arg_5:int = 0xFFFFFF, _arg_6:int = -1, _arg_7:int = -1):TextFieldDisplayConcrete {
+        var _local_8:TextFieldDisplayConcrete = new TextFieldDisplayConcrete();
+        _local_8.setStringBuilder(new StaticStringBuilder(_arg_1));
+        return (this.defaultFormatTFDC(_local_8, _arg_2, _arg_3, _arg_4, _arg_5, _arg_6, _arg_7));
+    }
 
-      public function getLiteralTextObject(param1:String, param2:int = -1, param3:int = -1, param4:int = 16, param5:int = 16777215, param6:int = -1, param7:int = -1) : TextFieldDisplayConcrete {
-         var _local8:TextFieldDisplayConcrete = new TextFieldDisplayConcrete();
-         _local8.setStringBuilder(new StaticStringBuilder(param1));
-         return this.defaultFormatTFDC(_local8,param2,param3,param4,param5,param6,param7);
-      }
+    public function getBlankFormattedTextObject(_arg_1:String, _arg_2:int = -1, _arg_3:int = -1, _arg_4:int = 16, _arg_5:int = 0xFFFFFF, _arg_6:int = -1, _arg_7:int = -1):TextFieldDisplayConcrete {
+        var _local_8:TextFieldDisplayConcrete = new TextFieldDisplayConcrete();
+        return (this.defaultFormatTFDC(_local_8, _arg_2, _arg_3, _arg_4, _arg_5, _arg_6, _arg_7));
+    }
 
-      public function getBlankFormattedTextObject(param1:String, param2:int = -1, param3:int = -1, param4:int = 16, param5:int = 16777215, param6:int = -1, param7:int = -1) : TextFieldDisplayConcrete {
-         var _local8:TextFieldDisplayConcrete = new TextFieldDisplayConcrete();
-         return this.defaultFormatTFDC(_local8,param2,param3,param4,param5,param6,param7);
-      }
+    public function formatExistingTextObject(_arg_1:TextFieldDisplayConcrete, _arg_2:int = -1, _arg_3:int = -1, _arg_4:int = 16, _arg_5:int = 0xFFFFFF, _arg_6:int = -1, _arg_7:int = -1):TextFieldDisplayConcrete {
+        return (this.defaultFormatTFDC(_arg_1, _arg_2, _arg_3, _arg_4, _arg_5, _arg_6, _arg_7));
+    }
 
-      public function formatExistingTextObject(param1:TextFieldDisplayConcrete, param2:int = -1, param3:int = -1, param4:int = 16, param5:int = 16777215, param6:int = -1, param7:int = -1) : TextFieldDisplayConcrete {
-         return this.defaultFormatTFDC(param1,param2,param3,param4,param5,param6,param7);
-      }
+    private function defaultFormatTFDC(_arg_1:TextFieldDisplayConcrete, _arg_2:int = -1, _arg_3:int = -1, _arg_4:int = 16, _arg_5:int = 0xFFFFFF, _arg_6:int = -1, _arg_7:int = -1):TextFieldDisplayConcrete {
+        _arg_1.setSize(_arg_4).setColor(_arg_5);
+        if (((!((_arg_6 == -1))) && (!((_arg_7 == -1))))) {
+            _arg_1.setTextWidth((_arg_6 - (_arg_7 * 2)));
+        }
+        else {
+            if (((!((this.containerWidth == -1))) && (!((this.containerMargin == -1))))) {
+                _arg_1.setTextWidth((this.containerWidth - (this.containerMargin * 2)));
+            }
+        }
+        _arg_1.setBold(true);
+        _arg_1.setWordWrap(true);
+        _arg_1.setMultiLine(true);
+        _arg_1.setAutoSize(TextFieldAutoSize.CENTER);
+        _arg_1.setHorizontalAlign(TextFormatAlign.CENTER);
+        _arg_1.filters = [new DropShadowFilter(0, 0, 0)];
+        if (_arg_2 != -1) {
+            _arg_1.x = _arg_2;
+        }
+        if (_arg_3 != -1) {
+            _arg_1.y = _arg_3;
+        }
+        return (_arg_1);
+    }
 
-      private function defaultFormatTFDC(param1:TextFieldDisplayConcrete, param2:int = -1, param3:int = -1, param4:int = 16, param5:int = 16777215, param6:int = -1, param7:int = -1) : TextFieldDisplayConcrete {
-         param1.setSize(param4).setColor(param5);
-         if(param6 != -1 && param7 != -1) {
-            param1.setTextWidth(param6 - param7 * 2);
-         } else if(this.containerWidth != -1 && this.containerMargin != -1) {
-            param1.setTextWidth(this.containerWidth - this.containerMargin * 2);
-         }
-         param1.setBold(true);
-         param1.setWordWrap(true);
-         param1.setMultiLine(true);
-         param1.setAutoSize(TextFieldAutoSize.CENTER);
-         param1.setHorizontalAlign(TextFormatAlign.CENTER);
-         param1.filters = [new DropShadowFilter(0,0,0)];
-         if(param2 != -1) {
-            param1.x = param2;
-         }
-         if(param3 != -1) {
-            param1.y = param3;
-         }
-         return param1;
-      }
+    public function get containerWidth():int {
+        return (this._containerWidth);
+    }
 
-      public function get containerWidth() : int {
-         return this._containerWidth;
-      }
+    public function set containerWidth(_arg_1:int):void {
+        this._containerWidth = _arg_1;
+    }
 
-      public function set containerWidth(param1:int) : void {
-         this._containerWidth = param1;
-      }
+    public function get containerMargin():int {
+        return (this._containerMargin);
+    }
 
-      public function get containerMargin() : int {
-         return this._containerMargin;
-      }
+    public function set containerMargin(_arg_1:int):void {
+        this._containerMargin = _arg_1;
+    }
 
-      public function set containerMargin(param1:int) : void {
-         this._containerMargin = param1;
-      }
-   }
+
 }
+}//package kabam.rotmg.text.view

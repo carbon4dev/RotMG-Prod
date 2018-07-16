@@ -1,5 +1,5 @@
-package com.company.assembleegameclient.ui.panels {
-import com.company.assembleegameclient.LOEBUILD_c8d46d341bea4fd5bff866a65ff8aea9.LOEBUILD_6615c4f9bea4fdaf620bf1ad513a54c1;
+﻿package com.company.assembleegameclient.ui.panels {
+import com.company.assembleegameclient.game.AGameSprite;
 import com.company.assembleegameclient.ui.DeprecatedTextButton;
 
 import flash.events.Event;
@@ -16,59 +16,57 @@ import kabam.rotmg.ui.view.SignalWaiter;
 
 public class TradeRequestPanel extends Panel {
 
-      public var name_:String;
+    public var name_:String;
+    private var title_:TextFieldDisplayConcrete;
+    private var rejectButton_:DeprecatedTextButton;
+    private var acceptButton_:DeprecatedTextButton;
+    private var timer_:Timer;
 
-      private var title_:TextFieldDisplayConcrete;
+    public function TradeRequestPanel(_arg_1:AGameSprite, _arg_2:String) {
+        super(_arg_1);
+        this.name_ = _arg_2;
+        this.title_ = new TextFieldDisplayConcrete().setSize(18).setColor(0xFFFFFF).setTextWidth(WIDTH);
+        this.title_.setStringBuilder(new LineBuilder().setParams(TextKey.TRADEREQUESTPANEL_WANTSTRADE, {"name": _arg_2}));
+        this.title_.setBold(true);
+        this.title_.setWordWrap(true).setMultiLine(true);
+        this.title_.setAutoSize(TextFieldAutoSize.CENTER);
+        this.title_.filters = [new DropShadowFilter(0, 0, 0)];
+        this.title_.y = 0;
+        addChild(this.title_);
+        this.rejectButton_ = new DeprecatedTextButton(16, TextKey.TRADE_REJECT);
+        this.rejectButton_.addEventListener(MouseEvent.CLICK, this.onRejectClick);
+        addChild(this.rejectButton_);
+        this.acceptButton_ = new DeprecatedTextButton(16, TextKey.TRADE_ACCEPT);
+        this.acceptButton_.addEventListener(MouseEvent.CLICK, this.onAcceptClick);
+        addChild(this.acceptButton_);
+        this.timer_ = new Timer((20 * 1000), 1);
+        this.timer_.start();
+        this.timer_.addEventListener(TimerEvent.TIMER, this.onTimer);
+        var _local_3:SignalWaiter = new SignalWaiter();
+        _local_3.pushArgs(this.rejectButton_.textChanged, this.acceptButton_.textChanged);
+        _local_3.complete.addOnce(this.onComplete);
+    }
 
-      private var rejectButton_:DeprecatedTextButton;
+    private function onComplete():void {
+        this.rejectButton_.x = ((WIDTH / 4) - (this.rejectButton_.width / 2));
+        this.acceptButton_.x = (((3 * WIDTH) / 4) - (this.acceptButton_.width / 2));
+        this.rejectButton_.y = ((HEIGHT - this.rejectButton_.height) - 4);
+        this.acceptButton_.y = ((HEIGHT - this.acceptButton_.height) - 4);
+    }
 
-      private var acceptButton_:DeprecatedTextButton;
+    private function onTimer(_arg_1:TimerEvent):void {
+        dispatchEvent(new Event(Event.COMPLETE));
+    }
 
-      private var timer_:Timer;
+    private function onRejectClick(_arg_1:MouseEvent):void {
+        dispatchEvent(new Event(Event.COMPLETE));
+    }
 
-      public function TradeRequestPanel(param1:LOEBUILD_6615c4f9bea4fdaf620bf1ad513a54c1, param2:String) {
-         super(param1);
-         this.name_ = param2;
-         this.title_ = new TextFieldDisplayConcrete().setSize(18).setColor(16777215).setTextWidth(WIDTH);
-         this.title_.setStringBuilder(new LineBuilder().setParams(TextKey.TRADEREQUESTPANEL_WANTSTRADE,{"name":param2}));
-         this.title_.setBold(true);
-         this.title_.setWordWrap(true).setMultiLine(true);
-         this.title_.setAutoSize(TextFieldAutoSize.CENTER);
-         this.title_.filters = [new DropShadowFilter(0,0,0)];
-         this.title_.y = 0;
-         addChild(this.title_);
-         this.rejectButton_ = new DeprecatedTextButton(16,TextKey.TRADE_REJECT);
-         this.rejectButton_.addEventListener(MouseEvent.CLICK,this.onRejectClick);
-         addChild(this.rejectButton_);
-         this.acceptButton_ = new DeprecatedTextButton(16,TextKey.TRADE_ACCEPT);
-         this.acceptButton_.addEventListener(MouseEvent.CLICK,this.onAcceptClick);
-         addChild(this.acceptButton_);
-         this.timer_ = new Timer(20 * 1000,1);
-         this.timer_.start();
-         this.timer_.addEventListener(TimerEvent.TIMER,this.onTimer);
-         var _local3:SignalWaiter = new SignalWaiter();
-         _local3.pushArgs(this.rejectButton_.textChanged,this.acceptButton_.textChanged);
-         _local3.complete.addOnce(this.onComplete);
-      }
+    private function onAcceptClick(_arg_1:MouseEvent):void {
+        gs_.gsc_.requestTrade(this.name_);
+        dispatchEvent(new Event(Event.COMPLETE));
+    }
 
-      private function onComplete() : void {
-         this.rejectButton_.x = WIDTH / 4 - this.rejectButton_.width / 2;
-         this.acceptButton_.x = 3 * WIDTH / 4 - this.acceptButton_.width / 2;
-         this.rejectButton_.y = HEIGHT - this.rejectButton_.height - 4;
-         this.acceptButton_.y = HEIGHT - this.acceptButton_.height - 4;
-      }
 
-      private function onTimer(param1:TimerEvent) : void {
-         dispatchEvent(new Event(Event.COMPLETE));
-      }
-
-      private function onRejectClick(param1:MouseEvent) : void {
-         dispatchEvent(new Event(Event.COMPLETE));
-      }
-
-      private function onAcceptClick(param1:MouseEvent) : void {
-         gs_.gsc_.requestTrade(this.name_);
-         dispatchEvent(new Event(Event.COMPLETE));
-      }
-   }
 }
+}//package com.company.assembleegameclient.ui.panels

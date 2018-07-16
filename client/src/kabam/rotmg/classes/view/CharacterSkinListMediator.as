@@ -1,4 +1,4 @@
-package kabam.rotmg.classes.view {
+﻿package kabam.rotmg.classes.view {
 import flash.display.DisplayObject;
 
 import kabam.rotmg.classes.model.CharacterClass;
@@ -8,31 +8,28 @@ import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class CharacterSkinListMediator extends Mediator {
 
-      [Inject]
-      public var view:CharacterSkinListView;
+    [Inject]
+    public var view:CharacterSkinListView;
+    [Inject]
+    public var model:ClassesModel;
+    [Inject]
+    public var factory:CharacterSkinListItemFactory;
 
-      [Inject]
-      public var model:ClassesModel;
 
-      [Inject]
-      public var factory:CharacterSkinListItemFactory;
+    override public function initialize():void {
+        this.model.selected.add(this.setSkins);
+        this.setSkins(this.model.getSelected());
+    }
 
-      public function CharacterSkinListMediator() {
-         super();
-      }
+    override public function destroy():void {
+        this.model.selected.remove(this.setSkins);
+    }
 
-      override public function initialize() : void {
-         this.model.selected.add(this.setSkins);
-         this.setSkins(this.model.getSelected());
-      }
+    private function setSkins(_arg_1:CharacterClass):void {
+        var _local_2:Vector.<DisplayObject> = this.factory.make(_arg_1.skins);
+        this.view.setItems(_local_2);
+    }
 
-      override public function destroy() : void {
-         this.model.selected.remove(this.setSkins);
-      }
 
-      private function setSkins(param1:CharacterClass) : void {
-         var _local2:Vector.<DisplayObject> = this.factory.make(param1.skins);
-         this.view.setItems(_local2);
-      }
-   }
 }
+}//package kabam.rotmg.classes.view

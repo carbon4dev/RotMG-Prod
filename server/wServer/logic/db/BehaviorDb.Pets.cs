@@ -22,14 +22,12 @@ namespace wServer.logic
                         new PetFollow(),
                         new Prioritize(
                             new StayCloseToSpawn(0.2),
-                            new PetWander(0.1, new Cooldown(10000, 10000))
+                            new PetWander(0.2, new Cooldown(2000, 1000))
                         ),
                         new PetHealHP(),
                         new PetHealMP(),
                         new PetElectric(),
-                        new PetShoot(),
-                        new PetRisingFury(),
-                        new PetSavage()
+                        new PetShoot()
                     )
                 );
             }

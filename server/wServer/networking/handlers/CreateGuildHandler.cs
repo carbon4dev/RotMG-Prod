@@ -34,12 +34,11 @@ namespace wServer.networking.handlers
                         {
                             if (db.GetGuild(name) != null)
                             {
-                                client.Player.SendInfo("Server Error #37 - CreateGuildHandler.cs. Contact LoE Team.");
-                                //player.Client.SendPacket(new CreateGuildResultPacket()
-                                //{
-                                //    Success = false,
-                                //    ErrorText = "{\"key\":\"server.create_guild_error\",\"tokens\":{\"error\":\"Guild already exists.\"}}"
-                                //});
+                                player.Client.SendPacket(new CreateGuildResultPacket()
+                                {
+                                    Success = false,
+                                    ErrorText = "{\"key\":\"server.create_guild_error\",\"tokens\":{\"error\":\"Guild already exists.\"}}"
+                                });
                                 return;
                             }
                             try
@@ -52,24 +51,22 @@ namespace wServer.networking.handlers
                                         player.Client.Account.Guild.Name = g.Name;
                                         player.Client.Account.Guild.Rank = g.Rank;
                                         player.Guild = GuildManager.Add(player, g);
-                                        client.Player.SendInfo("Purchase successful!");
-                                        //player.Client.SendPacket(new CreateGuildResultPacket()
-                                        //{
-                                        //    Success = true,
-                                        //    ErrorText = "{\"key\":\"server.buy_success\"}"
-                                        //});
+                                        player.Client.SendPacket(new CreateGuildResultPacket()
+                                        {
+                                            Success = true,
+                                            ErrorText = "{\"key\":\"server.buy_success\"}"
+                                        });
                                         player.CurrentFame = player.Client.Account.Stats.Fame = db.UpdateFame(player.Client.Account, -1000);
                                         player.UpdateCount++;
                                         return;
                                     }
                                     else
                                     {
-                                        client.Player.SendInfo("Server Error #99 - ChooseNameHandler.cs. Contact LoE Team.");
-                                        //player.Client.SendPacket(new CreateGuildResultPacket()
-                                        //{
-                                        //    Success = false,
-                                        //    ErrorText = "{\"key\":\"server.create_guild_error\",\"tokens\":{\"error\":\"Guild name cannot be blank.\"}}"
-                                        //});
+                                        player.Client.SendPacket(new CreateGuildResultPacket()
+                                        {
+                                            Success = false,
+                                            ErrorText = "{\"key\":\"server.create_guild_error\",\"tokens\":{\"error\":\"Guild name cannot be blank.\"}}"
+                                        });
                                         return;
                                     }
                                 }

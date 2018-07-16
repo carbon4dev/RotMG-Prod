@@ -22,88 +22,18 @@ namespace wServer.realm
 
         public void Say(Player src, string text)
         {
-            var byStar = src.Stars;
-            var lightBlue = (byStar >= 0) && (byStar <= 13);
-            var blue = (byStar >= 14) && (byStar <= 27);
-            var red = (byStar >= 28) && (byStar <= 41);
-            var orange = (byStar >= 42) && (byStar <= 55);
-            var yellow = (byStar >= 56) && (byStar <= 69);
-            //var white = (byStar >= 70);
-            if(src.Client.Account.Rank == 1)
+            src.Owner.BroadcastPacketSync(new TextPacket()
             {
-                src.Owner.BroadcastPacketSync(new TextPacket()
-                {
-                    Name = (lightBlue ? "!" : blue ? "$" : red  ? "%" : orange ? "+" : yellow ? "&" : "-") + src.Name,
-                    ObjectId = src.Id,
-                    Stars = src.Stars,
-                    BubbleTime = 10,
-                    Recipient = "",
-                    Text = text.ToSafeText(),
-                    CleanText = text.ToSafeText()
-                }, p => !p.Ignored.Contains(src.AccountId));
-                log.InfoFormat("[{0}({1})] <{2}> {3}", src.Owner.Name, src.Owner.Id, src.Name, text);
-                src.Owner.ChatReceived(text);
-            }
-            else if(src.Client.Account.Rank == 2)
-            {
-                src.Owner.BroadcastPacketSync(new TextPacket()
-                {
-                    Name = ";" +src.Name,
-                    ObjectId = src.Id,
-                    Stars = src.Stars,
-                    BubbleTime = 10,
-                    Recipient = "",
-                    Text = text.ToSafeText(),
-                    CleanText = text.ToSafeText()
-                }, p => !p.Ignored.Contains(src.AccountId));
-                log.InfoFormat("[{0}({1})] <{2}> {3}", src.Owner.Name, src.Owner.Id, src.Name, text);
-                src.Owner.ChatReceived(text);
-            }
-            else if(src.Client.Account.Rank == 3)
-            {
-                src.Owner.BroadcastPacketSync(new TextPacket()
-                {
-                    Name = "=" + src.Name,
-                    ObjectId = src.Id,
-                    Stars = src.Stars,
-                    BubbleTime = 10,
-                    Recipient = "",
-                    Text = text.ToSafeText(),
-                    CleanText = text.ToSafeText()
-                }, p => !p.Ignored.Contains(src.AccountId));
-                log.InfoFormat("[{0}({1})] <{2}> {3}", src.Owner.Name, src.Owner.Id, src.Name, text);
-                src.Owner.ChatReceived(text);
-            }
-            else if(src.Client.Account.Rank == 4)
-            {
-                src.Owner.BroadcastPacketSync(new TextPacket()
-                {
-                    Name = "~" +src.Name,
-                    ObjectId = src.Id,
-                    Stars = src.Stars,
-                    BubbleTime = 10,
-                    Recipient = "",
-                    Text = text.ToSafeText(),
-                    CleanText = text.ToSafeText()
-                }, p => !p.Ignored.Contains(src.AccountId));
-                log.InfoFormat("[{0}({1})] <{2}> {3}", src.Owner.Name, src.Owner.Id, src.Name, text);
-                src.Owner.ChatReceived(text);
-            }
-            else
-            {
-                src.Owner.BroadcastPacketSync(new TextPacket()
-                {
-                    Name = "" + src.Name,
-                    ObjectId = src.Id,
-                    Stars = src.Stars,
-                    BubbleTime = 10,
-                    Recipient = "",
-                    Text = text.ToSafeText(),
-                    CleanText = text.ToSafeText()
-                }, p => !p.Ignored.Contains(src.AccountId));
-                log.InfoFormat("[{0}({1})] <{2}> {3}", src.Owner.Name, src.Owner.Id, src.Name, text);
-                src.Owner.ChatReceived(text);
-            }
+                Name = (src.Client.Account.Rank >= 2 ? "@" : src.Client.Account.Rank >= 1 ? "#" : "") + src.Name,
+                ObjectId = src.Id,
+                Stars = src.Stars,
+                BubbleTime = 10,
+                Recipient = "",
+                Text = text.ToSafeText(),
+                CleanText = text.ToSafeText()
+            }, p => !p.Ignored.Contains(src.AccountId));
+            log.InfoFormat("[{0}({1})] <{2}> {3}", src.Owner.Name, src.Owner.Id, src.Name, text);
+            src.Owner.ChatReceived(text);
         }
 
         public void SayGuild(Player src, string text)

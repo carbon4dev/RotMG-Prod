@@ -1,30 +1,20 @@
-// Decompiled by AS3 Sorcerer 1.40
-// http://www.as3sorcerer.com/
+﻿package kabam.lib.net.impl {
+import kabam.lib.net.api.MessageHandlerProxy;
 
-//kabam.lib.net.impl.MethodHandlerProxy
+public class MethodHandlerProxy implements MessageHandlerProxy {
 
-package kabam.lib.net.impl
-{
-    import kabam.lib.net.api.*;
-
-    public class MethodHandlerProxy implements MessageHandlerProxy 
-    {
-
-        private var method:Function;
+    private var method:Function;
 
 
-        public function setMethod(_arg1:Function):MethodHandlerProxy
-        {
-            this.method = _arg1;
-            return (this);
-        }
-
-        public function getMethod():Function
-        {
-            return (this.method);
-        }
-
-
+    public function setMethod(_arg_1:Function):MethodHandlerProxy {
+        this.method = _arg_1;
+        return (this);
     }
-}//package kabam.lib.net.impl
 
+    public function getMethod():Function {
+        return (this.method);
+    }
+
+
+}
+}//package kabam.lib.net.impl

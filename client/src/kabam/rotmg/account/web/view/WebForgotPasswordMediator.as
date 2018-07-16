@@ -1,4 +1,4 @@
-package kabam.rotmg.account.web.view {
+﻿package kabam.rotmg.account.web.view {
 import kabam.lib.tasks.Task;
 import kabam.rotmg.account.core.signals.SendPasswordReminderSignal;
 import kabam.rotmg.core.signals.TaskErrorSignal;
@@ -8,59 +8,55 @@ import robotlegs.bender.bundles.mvcs.Mediator;
 
 public class WebForgotPasswordMediator extends Mediator {
 
-      [Inject]
-      public var view:WebForgotPasswordDialog;
+    [Inject]
+    public var view:WebForgotPasswordDialog;
+    [Inject]
+    public var sendPasswordReminder:SendPasswordReminderSignal;
+    [Inject]
+    public var openDialog:OpenDialogSignal;
+    [Inject]
+    public var failedToSend:TaskErrorSignal;
 
-      [Inject]
-      public var sendPasswordReminder:SendPasswordReminderSignal;
 
-      [Inject]
-      public var openDialog:OpenDialogSignal;
+    override public function initialize():void {
+        this.view.submit.add(this.onSubmit);
+        this.view.register.add(this.onRegister);
+        this.view.cancel.add(this.onCancel);
+        this.failedToSend.add(this.onFailedToSend);
+    }
 
-      [Inject]
-      public var failedToSend:TaskErrorSignal;
+    override public function destroy():void {
+        this.view.submit.remove(this.onSubmit);
+        this.view.register.remove(this.onRegister);
+        this.view.cancel.remove(this.onCancel);
+        this.failedToSend.add(this.onFailedToSend);
+    }
 
-      public function WebForgotPasswordMediator() {
-         super();
-      }
+    private function onEnable():void {
+        this.view.enable();
+    }
 
-      override public function initialize() : void {
-         this.view.submit.add(this.onSubmit);
-         this.view.register.add(this.onRegister);
-         this.view.cancel.add(this.onCancel);
-         this.failedToSend.add(this.onFailedToSend);
-      }
+    private function onClose():void {
+        this.view.parent.removeChild(this.view);
+    }
 
-      override public function destroy() : void {
-         this.view.submit.remove(this.onSubmit);
-         this.view.register.remove(this.onRegister);
-         this.view.cancel.remove(this.onCancel);
-         this.failedToSend.add(this.onFailedToSend);
-      }
+    private function onSubmit(_arg_1:String):void {
+        this.sendPasswordReminder.dispatch(_arg_1);
+    }
 
-      private function onEnable() : void {
-         this.view.enable();
-      }
+    private function onRegister():void {
+        this.openDialog.dispatch(new WebRegisterDialog());
+    }
 
-      private function onClose() : void {
-         this.view.parent.removeChild(this.view);
-      }
+    private function onCancel():void {
+        this.openDialog.dispatch(new WebLoginDialog());
+    }
 
-      private function onSubmit(param1:String) : void {
-         this.sendPasswordReminder.dispatch(param1);
-      }
+    private function onFailedToSend(_arg_1:Task):void {
+        this.view.showError(_arg_1.error);
+        this.view.enable();
+    }
 
-      private function onRegister() : void {
-         this.openDialog.dispatch(new WebRegisterDialog());
-      }
 
-      private function onCancel() : void {
-         this.openDialog.dispatch(new WebLoginDialog());
-      }
-
-      private function onFailedToSend(param1:Task) : void {
-         this.view.showError(param1.error);
-         this.view.enable();
-      }
-   }
 }
+}//package kabam.rotmg.account.web.view

@@ -1,49 +1,37 @@
-package kabam.rotmg.game.model {
-import com.company.assembleegameclient.LOEBUILD_5891da2d64975cae48d175d1e001f5da.GameObject;
+﻿package kabam.rotmg.game.model {
+import com.company.assembleegameclient.objects.GameObject;
 
 public class AddSpeechBalloonVO {
 
-      public var go:GameObject;
+    public var go:GameObject;
+    public var text:String;
+    public var name:String;
+    public var isTrade:Boolean;
+    public var isGuild:Boolean;
+    public var background:uint;
+    public var backgroundAlpha:Number;
+    public var outline:uint;
+    public var outlineAlpha:uint;
+    public var textColor:uint;
+    public var lifetime:int;
+    public var bold:Boolean;
+    public var hideable:Boolean;
 
-      public var text:String;
+    public function AddSpeechBalloonVO(_arg_1:GameObject, _arg_2:String, _arg_3:String, _arg_4:Boolean, _arg_5:Boolean, _arg_6:uint, _arg_7:Number, _arg_8:uint, _arg_9:Number, _arg_10:uint, _arg_11:int, _arg_12:Boolean, _arg_13:Boolean) {
+        this.go = _arg_1;
+        this.text = _arg_2;
+        this.name = _arg_3;
+        this.isTrade = _arg_4;
+        this.isGuild = _arg_5;
+        this.background = _arg_6;
+        this.backgroundAlpha = _arg_7;
+        this.outline = _arg_8;
+        this.outlineAlpha = _arg_9;
+        this.textColor = _arg_10;
+        this.lifetime = _arg_11;
+        this.bold = _arg_12;
+        this.hideable = _arg_13;
+    }
 
-      public var name:String;
-
-      public var isTrade:Boolean;
-
-      public var isGuild:Boolean;
-
-      public var background:uint;
-
-      public var backgroundAlpha:Number;
-
-      public var outline:uint;
-
-      public var outlineAlpha:uint;
-
-      public var textColor:uint;
-
-      public var lifetime:int;
-
-      public var bold:Boolean;
-
-      public var hideable:Boolean;
-
-      public function AddSpeechBalloonVO(param1:GameObject, param2:String, param3:String, param4:Boolean, param5:Boolean, param6:uint, param7:Number, param8:uint, param9:Number, param10:uint, param11:int, param12:Boolean, param13:Boolean) {
-         super();
-         this.go = param1;
-         this.text = param2;
-         this.name = param3;
-         this.isTrade = param4;
-         this.isGuild = param5;
-         this.background = param6;
-         this.backgroundAlpha = param7;
-         this.outline = param8;
-         this.outlineAlpha = param9;
-         this.textColor = param10;
-         this.lifetime = param11;
-         this.bold = param12;
-         this.hideable = param13;
-      }
-   }
 }
+}//package kabam.rotmg.game.model

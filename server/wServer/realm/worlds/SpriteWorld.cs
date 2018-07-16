@@ -11,11 +11,10 @@ namespace wServer.realm.worlds
         public SpriteWorld()
         {
             Name = "Sprite World";
-            ClientWorldName = "Sprite World";
+            ClientWorldName = "dungeons.Sprite_World";
             Background = 0;
             Difficulty = 2;
             AllowTeleport = true;
-            SetMusic("spriteworld");
         }
 
         protected override void Init()

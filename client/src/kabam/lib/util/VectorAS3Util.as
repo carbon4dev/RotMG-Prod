@@ -1,17 +1,16 @@
-package kabam.lib.util {
-   public class VectorAS3Util {
+﻿package kabam.lib.util {
+public class VectorAS3Util {
 
-      public function VectorAS3Util() {
-         super();
-      }
 
-      public static function toArray(param1:Object) : Array {
-         var _local3:Object = null;
-         var _local2:Array = [];
-         for each(_local3 in param1) {
-            _local2.push(_local3);
-         }
-         return _local2;
-      }
-   }
+    public static function toArray(_arg_1:Object):Array {
+        var _local_3:Object;
+        var _local_2:Array = [];
+        for each (_local_3 in _arg_1) {
+            _local_2.push(_local_3);
+        }
+        return (_local_2);
+    }
+
+
 }
+}//package kabam.lib.util

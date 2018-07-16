@@ -1,4 +1,4 @@
-package kabam.rotmg.promotions {
+﻿package kabam.rotmg.promotions {
 import kabam.rotmg.packages.control.BeginnersPackageAvailableSignal;
 import kabam.rotmg.promotions.commands.BuyBeginnersPackageCommand;
 import kabam.rotmg.promotions.commands.MakeBeginnersPackagePaymentCommand;
@@ -22,28 +22,25 @@ import robotlegs.bender.framework.api.IConfig;
 
 public class PromotionsConfig implements IConfig {
 
-      [Inject]
-      public var injector:Injector;
+    [Inject]
+    public var injector:Injector;
+    [Inject]
+    public var mediatorMap:IMediatorMap;
+    [Inject]
+    public var commandMap:ISignalCommandMap;
 
-      [Inject]
-      public var mediatorMap:IMediatorMap;
 
-      [Inject]
-      public var commandMap:ISignalCommandMap;
+    public function configure():void {
+        this.injector.map(BeginnersPackageModel).asSingleton();
+        this.injector.map(BeginnersPackageAvailableSignal).asSingleton();
+        this.mediatorMap.map(BeginnersPackageButton).toMediator(BeginnersPackageButtonMediator);
+        this.mediatorMap.map(BeginnersPackageOfferDialog).toMediator(BeginnersPackageOfferDialogMediator);
+        this.mediatorMap.map(WebChoosePaymentTypeDialog).toMediator(WebChoosePaymentTypeDialogMediator);
+        this.commandMap.map(ShowBeginnersPackageSignal).toCommand(ShowBeginnersPackageCommand);
+        this.commandMap.map(BuyBeginnersPackageSignal).toCommand(BuyBeginnersPackageCommand);
+        this.commandMap.map(MakeBeginnersPackagePaymentSignal).toCommand(MakeBeginnersPackagePaymentCommand);
+    }
 
-      public function PromotionsConfig() {
-         super();
-      }
 
-      public function configure() : void {
-         this.injector.map(BeginnersPackageModel).asSingleton();
-         this.injector.map(BeginnersPackageAvailableSignal).asSingleton();
-         this.mediatorMap.map(BeginnersPackageButton).toMediator(BeginnersPackageButtonMediator);
-         this.mediatorMap.map(BeginnersPackageOfferDialog).toMediator(BeginnersPackageOfferDialogMediator);
-         this.mediatorMap.map(WebChoosePaymentTypeDialog).toMediator(WebChoosePaymentTypeDialogMediator);
-         this.commandMap.map(ShowBeginnersPackageSignal).toCommand(ShowBeginnersPackageCommand);
-         this.commandMap.map(BuyBeginnersPackageSignal).toCommand(BuyBeginnersPackageCommand);
-         this.commandMap.map(MakeBeginnersPackagePaymentSignal).toCommand(MakeBeginnersPackagePaymentCommand);
-      }
-   }
 }
+}//package kabam.rotmg.promotions

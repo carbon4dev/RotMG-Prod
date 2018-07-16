@@ -1,122 +1,118 @@
-package kabam.rotmg.text.view.stringBuilder {
+﻿package kabam.rotmg.text.view.stringBuilder {
 import kabam.rotmg.core.StaticInjectorContext;
 import kabam.rotmg.language.model.StringMap;
 
 public class LineBuilder implements StringBuilder {
 
-      public var key:String;
+    public var key:String;
+    public var tokens:Object;
+    private var postfix:String = "";
+    private var prefix:String = "";
+    private var map:StringMap;
 
-      public var tokens:Object;
 
-      private var postfix:String = "";
+    public static function fromJSON(_arg_1:String):LineBuilder {
+        var _local_2:Object = JSON.parse(_arg_1);
+        return (new (LineBuilder)().setParams(_local_2.key, _local_2.tokens));
+    }
 
-      private var prefix:String = "";
+    public static function getLocalizedStringFromKey(_arg_1:String, _arg_2:Object = null):String {
+        var _local_3:LineBuilder = new (LineBuilder)();
+        _local_3.setParams(_arg_1, _arg_2);
+        var _local_4:StringMap = StaticInjectorContext.getInjector().getInstance(StringMap);
+        _local_3.setStringMap(_local_4);
+        return (_local_3.getString());
+    }
 
-      private var map:StringMap;
+    public static function getLocalizedStringFromJSON(_arg_1:String):String {
+        var _local_2:LineBuilder;
+        var _local_3:StringMap;
+        if (_arg_1.charAt(0) == "{") {
+            _local_2 = LineBuilder.fromJSON(_arg_1);
+            _local_3 = StaticInjectorContext.getInjector().getInstance(StringMap);
+            _local_2.setStringMap(_local_3);
+            return (_local_2.getString());
+        }
+        return (_arg_1);
+    }
 
-      public function LineBuilder() {
-         super();
-      }
-
-      public static function fromJSON(param1:String) : LineBuilder {
-         var _local2:Object = JSON.parse(param1);
-         return new LineBuilder().setParams(_local2.key,_local2.tokens);
-      }
-
-      public static function getLocalizedStringFromKey(param1:String, param2:Object = null) : String {
-         var _local3:LineBuilder = new LineBuilder();
-         _local3.setParams(param1,param2);
-         var _local4:StringMap = StaticInjectorContext.getInjector().getInstance(StringMap);
-         _local3.setStringMap(_local4);
-         return _local3.getString();
-      }
-
-      public static function getLocalizedStringFromJSON(param1:String) : String {
-         var _local2:LineBuilder = null;
-         var _local3:StringMap = null;
-         if(param1.charAt(0) == "{") {
-            _local2 = LineBuilder.fromJSON(param1);
-            _local3 = StaticInjectorContext.getInjector().getInstance(StringMap);
-            _local2.setStringMap(_local3);
-            return _local2.getString();
-         }
-         return param1;
-      }
-
-      public static function returnStringReplace(param1:String, param2:Object = null, param3:String = "", param4:String = "") : String {
-         var _local6:* = null;
-         var _local7:String = null;
-         var _local8:* = null;
-         var _local5:String = stripCurlyBrackets(param1);
-         for(_local6 in param2) {
-            _local7 = param2[_local6];
-            _local8 = "{" + _local6 + "}";
-            while(_local5.indexOf(_local8) != -1) {
-               _local5 = _local5.replace(_local8,_local7);
+    public static function returnStringReplace(_arg_1:String, _arg_2:Object = null, _arg_3:String = "", _arg_4:String = ""):String {
+        var _local_6:String;
+        var _local_7:String;
+        var _local_8:String;
+        var _local_5:String = stripCurlyBrackets(_arg_1);
+        for (_local_6 in _arg_2) {
+            _local_7 = _arg_2[_local_6];
+            _local_8 = (("{" + _local_6) + "}");
+            while (_local_5.indexOf(_local_8) != -1) {
+                _local_5 = _local_5.replace(_local_8, _local_7);
             }
-         }
-         _local5 = _local5.replace(new RegExp("\\\\n","g"),"\n");
-         return param3 + _local5 + param4;
-      }
+        }
+        _local_5 = _local_5.replace(/\\n/g, "\n");
+        return (((_arg_3 + _local_5) + _arg_4));
+    }
 
-      public static function getLocalizedString2(param1:String, param2:Object = null) : String {
-         var _local3:LineBuilder = new LineBuilder();
-         _local3.setParams(param1,param2);
-         var _local4:StringMap = StaticInjectorContext.getInjector().getInstance(StringMap);
-         _local3.setStringMap(_local4);
-         return _local3.getString();
-      }
+    public static function getLocalizedString2(_arg_1:String, _arg_2:Object = null):String {
+        var _local_3:LineBuilder = new (LineBuilder)();
+        _local_3.setParams(_arg_1, _arg_2);
+        var _local_4:StringMap = StaticInjectorContext.getInjector().getInstance(StringMap);
+        _local_3.setStringMap(_local_4);
+        return (_local_3.getString());
+    }
 
-      private static function stripCurlyBrackets(param1:String) : String {
-         var _local2:Boolean = param1 != null && param1.charAt(0) == "{" && param1.charAt(param1.length - 1) == "}";
-         return !!_local2?param1.substr(1,param1.length - 2):param1;
-      }
+    private static function stripCurlyBrackets(_arg_1:String):String {
+        var _local_2:Boolean = ((((!((_arg_1 == null))) && ((_arg_1.charAt(0) == "{")))) && ((_arg_1.charAt((_arg_1.length - 1)) == "}")));
+        return (((_local_2) ? _arg_1.substr(1, (_arg_1.length - 2)) : _arg_1));
+    }
 
-      public function toJson() : String {
-         return JSON.stringify({
-            "key":this.key,
-            "tokens":this.tokens
-         });
-      }
 
-      public function setParams(param1:String, param2:Object = null) : LineBuilder {
-         this.key = param1 || "";
-         this.tokens = param2;
-         return this;
-      }
+    public function toJson():String {
+        return (JSON.stringify({
+            "key": this.key,
+            "tokens": this.tokens
+        }));
+    }
 
-      public function setPrefix(param1:String) : LineBuilder {
-         this.prefix = param1;
-         return this;
-      }
+    public function setParams(_arg_1:String, _arg_2:Object = null):LineBuilder {
+        this.key = ((_arg_1) || (""));
+        this.tokens = _arg_2;
+        return (this);
+    }
 
-      public function setPostfix(param1:String) : LineBuilder {
-         this.postfix = param1;
-         return this;
-      }
+    public function setPrefix(_arg_1:String):LineBuilder {
+        this.prefix = _arg_1;
+        return (this);
+    }
 
-      public function setStringMap(param1:StringMap) : void {
-         this.map = param1;
-      }
+    public function setPostfix(_arg_1:String):LineBuilder {
+        this.postfix = _arg_1;
+        return (this);
+    }
 
-      public function getString() : String {
-         var _local3:* = null;
-         var _local4:String = null;
-         var _local5:* = null;
-         var _local1:String = stripCurlyBrackets(this.key);
-         var _local2:String = this.map.getValue(_local1) || "";
-         for(_local3 in this.tokens) {
-            _local4 = this.tokens[_local3];
-            if(_local4.charAt(0) == "{" && _local4.charAt(_local4.length - 1) == "}") {
-               _local4 = this.map.getValue(_local4.substr(1,_local4.length - 2));
+    public function setStringMap(_arg_1:StringMap):void {
+        this.map = _arg_1;
+    }
+
+    public function getString():String {
+        var _local_3:String;
+        var _local_4:String;
+        var _local_5:String;
+        var _local_1:String = stripCurlyBrackets(this.key);
+        var _local_2:String = ((this.map.getValue(_local_1)) || (""));
+        for (_local_3 in this.tokens) {
+            _local_4 = this.tokens[_local_3];
+            if ((((_local_4.charAt(0) == "{")) && ((_local_4.charAt((_local_4.length - 1)) == "}")))) {
+                _local_4 = this.map.getValue(_local_4.substr(1, (_local_4.length - 2)));
             }
-            _local5 = "{" + _local3 + "}";
-            while(_local2.indexOf(_local5) != -1) {
-               _local2 = _local2.replace(_local5,_local4);
+            _local_5 = (("{" + _local_3) + "}");
+            while (_local_2.indexOf(_local_5) != -1) {
+                _local_2 = _local_2.replace(_local_5, _local_4);
             }
-         }
-         _local2 = _local2.replace(new RegExp("\\\\n","g"),"\n");
-         return this.prefix + _local2 + this.postfix;
-      }
-   }
+        }
+        _local_2 = _local_2.replace(/\\n/g, "\n");
+        return (((this.prefix + _local_2) + this.postfix));
+    }
+
+
 }
+}//package kabam.rotmg.text.view.stringBuilder

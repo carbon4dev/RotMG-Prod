@@ -1,4 +1,4 @@
-package kabam.rotmg.account.web.commands {
+﻿package kabam.rotmg.account.web.commands {
 import com.company.assembleegameclient.screens.CharacterSelectionAndNewsScreen;
 
 import flash.display.Sprite;
@@ -14,45 +14,39 @@ import kabam.rotmg.pets.data.PetsModel;
 
 public class WebLogoutCommand {
 
-      [Inject]
-      public var account:Account;
+    [Inject]
+    public var account:Account;
+    [Inject]
+    public var invalidate:InvalidateDataSignal;
+    [Inject]
+    public var setScreenWithValidData:SetScreenWithValidDataSignal;
+    [Inject]
+    public var screenModel:ScreenModel;
+    [Inject]
+    public var getPackageTask:GetPackagesTask;
+    [Inject]
+    public var petsModel:PetsModel;
 
-      [Inject]
-      public var invalidate:InvalidateDataSignal;
 
-      [Inject]
-      public var setScreenWithValidData:SetScreenWithValidDataSignal;
+    public function execute():void {
+        this.account.clear();
+        this.invalidate.dispatch();
+        this.petsModel.clearPets();
+        this.getPackageTask.finished.addOnce(this.onFinished);
+        this.getPackageTask.start();
+    }
 
-      [Inject]
-      public var screenModel:ScreenModel;
+    private function onFinished(_arg_1:BaseTask, _arg_2:Boolean, _arg_3:String):void {
+        this.setScreenWithValidData.dispatch(this.makeScreen());
+    }
 
-      [Inject]
-      public var getPackageTask:GetPackagesTask;
+    private function makeScreen():Sprite {
+        if (this.screenModel.getCurrentScreenType() == FameView) {
+            return (new CharacterSelectionAndNewsScreen());
+        }
+        return (new (((this.screenModel.getCurrentScreenType()) || (CharacterSelectionAndNewsScreen)))());
+    }
 
-      [Inject]
-      public var petsModel:PetsModel;
 
-      public function WebLogoutCommand() {
-         super();
-      }
-
-      public function execute() : void {
-         this.account.clear();
-         this.invalidate.dispatch();
-         this.petsModel.clearPets();
-         this.getPackageTask.finished.addOnce(this.onFinished);
-         this.getPackageTask.start();
-      }
-
-      private function onFinished(param1:BaseTask, param2:Boolean, param3:String) : void {
-         this.setScreenWithValidData.dispatch(this.makeScreen());
-      }
-
-      private function makeScreen() : Sprite {
-         if(this.screenModel.getCurrentScreenType() == FameView) {
-            return new CharacterSelectionAndNewsScreen();
-         }
-         return new (this.screenModel.getCurrentScreenType() || CharacterSelectionAndNewsScreen)();
-      }
-   }
 }
+}//package kabam.rotmg.account.web.commands

@@ -1,52 +1,50 @@
-package kabam.rotmg.stage3D.Object3D {
+﻿package kabam.rotmg.stage3D.Object3D {
 import flash.geom.Matrix3D;
 import flash.utils.ByteArray;
 
 public class Util {
 
-      public function Util() {
-         super();
-      }
 
-      public static function perspectiveProjection(param1:Number = 90, param2:Number = 1, param3:Number = 1, param4:Number = 2048) : Matrix3D {
-         var _local5:Number = param3 * Math.tan(param1 * Math.PI / 360);
-         var _local6:Number = -_local5;
-         var _local7:Number = _local6 * param2;
-         var _local8:Number = _local5 * param2;
-         var _local9:Number = 2 * param3 / (_local8 - _local7);
-         var _local10:Number = 2 * param3 / (_local5 - _local6);
-         var _local11:Number = (_local8 + _local7) / (_local8 - _local7);
-         var _local12:Number = (_local5 + _local6) / (_local5 - _local6);
-         var _local13:Number = -(param4 + param3) / (param4 - param3);
-         var _local14:Number = -2 * (param4 * param3) / (param4 - param3);
-         return new Matrix3D(Vector.<Number>([_local9,0,0,0,0,_local10,0,0,_local11,_local12,_local13,-1,0,0,_local14,0]));
-      }
+    public static function perspectiveProjection(_arg_1:Number = 90, _arg_2:Number = 1, _arg_3:Number = 1, _arg_4:Number = 0x0800):Matrix3D {
+        var _local_5:Number = (_arg_3 * Math.tan(((_arg_1 * Math.PI) / 360)));
+        var _local_6:Number = -(_local_5);
+        var _local_7:Number = (_local_6 * _arg_2);
+        var _local_8:Number = (_local_5 * _arg_2);
+        var _local_9:Number = ((2 * _arg_3) / (_local_8 - _local_7));
+        var _local_10:Number = ((2 * _arg_3) / (_local_5 - _local_6));
+        var _local_11:Number = ((_local_8 + _local_7) / (_local_8 - _local_7));
+        var _local_12:Number = ((_local_5 + _local_6) / (_local_5 - _local_6));
+        var _local_13:Number = (-((_arg_4 + _arg_3)) / (_arg_4 - _arg_3));
+        var _local_14:Number = ((-2 * (_arg_4 * _arg_3)) / (_arg_4 - _arg_3));
+        return (new Matrix3D(Vector.<Number>([_local_9, 0, 0, 0, 0, _local_10, 0, 0, _local_11, _local_12, _local_13, -1, 0, 0, _local_14, 0])));
+    }
 
-      public static function readString(param1:ByteArray, param2:int) : String {
-         var _local5:uint = 0;
-         var _local3:String = "";
-         var _local4:int = 0;
-         while(_local4 < param2) {
-            _local5 = param1.readUnsignedByte();
-            if(_local5 === 0) {
-               param1.position = param1.position + Math.max(0,param2 - (_local4 + 1));
-               break;
+    public static function readString(_arg_1:ByteArray, _arg_2:int):String {
+        var _local_5:uint;
+        var _local_3 = "";
+        var _local_4:int;
+        while (_local_4 < _arg_2) {
+            _local_5 = _arg_1.readUnsignedByte();
+            if (_local_5 === 0) {
+                _arg_1.position = (_arg_1.position + Math.max(0, (_arg_2 - (_local_4 + 1))));
+                break;
             }
-            _local3 = _local3 + String.fromCharCode(_local5);
-            _local4++;
-         }
-         return _local3;
-      }
+            _local_3 = (_local_3 + String.fromCharCode(_local_5));
+            _local_4++;
+        }
+        return (_local_3);
+    }
 
-      public static function upperPowerOfTwo(param1:uint) : uint {
-         param1--;
-         param1 = param1 | param1 >> 1;
-         param1 = param1 | param1 >> 2;
-         param1 = param1 | param1 >> 4;
-         param1 = param1 | param1 >> 8;
-         param1 = param1 | param1 >> 16;
-         param1++;
-         return param1;
-      }
-   }
+    public static function upperPowerOfTwo(_arg_1:uint):uint {
+        _arg_1--;
+        _arg_1 = (_arg_1 | (_arg_1 >> 1));
+        _arg_1 = (_arg_1 | (_arg_1 >> 2));
+        _arg_1 = (_arg_1 | (_arg_1 >> 4));
+        _arg_1 = (_arg_1 | (_arg_1 >> 8));
+        _arg_1 = (_arg_1 | (_arg_1 >> 16));
+        return ((_arg_1 + 1));
+    }
+
+
 }
+}//package kabam.rotmg.stage3D.Object3D

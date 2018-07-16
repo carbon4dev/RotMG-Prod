@@ -1,10 +1,8 @@
-package kabam.rotmg.language.control {
+﻿package kabam.rotmg.language.control {
 import org.osflash.signals.Signal;
 
 public class RegisterChangeLanguageViaConsoleSignal extends Signal {
 
-      public function RegisterChangeLanguageViaConsoleSignal() {
-         super();
-      }
-   }
+
 }
+}//package kabam.rotmg.language.control

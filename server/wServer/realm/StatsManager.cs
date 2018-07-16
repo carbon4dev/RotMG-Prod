@@ -11,10 +11,6 @@ namespace wServer.realm
     {
         private readonly Player player;
 
-        private float levelVar;
-
-        private static float disVar;
-
         public StatsManager(Player player, uint seed)
         {
             this.player = player;
@@ -37,32 +33,14 @@ namespace wServer.realm
 
         private float DamageModifier()
         {
-            if(player.Level < 1000)
-                levelVar = 1 + (player.Level/1000);
-            else if(player.Level >= 1000)
-                levelVar = 2;
-            if(player.Client.Account.Rank == 1)
-            {
-                if (player.HasConditionEffect(ConditionEffectIndex.Weak))
-                    return 0.5f;
-                var ret = ((0.5f + GetStats(2) / 75F*(2 - 0.5f))*(5/4))*levelVar;
+            if (player.HasConditionEffect(ConditionEffectIndex.Weak))
+                return 0.5f;
+            var ret = (0.5f + GetStats(2) / 75F*(2 - 0.5f));
 
-                if (player.HasConditionEffect(ConditionEffectIndex.Damaging))
-                    ret *= 1.875f;
+            if (player.HasConditionEffect(ConditionEffectIndex.Damaging))
+                ret *= 1.5f;
 
-                return ret;
-            }
-            else
-            {
-                if (player.HasConditionEffect(ConditionEffectIndex.Weak))
-                    return 0.5f;
-                var ret = ((0.5f + GetStats(2) / 75F*(2 - 0.5f)))*levelVar;
-
-                if (player.HasConditionEffect(ConditionEffectIndex.Damaging))
-                    ret *= 1.5f;
-
-                return ret;
-            }
+            return ret;
         }
 
         public static float GetDefenseDamage(Entity host, int dmg, int def)
@@ -72,7 +50,7 @@ namespace wServer.realm
             if (host.HasConditionEffect(ConditionEffectIndex.ArmorBroken))
                 def = 0;
 
-            float limit = (dmg*0.15f)/2;
+            float limit = dmg*0.15f;
 
             float ret;
             if (dmg - def < limit) ret = limit;
@@ -86,94 +64,35 @@ namespace wServer.realm
 
         public float GetDefenseDamage(int dmg, bool noDef)
         {
-            if(player.Level < 1000)
-                levelVar = 1 + (player.Level/1000);
-            else if(player.Level >= 1000)
-                levelVar = 2;
-            if(player.Client.Account.Rank == 1)
-            {
-                int def = GetStats(3);
-                if (player.HasConditionEffect(ConditionEffectIndex.Armored))
-                    def *= (5/2);
-                if (player.HasConditionEffect(ConditionEffectIndex.ArmorBroken) ||
-                    noDef)
-                    def = 0;
+            int def = GetStats(3);
+            if (player.HasConditionEffect(ConditionEffectIndex.Armored))
+                def *= 2;
+            if (player.HasConditionEffect(ConditionEffectIndex.ArmorBroken) ||
+                noDef)
+                def = 0;
 
-                float limit = dmg*0.15f;
+            float limit = dmg*0.15f;
 
-                float ret;
-                if (dmg - def < limit) ret = limit;
-                else ret = dmg - def*levelVar;
+            float ret;
+            if (dmg - def < limit) ret = limit;
+            else ret = dmg - def;
 
-                if (player.HasConditionEffect(ConditionEffectIndex.Invulnerable) ||
-                    player.HasConditionEffect(ConditionEffectIndex.Invincible))
-                    ret = 0;
-                return ret;
-            }
-            else
-            {
-                int def = GetStats(3);
-                if (player.HasConditionEffect(ConditionEffectIndex.Armored))
-                    def *= 2;
-                if (player.HasConditionEffect(ConditionEffectIndex.ArmorBroken) ||
-                    noDef)
-                    def = 0;
-
-                float limit = dmg*0.15f;
-
-                float ret;
-                if (dmg - def < limit) ret = limit;
-                else ret = dmg - def*levelVar;
-
-                if (player.HasConditionEffect(ConditionEffectIndex.Invulnerable) ||
-                    player.HasConditionEffect(ConditionEffectIndex.Invincible))
-                    ret = 0;
-                return ret;
-            }
+            if (player.HasConditionEffect(ConditionEffectIndex.Invulnerable) ||
+                player.HasConditionEffect(ConditionEffectIndex.Invincible))
+                ret = 0;
+            return ret;
         }
 
         public static float GetSpeed(Entity entity, float stat)
         {
-            if((entity as Player).Level < 1000)
-                disVar = 1 + ((entity as Player).Level/1000);
-            else if((entity as Player).Level >= 1000)
-                disVar = 2;
-            if(entity is Player)
-            {
-                if((entity as Player).Client.Account.Rank == 1)
-                {
-                    float ret = ((2 + 5.6f*(stat/100f))*5/12)*disVar;
-                    if (entity.HasConditionEffect(ConditionEffectIndex.Speedy))
-                        ret *= 1.5625f;
-                    if (entity.HasConditionEffect(ConditionEffectIndex.Slowed))
-                        ret = 1;
-                    if (entity.HasConditionEffect(ConditionEffectIndex.Paralyzed))
-                        ret = 0;
-                    return ret;
-                }
-                else
-                {
-                    float ret = ((2 + 5.6f*(stat/100f))/3)*disVar;
-                    if (entity.HasConditionEffect(ConditionEffectIndex.Speedy))
-                        ret *= 1.25f;
-                    if (entity.HasConditionEffect(ConditionEffectIndex.Slowed))
-                        ret = 1;
-                    if (entity.HasConditionEffect(ConditionEffectIndex.Paralyzed))
-                        ret = 0;
-                    return ret;
-                }
-            }
-            else
-            {
-                float ret = (2 + 5.6f*(stat/100f))/3;
-                if (entity.HasConditionEffect(ConditionEffectIndex.Speedy))
-                    ret *= 1.25f;
-                if (entity.HasConditionEffect(ConditionEffectIndex.Slowed))
-                    ret = 1;
-                if (entity.HasConditionEffect(ConditionEffectIndex.Paralyzed))
-                    ret = 0;
-                return ret;
-            }
+            float ret = 4 + 5.6f*(stat/75f);
+            if (entity.HasConditionEffect(ConditionEffectIndex.Speedy))
+                ret *= 1.5f;
+            if (entity.HasConditionEffect(ConditionEffectIndex.Slowed))
+                ret = 4;
+            if (entity.HasConditionEffect(ConditionEffectIndex.Paralyzed))
+                ret = 0;
+            return ret;
         }
 
         public float GetSpeed()
@@ -183,82 +102,32 @@ namespace wServer.realm
 
         public float GetHPRegen()
         {
-            if(player.Level < 1000)
-                levelVar = 1 + (player.Level/1000);
-            else if(player.Level >= 1000)
-                levelVar = 2;
-            if(player.Client.Account.Rank == 1)
-            {
-                int vit = GetStats(5);
-                if (player.HasConditionEffect(ConditionEffectIndex.Sick))
-                    vit = 0;
-                return ((1 + 0.12f * vit)*5/4)*levelVar;
-            }
-            else
-            {
-                int vit = GetStats(5);
-                if (player.HasConditionEffect(ConditionEffectIndex.Sick))
-                    vit = 0;
-                return (1 + 0.12f * vit)*levelVar;
-            }
+            int vit = GetStats(5);
+            if (player.HasConditionEffect(ConditionEffectIndex.Sick))
+                vit = 0;
+            return 1 + 0.12f * vit;
         }
 
         public float GetMPRegen()
         {
-            if(player.Level < 1000)
-                levelVar = 1 + (player.Level/1000);
-            else if(player.Level >= 1000)
-                levelVar = 2;
-            if(player.Client.Account.Rank == 1)
-            {
-                int wis = GetStats(6);
-                if (player.HasConditionEffect(ConditionEffectIndex.Quiet))
-                    return 0;
-                return ((0.5f + 0.06f * wis)*5/4)*levelVar;
-            }
-            else
-            {
-                int wis = GetStats(6);
-                if (player.HasConditionEffect(ConditionEffectIndex.Quiet))
-                    return 0;
-                return (0.5f + 0.06f * wis)*levelVar;
-            }
+            int wis = GetStats(6);
+            if (player.HasConditionEffect(ConditionEffectIndex.Quiet))
+                return 0;
+            return 0.5f + 0.06f * wis;
         }
 
         public float GetDex()
         {
-            if(player.Level < 1000)
-                levelVar = 1 + (player.Level/1000);
-            else if(player.Level >= 1000)
-                levelVar = 2;
-            if(player.Client.Account.Rank == 1)
-            {
-                int dex = GetStats(7);
-                if (player.HasConditionEffect(ConditionEffectIndex.Dazed))
-                    dex = 0;
+            int dex = GetStats(7);
+            if (player.HasConditionEffect(ConditionEffectIndex.Dazed))
+                dex = 0;
 
-                float ret = ((1f + 2f*(dex/100f))/4)*levelVar;
-                //(1.5f + 6.5f*(dex/50f))*5/8;
-                if (player.HasConditionEffect(ConditionEffectIndex.Berserk))
-                    ret *= 1.875f;
-                if (player.HasConditionEffect(ConditionEffectIndex.Stunned))
-                    ret = 0;
-                return ret;
-            }
-            else
-            {
-                int dex = GetStats(7);
-                if (player.HasConditionEffect(ConditionEffectIndex.Dazed))
-                    dex = 0;
-
-                float ret = ((1f + 2f*(dex/100f))/6)*levelVar;
-                //float ret = (1.5f + 6.5f*(dex/50f))/2;
-                if (player.HasConditionEffect(ConditionEffectIndex.Berserk))
-                    ret *= 1.5f;
-                if (player.HasConditionEffect(ConditionEffectIndex.Stunned))
-                    ret = 0;
-                return ret;
-            }
+            float ret = 1.5f + 6.5f*(dex/75f);
+            if (player.HasConditionEffect(ConditionEffectIndex.Berserk))
+                ret *= 1.5f;
+            if (player.HasConditionEffect(ConditionEffectIndex.Stunned))
+                ret = 0;
+            return ret;
         }
 
         public static int StatsNameToIndex(string name)

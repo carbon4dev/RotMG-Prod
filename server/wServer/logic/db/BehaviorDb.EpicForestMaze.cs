@@ -13,36 +13,34 @@ namespace wServer.logic
                  new State("idle",
                      new Wander(0.2),
                      new Follow(5.0, 10, coolDown: 0),
-                     new Spawn("Mini Larva", coolDown: 1500, maxChildren: 10, initialSpawn: 5),
-                     new Reproduce("Mini Larva", coolDown: 500, densityMax: 10, densityRadius: 50),
+                     new Spawn("Mini Larva", coolDown: 500, maxChildren: 10, initialSpawn: 4),
+                     new Reproduce("Mini Larva", coolDown: 500, densityMax: 20, densityRadius: 4),
                      new Shoot(25, projectileIndex: 0, count: 2, shootAngle: 10, coolDown: 500, coolDownOffset: 500),
                      new Shoot(25, projectileIndex: 1, count: 1, shootAngle: 0, coolDown: 1, coolDownOffset: 1)
                      )
                  ),
-                new MostDamagers(5,
-                    LootTemplates.StatIncreasePotionsLoot()
-                    ),
-                new MostDamagers(3,
-                    new OnlyOne(
-                        new ItemLoot("Leaf Bow", whitebag)
-                        ),
-                    new ItemLoot("Potion of Mana", 0.35),
-                    new ItemLoot("Potion of Life", 0.25),
-                    new EggLoot(EggRarity.Common, eggbag + goodloot),
-                    new EggLoot(EggRarity.Uncommon, eggbag + greatloot),
-                    new EggLoot(EggRarity.Rare, eggbag + awesomeloot),
-                    new EggLoot(EggRarity.Legendary, eggbag),
-                    new ItemLoot("Wine Cellar Incantation", winecellar),
-                    new TierLoot(12, ItemType.Weapon, greatloot),
-                    new TierLoot(9, ItemType.Weapon, normalloot),
-                    new TierLoot(8, ItemType.Weapon, mediumloot),
-                    new TierLoot(13, ItemType.Armor, greatloot),
-                    new TierLoot(12, ItemType.Armor, goodloot),
-                    new TierLoot(11, ItemType.Armor, normalloot),
-                    new TierLoot(10, ItemType.Armor, normalloot),
-                    new TierLoot(9, ItemType.Armor, mediumloot),
-                    new TierLoot(8, ItemType.Armor, mediumloot),
-                    new TierLoot(4, ItemType.Ability, normalloot)
+                 new MostDamagers(1,
+                    new ItemLoot("Potion of Vitality", 0.9)
+                ),
+                new Threshold(0.025,
+                    new TierLoot(8, ItemType.Armor, 0.035),
+                    new TierLoot(9, ItemType.Armor, 0.03),
+                    new TierLoot(10, ItemType.Armor, 0.025),
+                    new TierLoot(11, ItemType.Armor, 0.02),
+                    new TierLoot(12, ItemType.Armor, 0.015),
+                    new TierLoot(13, ItemType.Armor, 0.01),
+                    new TierLoot(4, ItemType.Ability, 0.03),
+                    new TierLoot(8, ItemType.Weapon, 0.01),
+                    new TierLoot(9, ItemType.Weapon, 0.01),
+                    new TierLoot(12, ItemType.Weapon, 0.01),
+                    new ItemLoot("Wine Cellar Incantation", 0.01),
+                    new ItemLoot("Leaf Bow", 0.005)
+                ),
+                new Threshold(0.2,
+                    new EggLoot(EggRarity.Common, 0.1),
+                    new EggLoot(EggRarity.Uncommon, 0.05),
+                    new EggLoot(EggRarity.Rare, 0.01),
+                    new EggLoot(EggRarity.Legendary, 0.002)
                 )
             )
         .Init("Mini Larva",
@@ -50,7 +48,7 @@ namespace wServer.logic
                 new State("idle",
                     new Wander(0.1),
                     new Protect(1, "Murderous Megamoth", 100, 5, 5),
-                    new Shoot(10, count: 4, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2, coolDown: 1000)
+                    new Shoot(10, count: 4, projectileIndex: 0, fixedAngle: fixedAngle_RingAttack2)
                     )
                 )
             )
@@ -61,13 +59,16 @@ namespace wServer.logic
                 new State("idle",
                     new Wander(0.2),
                     new Follow(4.0, 10, coolDown: 0),
-                    new Spawn("Woodland Mini Megamoth", coolDown: 1500, maxChildren: 10, initialSpawn: 5),
-                    new Reproduce("Woodland Mini Megamoth", coolDown: 500, densityMax: 10, densityRadius: 50),
+                    new Spawn("Woodland Mini Megamoth", coolDown: 500, initialSpawn: 5),
+                    new Reproduce("Woodland Mini Megamoth", coolDown: 500, densityMax: 12, densityRadius: 5),
                     new Shoot(25, projectileIndex: 0, count: 3, shootAngle: 10, coolDown: 1, coolDownOffset: 1)
                     ),
                 new State("change",
                     new ConditionalEffect(ConditionEffectIndex.Invulnerable),
                     new Flash(0xfFF0000, 1, 900001),
+                    new TimedTransition(3000, "suicide")
+                    ),
+                new State("suicide",
                     new Suicide()
                     )
 
@@ -78,7 +79,7 @@ namespace wServer.logic
                 new EntityNotExistsTransition("Epic Mama Megamoth", 20, "suicide"),
                 new State("idle",
                     new Wander(0.1),
-                    new Shoot(25, projectileIndex: 0, count: 1, shootAngle: 0, coolDown: 1000, coolDownOffset: 0),
+                    new Shoot(25, projectileIndex: 0, count: 1, shootAngle: 0, coolDown: 0, coolDownOffset: 0),
                     new Protect(1, "Epic Mama Megamoth", 20, 5, 1)
                     ),
                 new State("suicide",

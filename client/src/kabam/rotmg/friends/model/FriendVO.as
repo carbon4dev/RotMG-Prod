@@ -1,60 +1,57 @@
-package kabam.rotmg.friends.model {
-import kabam.rotmg.assets.model.Player;
+﻿package kabam.rotmg.friends.model {
+import com.company.assembleegameclient.objects.Player;
 
 import flash.display.BitmapData;
 
 public class FriendVO {
 
-      public var playerName:String;
+    public var playerName:String;
+    private var _player:Player;
+    private var _isOnline:Boolean;
+    private var _serverName:String;
+    private var _serverAddr:String;
 
-      private var _player:Player;
+    public function FriendVO(_arg_1:Player, _arg_2:Boolean = false, _arg_3:String = "", _arg_4:String = "") {
+        this._player = _arg_1;
+        this._isOnline = _arg_2;
+        this._serverName = _arg_3;
+        this._serverAddr = _arg_4;
+        this.playerName = this._player.getName();
+    }
 
-      private var _isOnline:Boolean;
+    public function updatePlayer(_arg_1:Player):void {
+        this._player = _arg_1;
+        this.playerName = this._player.getName();
+    }
 
-      private var _serverName:String;
+    public function getServerName():String {
+        return (this._serverName);
+    }
 
-      private var _serverAddr:String;
+    public function getName():String {
+        return (this._player.getName());
+    }
 
-      public function FriendVO(param1:Player, param2:Boolean = false, param3:String = "", param4:String = "") {
-         super();
-         this._player = param1;
-         this._isOnline = param2;
-         this._serverName = param3;
-         this._serverAddr = param4;
-         this.playerName = this._player.getName();
-      }
+    public function getPortrait():BitmapData {
+        return (this._player.getPortrait());
+    }
 
-      public function updatePlayer(param1:Player) : void {
-         this._player = param1;
-         this.playerName = this._player.getName();
-      }
+    public function get isOnline():Boolean {
+        return (this._isOnline);
+    }
 
-      public function getServerName() : String {
-         return this._serverName;
-      }
+    public function online(_arg_1:String, _arg_2:String):void {
+        this._isOnline = true;
+        this._serverName = _arg_1;
+        this._serverAddr = _arg_2;
+    }
 
-      public function getName() : String {
-         return this._player.getName();
-      }
+    public function offline():void {
+        this._isOnline = false;
+        this._serverName = "";
+        this._serverAddr = "";
+    }
 
-      public function getPortrait() : BitmapData {
-         return this._player.getPortrait();
-      }
 
-      public function get isOnline() : Boolean {
-         return this._isOnline;
-      }
-
-      public function online(param1:String, param2:String) : void {
-         this._isOnline = true;
-         this._serverName = param1;
-         this._serverAddr = param2;
-      }
-
-      public function offline() : void {
-         this._isOnline = false;
-         this._serverName = "";
-         this._serverAddr = "";
-      }
-   }
 }
+}//package kabam.rotmg.friends.model

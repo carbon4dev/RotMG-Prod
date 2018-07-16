@@ -1,5 +1,5 @@
-package kabam.rotmg.game.focus {
-import com.company.assembleegameclient.LOEBUILD_c8d46d341bea4fd5bff866a65ff8aea9.GameSprite;
+﻿package kabam.rotmg.game.focus {
+import com.company.assembleegameclient.game.GameSprite;
 
 import kabam.rotmg.game.focus.control.AddGameFocusConsoleActionCommand;
 import kabam.rotmg.game.focus.control.AddGameFocusConsoleActionSignal;
@@ -16,31 +16,27 @@ import robotlegs.bender.framework.api.IContext;
 
 public class GameFocusConfig implements IConfig {
 
-      [Inject]
-      public var context:IContext;
+    [Inject]
+    public var context:IContext;
+    [Inject]
+    public var injector:Injector;
+    [Inject]
+    public var commandMap:ISignalCommandMap;
+    [Inject]
+    public var mediatorMap:IMediatorMap;
 
-      [Inject]
-      public var injector:Injector;
 
-      [Inject]
-      public var commandMap:ISignalCommandMap;
+    public function configure():void {
+        this.injector.map(SetGameFocusSignal).asSingleton();
+        this.commandMap.map(AddGameFocusConsoleActionSignal).toCommand(AddGameFocusConsoleActionCommand);
+        this.mediatorMap.map(GameSprite).toMediator(GameFocusMediator);
+        this.context.lifecycle.afterInitializing(this.init);
+    }
 
-      [Inject]
-      public var mediatorMap:IMediatorMap;
+    private function init():void {
+        Signal(this.injector.getInstance(AddGameFocusConsoleActionSignal)).dispatch();
+    }
 
-      public function GameFocusConfig() {
-         super();
-      }
 
-      public function configure() : void {
-         this.injector.map(SetGameFocusSignal).asSingleton();
-         this.commandMap.map(AddGameFocusConsoleActionSignal).toCommand(AddGameFocusConsoleActionCommand);
-         this.mediatorMap.map(GameSprite).toMediator(GameFocusMediator);
-         this.context.lifecycle.afterInitializing(this.init);
-      }
-
-      private function init() : void {
-         Signal(this.injector.getInstance(AddGameFocusConsoleActionSignal)).dispatch();
-      }
-   }
 }
+}//package kabam.rotmg.game.focus

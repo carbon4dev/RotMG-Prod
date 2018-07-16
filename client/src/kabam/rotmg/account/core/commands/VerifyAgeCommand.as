@@ -1,4 +1,4 @@
-package kabam.rotmg.account.core.commands {
+﻿package kabam.rotmg.account.core.commands {
 import com.company.assembleegameclient.screens.CharacterSelectionAndNewsScreen;
 import com.company.assembleegameclient.ui.dialogs.ErrorDialog;
 
@@ -12,38 +12,34 @@ import kabam.rotmg.dialogs.control.OpenDialogSignal;
 
 public class VerifyAgeCommand {
 
-      private const UNABLE_TO_VERIFY:String = "Unable to verify age";
+    private const UNABLE_TO_VERIFY:String = "Unable to verify age";
 
-      [Inject]
-      public var task:VerifyAgeTask;
+    [Inject]
+    public var task:VerifyAgeTask;
+    [Inject]
+    public var monitor:TaskMonitor;
+    [Inject]
+    public var setScreen:SetScreenWithValidDataSignal;
+    [Inject]
+    public var openDialog:OpenDialogSignal;
 
-      [Inject]
-      public var monitor:TaskMonitor;
 
-      [Inject]
-      public var setScreen:SetScreenWithValidDataSignal;
+    public function execute():void {
+        var _local_1:BranchingTask = new BranchingTask(this.task);
+        _local_1.addSuccessTask(this.makeSuccessTask());
+        _local_1.addFailureTask(this.makeFailureTask());
+        this.monitor.add(_local_1);
+        _local_1.start();
+    }
 
-      [Inject]
-      public var openDialog:OpenDialogSignal;
+    private function makeSuccessTask():Task {
+        return (new DispatchSignalTask(this.setScreen, new CharacterSelectionAndNewsScreen()));
+    }
 
-      public function VerifyAgeCommand() {
-         super();
-      }
+    private function makeFailureTask():Task {
+        return (new DispatchSignalTask(this.openDialog, new ErrorDialog(this.UNABLE_TO_VERIFY)));
+    }
 
-      public function execute() : void {
-         var _local1:BranchingTask = new BranchingTask(this.task);
-         _local1.addSuccessTask(this.makeSuccessTask());
-         _local1.addFailureTask(this.makeFailureTask());
-         this.monitor.add(_local1);
-         _local1.start();
-      }
 
-      private function makeSuccessTask() : Task {
-         return new DispatchSignalTask(this.setScreen,new CharacterSelectionAndNewsScreen());
-      }
-
-      private function makeFailureTask() : Task {
-         return new DispatchSignalTask(this.openDialog,new ErrorDialog(this.UNABLE_TO_VERIFY));
-      }
-   }
 }
+}//package kabam.rotmg.account.core.commands

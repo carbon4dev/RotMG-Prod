@@ -5,12 +5,10 @@
         public PirateCave()
         {
             Name = "Pirate Cave";
-            ClientWorldName = "Pirate Cave";
+            ClientWorldName = "dungeons.Pirate_Cave";
             Background = 0;
-            Dungeon = true;
             Difficulty = 1;
             AllowTeleport = true;
-            SetMusic("piratecave");
         }
 
         protected override void Init()

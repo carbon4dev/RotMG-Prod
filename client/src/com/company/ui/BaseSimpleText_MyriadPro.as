@@ -1,12 +1,12 @@
+﻿//Created by Action Script Viewer - http://www.buraks.com/asv
 package com.company.ui {
-import mx.core.FontAsset;
+import mx.core.*;
 
-[Embed(source="../../../kabam/rotmg/text/model/MyriadPro-Bold.ttf", fontName="Myriad Pro", fontFamily="MyriadPro", fontStyle="Regular", embedAsCFF="false", mimeType="application/x-font")]
-
+[Embed(source="BaseSimpleText_MyriadPro.swf", symbol="com.company.ui.BaseSimpleText_MyriadPro")]
 public class BaseSimpleText_MyriadPro extends FontAsset {
+    public function BaseSimpleText_MyriadPro() {
+        super();
 
-      public function BaseSimpleText_MyriadPro() {
-         super();
-      }
-   }
+    }
 }
+}//package com.company.ui

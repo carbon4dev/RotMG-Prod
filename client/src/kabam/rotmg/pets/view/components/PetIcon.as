@@ -1,4 +1,4 @@
-package kabam.rotmg.pets.view.components {
+﻿package kabam.rotmg.pets.view.components {
 import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.events.Event;
@@ -13,73 +13,71 @@ import kabam.rotmg.tooltips.TooltipAble;
 
 public class PetIcon extends Sprite implements TooltipAble, Disableable {
 
-      public static const DISABLE_COLOR:uint = 2697513;
+    public static const DISABLE_COLOR:uint = 0x292929;
 
-      public var hoverTooltipDelegate:HoverTooltipDelegate;
+    public var hoverTooltipDelegate:HoverTooltipDelegate;
+    private var bitmap:Bitmap;
+    private var enabled:Boolean = true;
+    private var petVO:PetVO;
+    private var doShowTooltip:Boolean = false;
 
-      private var bitmap:Bitmap;
+    public function PetIcon(_arg_1:PetVO) {
+        this.hoverTooltipDelegate = new HoverTooltipDelegate();
+        super();
+        this.petVO = _arg_1;
+        this.hoverTooltipDelegate.setDisplayObject(this);
+        this.hoverTooltipDelegate.tooltip = new PetTooltip(_arg_1);
+    }
 
-      private var enabled:Boolean = true;
+    public function disable():void {
+        var _local_1:ColorTransform = new ColorTransform();
+        _local_1.color = DISABLE_COLOR;
+        this.bitmap.transform.colorTransform = _local_1;
+        this.enabled = false;
+    }
 
-      private var petVO:PetVO;
+    public function isEnabled():Boolean {
+        return (this.enabled);
+    }
 
-      private var doShowTooltip:Boolean = false;
+    override public function dispatchEvent(_arg_1:Event):Boolean {
+        if (this.enabled) {
+            return (super.dispatchEvent(_arg_1));
+        }
+        return (false);
+    }
 
-      public function PetIcon(param1:PetVO) {
-         this.hoverTooltipDelegate = new HoverTooltipDelegate();
-         super();
-         this.petVO = param1;
-         this.hoverTooltipDelegate.setDisplayObject(this);
-         this.hoverTooltipDelegate.tooltip = new PetTooltip(param1);
-      }
+    public function setBitmap(_arg_1:Bitmap):void {
+        this.bitmap = _arg_1;
+        addChild(_arg_1);
+    }
 
-      public function disable() : void {
-         var _local1:ColorTransform = new ColorTransform();
-         _local1.color = DISABLE_COLOR;
-         this.bitmap.transform.colorTransform = _local1;
-         this.enabled = false;
-      }
+    public function setShowToolTipSignal(_arg_1:ShowTooltipSignal):void {
+        this.hoverTooltipDelegate.setShowToolTipSignal(_arg_1);
+    }
 
-      public function isEnabled() : Boolean {
-         return this.enabled;
-      }
+    public function getShowToolTip():ShowTooltipSignal {
+        return (this.hoverTooltipDelegate.getShowToolTip());
+    }
 
-      override public function dispatchEvent(param1:Event) : Boolean {
-         if(this.enabled) {
-            return super.dispatchEvent(param1);
-         }
-         return false;
-      }
+    public function setHideToolTipsSignal(_arg_1:HideTooltipsSignal):void {
+        this.hoverTooltipDelegate.setHideToolTipsSignal(_arg_1);
+    }
 
-      public function setBitmap(param1:Bitmap) : void {
-         this.bitmap = param1;
-         addChild(param1);
-      }
+    public function getHideToolTips():HideTooltipsSignal {
+        return (this.hoverTooltipDelegate.getHideToolTips());
+    }
 
-      public function setShowToolTipSignal(param1:ShowTooltipSignal) : void {
-         this.hoverTooltipDelegate.setShowToolTipSignal(param1);
-      }
+    public function getPetVO():PetVO {
+        return (this.petVO);
+    }
 
-      public function getShowToolTip() : ShowTooltipSignal {
-         return this.hoverTooltipDelegate.getShowToolTip();
-      }
+    public function setTooltipEnabled(_arg_1:Boolean):void {
+        this.doShowTooltip = _arg_1;
+        if (!_arg_1) {
+        }
+    }
 
-      public function setHideToolTipsSignal(param1:HideTooltipsSignal) : void {
-         this.hoverTooltipDelegate.setHideToolTipsSignal(param1);
-      }
 
-      public function getHideToolTips() : HideTooltipsSignal {
-         return this.hoverTooltipDelegate.getHideToolTips();
-      }
-
-      public function getPetVO() : PetVO {
-         return this.petVO;
-      }
-
-      public function setTooltipEnabled(param1:Boolean) : void {
-         this.doShowTooltip = param1;
-         if(param1) {
-         }
-      }
-   }
 }
+}//package kabam.rotmg.pets.view.components

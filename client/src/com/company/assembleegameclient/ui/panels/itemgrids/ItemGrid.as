@@ -1,8 +1,8 @@
-package com.company.assembleegameclient.ui.panels.itemgrids {
-import com.company.assembleegameclient.LOEBUILD_93fb40ec02c008121fa9199899b31202.LOEBUILD_420e0eb99409a66597f19d612d12594f;
-import com.company.assembleegameclient.LOEBUILD_5891da2d64975cae48d175d1e001f5da.Container;
-import com.company.assembleegameclient.LOEBUILD_5891da2d64975cae48d175d1e001f5da.GameObject;
-import kabam.rotmg.assets.model.Player;
+﻿package com.company.assembleegameclient.ui.panels.itemgrids {
+import com.company.assembleegameclient.constants.InventoryOwnerTypes;
+import com.company.assembleegameclient.objects.Container;
+import com.company.assembleegameclient.objects.GameObject;
+import com.company.assembleegameclient.objects.Player;
 import com.company.assembleegameclient.ui.panels.Panel;
 import com.company.assembleegameclient.ui.panels.itemgrids.itemtiles.EquipmentTile;
 import com.company.assembleegameclient.ui.panels.itemgrids.itemtiles.ItemTile;
@@ -19,114 +19,110 @@ import org.osflash.signals.Signal;
 
 public class ItemGrid extends Panel {
 
-      private static const NO_CUT:Array = [0,0,0,0];
+    private static const NO_CUT:Array = [0, 0, 0, 0];
+    private static const CutsByNum:Object = {
+        "1": [[1, 0, 0, 1], NO_CUT, NO_CUT, [0, 1, 1, 0]],
+        "2": [[1, 0, 0, 0], NO_CUT, NO_CUT, [0, 1, 0, 0], [0, 0, 0, 1], NO_CUT, NO_CUT, [0, 0, 1, 0]],
+        "3": [[1, 0, 0, 1], NO_CUT, NO_CUT, [0, 1, 1, 0], [1, 0, 0, 0], NO_CUT, NO_CUT, [0, 1, 0, 0], [0, 0, 0, 1], NO_CUT, NO_CUT, [0, 0, 1, 0]]
+    };
 
-      private static const CutsByNum:Object = {
-         1:[[1,0,0,1],NO_CUT,NO_CUT,[0,1,1,0]],
-         2:[[1,0,0,0],NO_CUT,NO_CUT,[0,1,0,0],[0,0,0,1],NO_CUT,NO_CUT,[0,0,1,0]],
-         3:[[1,0,0,1],NO_CUT,NO_CUT,[0,1,1,0],[1,0,0,0],NO_CUT,NO_CUT,[0,1,0,0],[0,0,0,1],NO_CUT,NO_CUT,[0,0,1,0]]
-      };
+    private const padding:uint = 4;
+    private const rowLength:uint = 4;
+    public const addToolTip:Signal = new Signal(ToolTip);
 
-      private const padding:uint = 4;
+    public var owner:GameObject;
+    private var tooltip:ToolTip;
+    private var tooltipFocusTile:ItemTile;
+    public var curPlayer:Player;
+    protected var indexOffset:int;
+    public var interactive:Boolean;
 
-      private const rowLength:uint = 4;
-
-      public var owner:GameObject;
-
-      private var tooltip:ToolTip;
-
-      private var tooltipFocusTile:ItemTile;
-
-      public var curPlayer:Player;
-
-      protected var indexOffset:int;
-
-      public var interactive:Boolean;
-
-      public const addToolTip:Signal = new Signal(ToolTip);
-
-      public function ItemGrid(param1:GameObject, param2:Player, param3:int) {
-         super(null);
-         this.owner = param1;
-         this.curPlayer = param2;
-         this.indexOffset = param3;
-         var _local4:Container = param1 as Container;
-         if(param1 == param2 || Boolean(_local4)) {
+    public function ItemGrid(_arg_1:GameObject, _arg_2:Player, _arg_3:int) {
+        super(null);
+        this.owner = _arg_1;
+        this.curPlayer = _arg_2;
+        this.indexOffset = _arg_3;
+        var _local_4:Container = (_arg_1 as Container);
+        if ((((_arg_1 == _arg_2)) || (_local_4))) {
             this.interactive = true;
-         }
-      }
+        }
+    }
 
-      public function hideTooltip() : void {
-         if(this.tooltip) {
+    public function hideTooltip():void {
+        if (this.tooltip) {
             this.tooltip.detachFromTarget();
             this.tooltip = null;
             this.tooltipFocusTile = null;
-         }
-      }
+        }
+    }
 
-      public function refreshTooltip() : void {
-         if(!stage || !this.tooltip || !this.tooltip.stage) {
+    public function refreshTooltip():void {
+        if (((((!(stage)) || (!(this.tooltip)))) || (!(this.tooltip.stage)))) {
             return;
-         }
-         if(this.tooltipFocusTile) {
+        }
+        if (this.tooltipFocusTile) {
             this.tooltip.detachFromTarget();
             this.tooltip = null;
             this.addToolTipToTile(this.tooltipFocusTile);
-         }
-      }
+        }
+    }
 
-      private function onTileHover(param1:MouseEvent) : void {
-         if(!stage) {
+    private function onTileHover(_arg_1:MouseEvent):void {
+        if (!stage) {
             return;
-         }
-         var _local2:ItemTile = param1.currentTarget as ItemTile;
-         this.addToolTipToTile(_local2);
-         this.tooltipFocusTile = _local2;
-      }
+        }
+        var _local_2:ItemTile = (_arg_1.currentTarget as ItemTile);
+        this.addToolTipToTile(_local_2);
+        this.tooltipFocusTile = _local_2;
+    }
 
-      private function addToolTipToTile(param1:ItemTile) : void {
-         var _local2:String = null;
-         if(param1.itemSprite.itemId > 0) {
-            this.tooltip = new EquipmentToolTip(param1.itemSprite.itemId,this.curPlayer,!!this.owner?int(this.owner.objectType_):-1,this.getCharacterType());
-         } else {
-            if(param1 is EquipmentTile) {
-               _local2 = ItemConstants.itemTypeToName((param1 as EquipmentTile).itemType);
-            } else {
-               _local2 = TextKey.ITEM;
+    private function addToolTipToTile(_arg_1:ItemTile):void {
+        var _local_2:String;
+        if (_arg_1.itemSprite.itemId > 0) {
+            this.tooltip = new EquipmentToolTip(_arg_1.itemSprite.itemId, this.curPlayer, ((this.owner) ? this.owner.objectType_ : -1), this.getCharacterType());
+        }
+        else {
+            if ((_arg_1 is EquipmentTile)) {
+                _local_2 = ItemConstants.itemTypeToName((_arg_1 as EquipmentTile).itemType);
             }
-            this.tooltip = new TextToolTip(3552822,10197915,null,TextKey.ITEM_EMPTY_SLOT,200,{"itemType":TextKey.wrapForTokenResolution(_local2)});
-         }
-         this.tooltip.attachToTarget(param1);
-         this.addToolTip.dispatch(this.tooltip);
-      }
+            else {
+                _local_2 = TextKey.ITEM;
+            }
+            this.tooltip = new TextToolTip(0x363636, 0x9B9B9B, null, TextKey.ITEM_EMPTY_SLOT, 200, {"itemType": TextKey.wrapForTokenResolution(_local_2)});
+        }
+        this.tooltip.attachToTarget(_arg_1);
+        this.addToolTip.dispatch(this.tooltip);
+    }
 
-      private function getCharacterType() : String {
-         if(this.owner == this.curPlayer) {
-            return LOEBUILD_420e0eb99409a66597f19d612d12594f.CURRENT_PLAYER;
-         }
-         if(this.owner is Player) {
-            return LOEBUILD_420e0eb99409a66597f19d612d12594f.OTHER_PLAYER;
-         }
-         return LOEBUILD_420e0eb99409a66597f19d612d12594f.NPC;
-      }
+    private function getCharacterType():String {
+        if (this.owner == this.curPlayer) {
+            return (InventoryOwnerTypes.CURRENT_PLAYER);
+        }
+        if ((this.owner is Player)) {
+            return (InventoryOwnerTypes.OTHER_PLAYER);
+        }
+        return (InventoryOwnerTypes.NPC);
+    }
 
-      protected function addToGrid(param1:ItemTile, param2:uint, param3:uint) : void {
-         param1.drawBackground(CutsByNum[param2][param3]);
-         param1.addEventListener(MouseEvent.ROLL_OVER,this.onTileHover);
-         param1.x = int(param3 % this.rowLength) * (ItemTile.WIDTH + this.padding);
-         param1.y = int(param3 / this.rowLength) * (ItemTile.HEIGHT + this.padding);
-         addChild(param1);
-      }
+    protected function addToGrid(_arg_1:ItemTile, _arg_2:uint, _arg_3:uint):void {
+        _arg_1.drawBackground(CutsByNum[_arg_2][_arg_3]);
+        _arg_1.addEventListener(MouseEvent.ROLL_OVER, this.onTileHover);
+        _arg_1.x = (int((_arg_3 % this.rowLength)) * (ItemTile.WIDTH + this.padding));
+        _arg_1.y = (int((_arg_3 / this.rowLength)) * (ItemTile.HEIGHT + this.padding));
+        addChild(_arg_1);
+    }
 
-      public function setItems(param1:Vector.<int>, param2:int = 0) : void {
-      }
+    public function setItems(_arg_1:Vector.<int>, _arg_2:int = 0):void {
+    }
 
-      public function enableInteraction(param1:Boolean) : void {
-         mouseEnabled = param1;
-      }
+    public function enableInteraction(_arg_1:Boolean):void {
+        mouseEnabled = _arg_1;
+    }
 
-      override public function draw() : void {
-         this.setItems(this.owner.equipment_,this.indexOffset);
-      }
-   }
+    override public function draw():void {
+        this.setItems(this.owner.equipment_, this.indexOffset);
+    }
+
+
 }
+}//package com.company.assembleegameclient.ui.panels.itemgrids

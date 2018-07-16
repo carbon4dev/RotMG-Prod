@@ -157,7 +157,7 @@ namespace server.mysterybox
                 }
 
                 cmd = db.CreateQuery();
-                cmd.CommandText = "SELECT * FROM thealchemist WHERE endTime >= now();";
+                cmd.CommandText = "SELECT * FROM theAlchemist WHERE endTime >= now();";
                 using (var rdr = cmd.ExecuteReader())
                 {
                     while (rdr.Read())

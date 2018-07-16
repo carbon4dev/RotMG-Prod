@@ -21,7 +21,6 @@ namespace wServer
         public static bool WhiteList { get; private set; }
         public static bool Verify { get; private set; }
         internal static SimpleSettings Settings;
-        public static readonly DateTime StartTime = DateTime.Now;
 
         private static readonly ILog log = LogManager.GetLogger("Server");
         private static RealmManager manager;
@@ -30,7 +29,7 @@ namespace wServer
 
         private static void Main(string[] args)
         {
-            Console.Title = "wServer";
+            Console.Title = "Fabiano Swagger of Doom - World Server";
             try
             {
                 XmlConfigurator.ConfigureAndWatch(new FileInfo("log4net_wServer.config"));
@@ -39,10 +38,14 @@ namespace wServer
                 Thread.CurrentThread.Name = "Entry";
 
                 Settings = new SimpleSettings("wServer");
-                new Database();
+                new Database(
+                    Settings.GetValue<string>("db_host", "127.0.0.1"),
+                    Settings.GetValue<string>("db_database", "rotmgprod"),
+                    Settings.GetValue<string>("db_user", "root"),
+                    Settings.GetValue<string>("db_auth", ""));
 
                 manager = new RealmManager(
-                    Settings.GetValue<int>("maxClients", "50"),
+                    Settings.GetValue<int>("maxClients", "100"),
                     Settings.GetValue<int>("tps", "20"));
 
                 WhiteList = Settings.GetValue<bool>("whiteList", "false");
@@ -56,10 +59,9 @@ namespace wServer
                 PolicyServer policy = new PolicyServer();
 
                 Console.CancelKeyPress += (sender, e) => e.Cancel = true;
-                
+
                 policy.Start();
                 server.Start();
-                new Thread(AutoNotify).Start();
                 if(Settings.GetValue<bool>("broadcastNews", "false") && File.Exists("news.txt"))
                     new Thread(autoBroadcastNews).Start();
                 log.Info("Server initialized.");
@@ -89,28 +91,6 @@ namespace wServer
             }
         }
 
-        
-
-        private static void AutoNotify()
-        {
-            int uptime = 0;
-            while (true)
-            {
-                ChatManager cm = new ChatManager(manager);
-                if ((uptime < 55)  && (uptime >= 0))
-                {
-                    uptime += 1;
-                    Thread.Sleep(1 * (60 * 1000));
-                }
-                else if ((uptime >= 55) && (uptime <= 59))
-                {
-                    cm.Announce("This server going to restart in 5 minutes.");
-                    Thread.Sleep(1 * (60 * 1000));
-                    uptime += 1;
-                }
-            }
-        }
-
         public static void SendEmail(MailMessage message, bool enableSsl = true)
         {
             SmtpClient client = new SmtpClient
@@ -135,7 +115,7 @@ namespace wServer
                 {
                     ChatManager cm = new ChatManager(manager);
                     cm.News(news[new Random().Next(news.Length)]);
-                    Thread.Sleep(300000);
+                    Thread.Sleep(300000); //5 min
                 }
                 while (true);
             }

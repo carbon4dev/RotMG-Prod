@@ -87,21 +87,19 @@ namespace wServer.networking.handlers
                                     client.Player.Name = packet.Name;
                                     client.Player.NameChosen = true;
                                     client.Player.UpdateCount++;
-                                    client.Player.SendInfo("Purchase successful!");
-                                    //client.SendPacket(new NameResultPacket
-                                    //{
-                                    //    Success = true,
-                                    //    ErrorText = "server.buy_success"
-                                    //});
+                                    client.SendPacket(new NameResultPacket
+                                    {
+                                        Success = true,
+                                        ErrorText = "server.buy_success"
+                                    });
                                 }
                                 else
                                 {
-                                    client.Player.SendInfo("Server Error #99 - ChooseNameHandler.cs. Contact LoE Team.");
-                                    //client.SendPacket(new NameResultPacket
-                                    //{
-                                    //    Success = false,
-                                    //    ErrorText = "GuildChronicle.left"
-                                    //});
+                                    client.SendPacket(new NameResultPacket
+                                    {
+                                        Success = false,
+                                        ErrorText = "GuildChronicle.left"
+                                    });
                                 }
                             }
                             else
@@ -116,21 +114,19 @@ namespace wServer.networking.handlers
                                     client.Player.Name = packet.Name;
                                     client.Player.NameChosen = true;
                                     client.Player.UpdateCount++;
-                                    client.Player.SendInfo("Purchase successful!");
-                                    //client.SendPacket(new NameResultPacket
-                                    //{
-                                    //    Success = true,
-                                    //    ErrorText = "server.buy_success"
-                                    //});
+                                    client.SendPacket(new NameResultPacket
+                                    {
+                                        Success = true,
+                                        ErrorText = "server.buy_success"
+                                    });
                                 }
                                 else
                                 {
-                                    client.Player.SendInfo("Server Error #99 - ChooseNameHandler.cs. Contact LoE Team.");
-                                    //client.SendPacket(new NameResultPacket
-                                    //{
-                                    //    Success = false,
-                                    //    ErrorText = "GuildChronicle.left"
-                                    //});
+                                    client.SendPacket(new NameResultPacket
+                                    {
+                                        Success = false,
+                                        ErrorText = "GuildChronicle.left"
+                                    });
                                 }
                             }
                         }

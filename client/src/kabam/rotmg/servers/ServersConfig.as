@@ -1,9 +1,9 @@
-package kabam.rotmg.servers {
+﻿package kabam.rotmg.servers {
 import kabam.rotmg.account.core.signals.CharListDataSignal;
 import kabam.rotmg.build.api.BuildData;
 import kabam.rotmg.build.api.BuildEnvironment;
 import kabam.rotmg.servers.api.ServerModel;
-import kabam.rotmg.assets.services.LOEBUILD_bd432c68af1cbfdbfa870f9f4d14cae5;
+import kabam.rotmg.servers.control.ParseServerDataCommand;
 import kabam.rotmg.servers.model.FixedIPServerModel;
 import kabam.rotmg.servers.model.LiveServerModel;
 import kabam.rotmg.servers.model.LocalhostServerModel;
@@ -15,49 +15,46 @@ import robotlegs.bender.framework.api.IConfig;
 
 public class ServersConfig implements IConfig {
 
-      [Inject]
-      public var injector:Injector;
+    [Inject]
+    public var injector:Injector;
+    [Inject]
+    public var data:BuildData;
+    [Inject]
+    public var commandMap:ISignalCommandMap;
 
-      [Inject]
-      public var data:BuildData;
 
-      [Inject]
-      public var commandMap:ISignalCommandMap;
-
-      public function ServersConfig() {
-         super();
-      }
-
-      public function configure() : void {
-         var _local1:BuildEnvironment = this.data.getEnvironment();
-         switch(_local1) {
+    public function configure():void {
+        var _local_1:BuildEnvironment = this.data.getEnvironment();
+        switch (_local_1) {
             case BuildEnvironment.FIXED_IP:
-               this.configureFixedIP();
-               break;
+                this.configureFixedIP();
+                return;
             case BuildEnvironment.LOCALHOST:
             case BuildEnvironment.PRIVATE:
-               this.configureLocalhost();
-               break;
+                this.configureLocalhost();
+                return;
             default:
-               this.configureLiveServers();
-         }
-      }
+                this.configureLiveServers();
+        }
+    }
 
-      private function configureLocalhost() : void {
-         this.injector.map(ServerModel).toSingleton(LocalhostServerModel);
-      }
+    private function configureLocalhost():void {
+        this.injector.map(ServerModel).toSingleton(LocalhostServerModel);
+    }
 
-      private function configureFixedIP() : void {
-         this.injector.map(ServerModel).toValue(this.makeFixedIPServerModel());
-      }
+    private function configureFixedIP():void {
+        this.injector.map(ServerModel).toValue(this.makeFixedIPServerModel());
+    }
 
-      private function makeFixedIPServerModel() : FixedIPServerModel {
-         return new FixedIPServerModel().setIP(this.data.getEnvironmentString());
-      }
+    private function makeFixedIPServerModel():FixedIPServerModel {
+        return (new FixedIPServerModel().setIP(this.data.getEnvironmentString()));
+    }
 
-      private function configureLiveServers() : void {
-         this.injector.map(ServerModel).toSingleton(LiveServerModel);
-         this.commandMap.map(CharListDataSignal).toCommand(LOEBUILD_bd432c68af1cbfdbfa870f9f4d14cae5);
-      }
-   }
+    private function configureLiveServers():void {
+        this.injector.map(ServerModel).toSingleton(LiveServerModel);
+        this.commandMap.map(CharListDataSignal).toCommand(ParseServerDataCommand);
+    }
+
+
 }
+}//package kabam.rotmg.servers

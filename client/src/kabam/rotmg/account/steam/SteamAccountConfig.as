@@ -1,4 +1,4 @@
-package kabam.rotmg.account.steam {
+﻿package kabam.rotmg.account.steam {
 import kabam.rotmg.account.core.Account;
 import kabam.rotmg.account.core.model.MoneyConfig;
 import kabam.rotmg.account.core.services.LoadAccountTask;
@@ -30,49 +30,46 @@ import robotlegs.bender.framework.api.IConfig;
 
 public class SteamAccountConfig implements IConfig {
 
-      [Inject]
-      public var injector:Injector;
+    [Inject]
+    public var injector:Injector;
+    [Inject]
+    public var mediatorMap:IMediatorMap;
+    [Inject]
+    public var commandMap:ISignalCommandMap;
 
-      [Inject]
-      public var mediatorMap:IMediatorMap;
 
-      [Inject]
-      public var commandMap:ISignalCommandMap;
+    public function configure():void {
+        this.mapModel();
+        this.mapCommands();
+        this.mapMediators();
+        this.mapServices();
+    }
 
-      public function SteamAccountConfig() {
-         super();
-      }
+    protected function mapModel():void {
+        this.injector.map(Account).toSingleton(SteamAccount);
+        this.injector.map(MoneyConfig).toSingleton(SteamMoneyConfig);
+        this.injector.map(CharListDataSignal).asSingleton();
+    }
 
-      public function configure() : void {
-         this.mapModel();
-         this.mapCommands();
-         this.mapMediators();
-         this.mapServices();
-      }
+    protected function mapCommands():void {
+        this.commandMap.map(OpenAccountInfoSignal).toCommand(SteamOpenAccountInfoCommand);
+        this.commandMap.map(RegisterAccountSignal).toCommand(SteamRegisterAccountCommand);
+    }
 
-      protected function mapModel() : void {
-         this.injector.map(Account).toSingleton(SteamAccount);
-         this.injector.map(MoneyConfig).toSingleton(SteamMoneyConfig);
-         this.injector.map(CharListDataSignal).asSingleton();
-      }
+    protected function mapMediators():void {
+        this.mediatorMap.map(SteamAccountDetailDialog).toMediator(SteamAccountDetailMediator);
+        this.mediatorMap.map(RegisterWebAccountDialog).toMediator(SteamRegisterWebAccountMediator);
+    }
 
-      protected function mapCommands() : void {
-         this.commandMap.map(OpenAccountInfoSignal).toCommand(SteamOpenAccountInfoCommand);
-         this.commandMap.map(RegisterAccountSignal).toCommand(SteamRegisterAccountCommand);
-      }
+    protected function mapServices():void {
+        this.injector.map(SteamApi).toSingleton(LiveSteamApi);
+        this.injector.map(LoadAccountTask).toType(SteamLoadAccountTask);
+        this.injector.map(SteamLoadApiTask);
+        this.injector.map(MakePaymentTask).toType(SteamMakePaymentTask);
+        this.injector.map(PurchaseGoldTask).toType(SteamPurchaseGoldTask);
+        this.injector.map(RegisterAccountTask).toType(SteamRegisterAccountTask);
+    }
 
-      protected function mapMediators() : void {
-         this.mediatorMap.map(SteamAccountDetailDialog).toMediator(SteamAccountDetailMediator);
-         this.mediatorMap.map(RegisterWebAccountDialog).toMediator(SteamRegisterWebAccountMediator);
-      }
 
-      protected function mapServices() : void {
-         this.injector.map(SteamApi).toSingleton(LiveSteamApi);
-         this.injector.map(LoadAccountTask).toType(SteamLoadAccountTask);
-         this.injector.map(SteamLoadApiTask);
-         this.injector.map(MakePaymentTask).toType(SteamMakePaymentTask);
-         this.injector.map(PurchaseGoldTask).toType(SteamPurchaseGoldTask);
-         this.injector.map(RegisterAccountTask).toType(SteamRegisterAccountTask);
-      }
-   }
 }
+}//package kabam.rotmg.account.steam

@@ -15,7 +15,6 @@ namespace wServer.realm.worlds
             Name = "Guild Hall";
             Background = 0;
             AllowTeleport = true;
-            SetMusic("guildhall");
         }
 
         protected override void Init()

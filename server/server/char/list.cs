@@ -147,7 +147,7 @@ namespace server.@char
                     Name = Program.Settings.GetValue<string>("svr" + i + "Name"),
                     Lat = p != null ? p.Latitude : 0,
                     Long = p != null ? p.Longitude : 0,
-                    DNS = Program.Settings.GetValue<string>("svr" + i + "Adr", "216.107.151.109"),
+                    DNS = Program.Settings.GetValue<string>("svr" + i + "Adr", "127.0.0.1"),
                     Usage = usage,
                     AdminOnly = Program.Settings.GetValue<bool>("svr" + i + "Admin", "false")
                 });
@@ -155,14 +155,11 @@ namespace server.@char
             return ret;
         }
 
-        public const int DEFAULT_PORT = 2050;
-        public const int LOE_PORT = 2889;
-
-        private static double GetUsage(string host, int port = LOE_PORT)
+        private static double GetUsage(string host, int port = 2050)
         {
             try
             {
-                using (var cli = new TcpClient(host, LOE_PORT))
+                using (var cli = new TcpClient(host, 2050))
                 {
                     var stream = cli.GetStream();
                     stream.Write(new byte[5] {0x4d, 0x61, 0x64, 0x65, 0xff}, 0, 5);
@@ -174,7 +171,7 @@ namespace server.@char
             }
             catch
             {
-                //Program.Logger.Error("Not supported server detected: \nHost: " + host + "\nPort: " + port);
+                Program.Logger.Error("Not supported server detected: \nHost: " + host + "\nPort: " + port);
                 return -1;
             }
         }
@@ -203,20 +200,20 @@ namespace server.@char
             {
                 return new List<ClassAvailabilityItem>
                 {
-                    new ClassAvailabilityItem {Class = "Rogue", Restricted = "unrestricted"},
-                    new ClassAvailabilityItem {Class = "Assassin", Restricted = "unrestricted"},
-                    new ClassAvailabilityItem {Class = "Huntress", Restricted = "unrestricted"},
-                    new ClassAvailabilityItem {Class = "Mystic", Restricted = "unrestricted"},
-                    new ClassAvailabilityItem {Class = "Trickster", Restricted = "unrestricted"},
-                    new ClassAvailabilityItem {Class = "Sorcerer", Restricted = "unrestricted"},
-                    new ClassAvailabilityItem {Class = "Ninja", Restricted = "unrestricted"},
-                    new ClassAvailabilityItem {Class = "Archer", Restricted = "unrestricted"},
+                    new ClassAvailabilityItem {Class = "Rogue", Restricted = "restricted"},
+                    new ClassAvailabilityItem {Class = "Assassin", Restricted = "restricted"},
+                    new ClassAvailabilityItem {Class = "Huntress", Restricted = "restricted"},
+                    new ClassAvailabilityItem {Class = "Mystic", Restricted = "restricted"},
+                    new ClassAvailabilityItem {Class = "Trickster", Restricted = "restricted"},
+                    new ClassAvailabilityItem {Class = "Sorcerer", Restricted = "restricted"},
+                    new ClassAvailabilityItem {Class = "Ninja", Restricted = "restricted"},
+                    new ClassAvailabilityItem {Class = "Archer", Restricted = "restricted"},
                     new ClassAvailabilityItem {Class = "Wizard", Restricted = "unrestricted"},
-                    new ClassAvailabilityItem {Class = "Priest", Restricted = "unrestricted"},
-                    new ClassAvailabilityItem {Class = "Necromancer", Restricted = "unrestricted"},
-                    new ClassAvailabilityItem {Class = "Warrior", Restricted = "unrestricted"},
-                    new ClassAvailabilityItem {Class = "Knight", Restricted = "unrestricted"},
-                    new ClassAvailabilityItem {Class = "Paladin", Restricted = "unrestricted"},
+                    new ClassAvailabilityItem {Class = "Priest", Restricted = "restricted"},
+                    new ClassAvailabilityItem {Class = "Necromancer", Restricted = "restricted"},
+                    new ClassAvailabilityItem {Class = "Warrior", Restricted = "restricted"},
+                    new ClassAvailabilityItem {Class = "Knight", Restricted = "restricted"},
+                    new ClassAvailabilityItem {Class = "Paladin", Restricted = "restricted"},
                 };
             }
 
@@ -269,8 +266,8 @@ namespace server.@char
                 Account a = db.Verify(guid, password, data);
                 if (a != null)
                 {
-                    //if (a.Banned)
-                    //    return null;
+                    if (a.Banned)
+                        return null;
                 }
 
                 Chars chrs = new Chars

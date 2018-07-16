@@ -1,39 +1,30 @@
-// Decompiled by AS3 Sorcerer 1.40
-// http://www.as3sorcerer.com/
+﻿package kabam.lib.net {
+import flash.net.Socket;
 
-//kabam.lib.net.NetConfig
+import kabam.lib.net.api.MessageMap;
+import kabam.lib.net.api.MessageProvider;
+import kabam.lib.net.impl.MessageCenter;
+import kabam.lib.net.impl.SocketServer;
 
-package kabam.lib.net
-{
-    import org.swiftsuspenders.Injector;
+import org.swiftsuspenders.Injector;
 
 import robotlegs.bender.framework.api.IConfig;
 
-import kabam.lib.net.impl.MessageCenter;
-    import flash.net.Socket;
-    import kabam.lib.net.api.MessageMap;
-    import kabam.lib.net.api.MessageProvider;
-    import kabam.lib.net.impl.SocketServer;
-    import robotlegs.bender.framework.api.*;
+public class NetConfig implements IConfig {
 
-    public class NetConfig implements IConfig 
-    {
-
-        [Inject]
-        public var injector:Injector;
-        private var messageCenter:MessageCenter;
+    [Inject]
+    public var injector:Injector;
+    private var messageCenter:MessageCenter;
 
 
-        public function configure():void
-        {
-            this.messageCenter = new MessageCenter().setInjector(this.injector);
-            this.injector.map(Socket);
-            this.injector.map(MessageMap).toValue(this.messageCenter);
-            this.injector.map(MessageProvider).toValue(this.messageCenter);
-            this.injector.map(SocketServer).asSingleton();
-        }
-
-
+    public function configure():void {
+        this.messageCenter = new MessageCenter().setInjector(this.injector);
+        this.injector.map(Socket);
+        this.injector.map(MessageMap).toValue(this.messageCenter);
+        this.injector.map(MessageProvider).toValue(this.messageCenter);
+        this.injector.map(SocketServer).asSingleton();
     }
-}//package kabam.lib.net
 
+
+}
+}//package kabam.lib.net

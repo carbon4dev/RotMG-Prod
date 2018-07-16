@@ -1,5 +1,5 @@
-package kabam.rotmg.servers.model {
-import com.company.assembleegameclient.LOEBUILD_166e64f6c3677d0c513901242a3e702d.LOEBUILD_3225a10b07f1580f10dee4abc3779e6c;
+﻿package kabam.rotmg.servers.model {
+import com.company.assembleegameclient.parameters.Parameters;
 
 import kabam.rotmg.core.model.PlayerModel;
 import kabam.rotmg.servers.api.LatLong;
@@ -8,79 +8,77 @@ import kabam.rotmg.servers.api.ServerModel;
 
 public class LiveServerModel implements ServerModel {
 
-      [Inject]
-      public var model:PlayerModel;
+    private const servers:Vector.<Server> = new Vector.<Server>(0);
 
-      private var _descendingFlag:Boolean;
+    [Inject]
+    public var model:PlayerModel;
+    private var _descendingFlag:Boolean;
 
-      private const servers:Vector.<Server> = new Vector.<Server>(0);
 
-      public function LiveServerModel() {
-         super();
-      }
+    public function setServers(_arg_1:Vector.<Server>):void {
+        var _local_2:Server;
+        this.servers.length = 0;
+        for each (_local_2 in _arg_1) {
+            this.servers.push(_local_2);
+        }
+        this._descendingFlag = false;
+        this.servers.sort(this.compareServerName);
+    }
 
-      public function setServers(param1:Vector.<Server>) : void {
-         var _local2:Server = null;
-         this.servers.length = 0;
-         for each(_local2 in param1) {
-            this.servers.push(_local2);
-         }
-         this._descendingFlag = false;
-         this.servers.sort(this.compareServerName);
-      }
+    public function getServers():Vector.<Server> {
+        return (this.servers);
+    }
 
-      public function getServers() : Vector.<Server> {
-         return this.servers;
-      }
-
-      public function getServer() : Server {
-         var _local6:Server = null;
-         var _local7:int = 0;
-         var _local8:Number = NaN;
-         var _local1:Boolean = this.model.isAdmin();
-         var _local2:LatLong = this.model.getMyPos();
-         var _local3:Server = null;
-         var _local4:Number = Number.MAX_VALUE;
-         var _local5:int = int.MAX_VALUE;
-         for each(_local6 in this.servers) {
-            if(!(Boolean(_local6.isFull()) && !_local1)) {
-               if(_local6.name == LOEBUILD_3225a10b07f1580f10dee4abc3779e6c.data_.preferredServer) {
-                  return _local6;
-               }
-               _local7 = _local6.priority();
-               _local8 = LatLong.distance(_local2,_local6.latLong);
-               if(_local7 < _local5 || _local7 == _local5 && _local8 < _local4) {
-                  _local3 = _local6;
-                  _local4 = _local8;
-                  _local5 = _local7;
-               }
+    public function getServer():Server {
+        var _local_6:Server;
+        var _local_7:int;
+        var _local_8:Number;
+        var _local_1:Boolean = this.model.isAdmin();
+        var _local_2:LatLong = this.model.getMyPos();
+        var _local_3:Server;
+        var _local_4:Number = Number.MAX_VALUE;
+        var _local_5:int = int.MAX_VALUE;
+        for each (_local_6 in this.servers) {
+            if (!((_local_6.isFull()) && (!(_local_1)))) {
+                if (_local_6.name == Parameters.data_.preferredServer) {
+                    return (_local_6);
+                }
+                _local_7 = _local_6.priority();
+                _local_8 = LatLong.distance(_local_2, _local_6.latLong);
+                if ((((_local_7 < _local_5)) || ((((_local_7 == _local_5)) && ((_local_8 < _local_4)))))) {
+                    _local_3 = _local_6;
+                    _local_4 = _local_8;
+                    _local_5 = _local_7;
+                }
             }
-         }
-         return _local3;
-      }
+        }
+        return (_local_3);
+    }
 
-      public function getServerNameByAddress(param1:String) : String {
-         var _local2:Server = null;
-         for each(_local2 in this.servers) {
-            if(_local2.address == param1) {
-               return _local2.name;
+    public function getServerNameByAddress(_arg_1:String):String {
+        var _local_2:Server;
+        for each (_local_2 in this.servers) {
+            if (_local_2.address == _arg_1) {
+                return (_local_2.name);
             }
-         }
-         return "";
-      }
+        }
+        return ("");
+    }
 
-      public function isServerAvailable() : Boolean {
-         return this.servers.length > 0;
-      }
+    public function isServerAvailable():Boolean {
+        return ((this.servers.length > 0));
+    }
 
-      private function compareServerName(param1:Server, param2:Server) : int {
-         if(param1.name < param2.name) {
-            return !!this._descendingFlag?-1:1;
-         }
-         if(param1.name > param2.name) {
-            return !!this._descendingFlag?1:-1;
-         }
-         return 0;
-      }
-   }
+    private function compareServerName(_arg_1:Server, _arg_2:Server):int {
+        if (_arg_1.name < _arg_2.name) {
+            return (((this._descendingFlag) ? -1 : 1));
+        }
+        if (_arg_1.name > _arg_2.name) {
+            return (((this._descendingFlag) ? 1 : -1));
+        }
+        return (0);
+    }
+
+
 }
+}//package kabam.rotmg.servers.model

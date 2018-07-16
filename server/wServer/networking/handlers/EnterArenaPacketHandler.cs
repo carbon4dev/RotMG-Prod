@@ -29,12 +29,11 @@ namespace wServer.networking.handlers
                 else
                 {
                     client.Player.Credits = client.Account.Credits = db.UpdateCredit(client.Account, -50);
-                    client.Player.SendInfo("Purchase successful!");
-                    //client.SendPacket(new BuyResultPacket
-                    //{
-                    //    Result = 0,
-                    //    Message = "{server.buy_success}"
-                    //});
+                    client.SendPacket(new BuyResultPacket
+                    {
+                        Result = 0,
+                        Message = "{server.buy_success}"
+                    });
                     client.Player.UpdateCount++;
                 }
             }

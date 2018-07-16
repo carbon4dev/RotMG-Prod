@@ -43,10 +43,9 @@ namespace wServer.realm
 
     public class RealmManager
     {
-        public static List<string> Realms = new List<string>(1)//44
+        public static List<string> Realms = new List<string>(44)
         {
-            "Realm of the Mad God"
-            /*"NexusPortal.Lich",
+            "NexusPortal.Lich",
             "NexusPortal.Goblin",
             "NexusPortal.Ghost",
             "NexusPortal.Giant",
@@ -89,10 +88,10 @@ namespace wServer.realm
             "NexusPortal.Reaper",
             "NexusPortal.Beholder",
             "NexusPortal.Dragon",
-            "NexusPortal.Harpy"*/
+            "NexusPortal.Harpy"
         };
         public static List<string> CurrentRealmNames = new List<string>();
-        public const int MAX_REALM_PLAYERS = 20;
+        public const int MAX_REALM_PLAYERS = 85;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(RealmManager));
 
@@ -173,12 +172,7 @@ namespace wServer.realm
             Monitor.WorldRemoved(world);
         }
 
-        public void Disconnect(Client client)
-        {
-            Clients.TryRemove(client.Account.AccountId, out client);
-        }
-
-        /*public async void Disconnect(Client client)
+        public async void Disconnect(Client client)
         {
             if (client == null) return;
             Client dummy;
@@ -186,7 +180,7 @@ namespace wServer.realm
             await client.Save();
             while (!Clients.TryRemove(client.Account.AccountId, out dummy) && Clients.ContainsKey(client.Account.AccountId));
             client.Dispose();
-        }*/
+        }
 
         public Player FindPlayer(string name)
         {
@@ -237,13 +231,6 @@ namespace wServer.realm
             AddWorld(World.TEST_ID, new Test());
             AddWorld(World.TUT_ID, new Tutorial(true));
             AddWorld(World.DAILY_QUEST_ID, new DailyQuestRoom());
-            AddWorld(World.ELDER_MONTAINS, new ElderMountains());
-            AddWorld(World.ELDER_MONTAINS_SV1, new ElderMountainsSv1());
-            AddWorld(World.ELDER_MONTAINS_SV2, new ElderMountainsSv2());
-            AddWorld(World.ELDER_MONTAINS_SV3, new ElderMountainsSv3());
-            //AddWorld(World.CRAWLING_DEPTHS, new CDepths());
-            //AddWorld(World.ORYX_CHAMBER, new OryxChamber());
-            //AddWorld(World.IVORY_WYVERN, new Ivory());
             Monitor = new RealmPortalMonitor(this);
 
             Task.Factory.StartNew(() => GameWorld.AutoName(1, true)).ContinueWith(_ => AddWorld(_.Result), TaskScheduler.Default);

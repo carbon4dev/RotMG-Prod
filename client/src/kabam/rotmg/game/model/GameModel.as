@@ -1,25 +1,23 @@
-package kabam.rotmg.game.model {
-import com.company.assembleegameclient.LOEBUILD_5891da2d64975cae48d175d1e001f5da.GameObject;
-import kabam.rotmg.assets.model.Player;
+﻿package kabam.rotmg.game.model {
+import com.company.assembleegameclient.objects.GameObject;
+import com.company.assembleegameclient.objects.Player;
 
 import flash.utils.Dictionary;
 
 public class GameModel {
 
-      public var player:Player;
+    public var player:Player;
+    public var gameObjects:Dictionary;
 
-      public var gameObjects:Dictionary;
 
-      public function GameModel() {
-         super();
-      }
+    public function getGameObject(_arg_1:int):GameObject {
+        var _local_2:GameObject = this.gameObjects[_arg_1];
+        if (((!(_local_2)) && ((this.player.objectId_ == _arg_1)))) {
+            _local_2 = this.player;
+        }
+        return (_local_2);
+    }
 
-      public function getGameObject(param1:int) : GameObject {
-         var _local2:GameObject = this.gameObjects[param1];
-         if(!_local2 && this.player.objectId_ == param1) {
-            _local2 = this.player;
-         }
-         return _local2;
-      }
-   }
+
 }
+}//package kabam.rotmg.game.model

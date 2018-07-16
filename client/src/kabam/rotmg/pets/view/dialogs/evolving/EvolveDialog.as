@@ -1,4 +1,4 @@
-package kabam.rotmg.pets.view.dialogs.evolving {
+﻿package kabam.rotmg.pets.view.dialogs.evolving {
 import com.company.assembleegameclient.ui.dialogs.CloseDialogComponent;
 import com.company.assembleegameclient.ui.dialogs.Dialog;
 import com.company.assembleegameclient.ui.dialogs.DialogCloser;
@@ -9,36 +9,38 @@ import org.osflash.signals.Signal;
 
 public class EvolveDialog extends PetDialog implements DialogCloser {
 
-      private static const VERTICAL_SPACE:int = 6;
+    private static const VERTICAL_SPACE:int = 6;
 
-      public var evolveAnimation:EvolveAnimation;
+    private const closeDialogComponent:CloseDialogComponent = new CloseDialogComponent();
 
-      private const closeDialogComponent:CloseDialogComponent = new CloseDialogComponent();
+    public var evolveAnimation:EvolveAnimation;
 
-      public function EvolveDialog(param1:EvolveAnimation) {
-         this.evolveAnimation = param1;
-         super("EvolveDialog.title","","ErrorDialog.ok",null,null);
-         this.closeDialogComponent.add(this,Dialog.LEFT_BUTTON);
-         dialogWidth = param1.width + 1;
-      }
+    public function EvolveDialog(_arg_1:EvolveAnimation) {
+        this.evolveAnimation = _arg_1;
+        super("EvolveDialog.title", "", "ErrorDialog.ok", null, null);
+        this.closeDialogComponent.add(this, Dialog.LEFT_BUTTON);
+        dialogWidth = (_arg_1.width + 1);
+    }
 
-      override protected function makeUIAndAdd() : void {
-         box_.addChild(this.evolveAnimation);
-      }
+    override protected function makeUIAndAdd():void {
+        box_.addChild(this.evolveAnimation);
+    }
 
-      override protected function drawAdditionalUI() : void {
-         this.evolveAnimation.x = (dialogWidth - this.evolveAnimation.width) / 2;
-         this.evolveAnimation.y = titleText_.getBounds(box_).bottom + VERTICAL_SPACE;
-      }
+    override protected function drawAdditionalUI():void {
+        this.evolveAnimation.x = ((dialogWidth - this.evolveAnimation.width) / 2);
+        this.evolveAnimation.y = (titleText_.getBounds(box_).bottom + VERTICAL_SPACE);
+    }
 
-      override protected function drawGraphicsTemplate() : void {
-         super.drawGraphicsTemplate();
-         var _local1:Number = this.evolveAnimation.getBounds(rect_).bottom;
-         petDialogStyler.drawLine(_local1);
-      }
+    override protected function drawGraphicsTemplate():void {
+        super.drawGraphicsTemplate();
+        var _local_1:Number = this.evolveAnimation.getBounds(rect_).bottom;
+        petDialogStyler.drawLine(_local_1);
+    }
 
-      public function getCloseSignal() : Signal {
-         return this.closeDialogComponent.getCloseSignal();
-      }
-   }
+    public function getCloseSignal():Signal {
+        return (this.closeDialogComponent.getCloseSignal());
+    }
+
+
 }
+}//package kabam.rotmg.pets.view.dialogs.evolving

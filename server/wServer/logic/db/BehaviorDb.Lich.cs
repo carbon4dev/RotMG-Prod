@@ -162,21 +162,19 @@ namespace wServer.logic
                         new TimedTransition(6000, "typeA")
                         )
                     ),
-                new MostDamagers(5,
-                    new TierLoot(2, ItemType.Ring, 0.11),
-                    new TierLoot(3, ItemType.Ring, 0.01),
-                    new TierLoot(5, ItemType.Weapon, 0.3),
-                    new TierLoot(6, ItemType.Weapon, 0.2),
-                    new TierLoot(7, ItemType.Weapon, 0.05),
-                    new TierLoot(5, ItemType.Armor, 0.3),
-                    new TierLoot(6, ItemType.Armor, 0.2),
-                    new TierLoot(7, ItemType.Armor, 0.05),
-                    new TierLoot(1, ItemType.Ability, 0.9),
-                    new TierLoot(2, ItemType.Ability, 0.15),
-                    new TierLoot(3, ItemType.Ability, 0.02),
-                    new ItemLoot("Health Potion", 0.4),
-                    new ItemLoot("Magic Potion", 0.4)
-                    )
+                new TierLoot(2, ItemType.Ring, 0.11),
+                new TierLoot(3, ItemType.Ring, 0.01),
+                new TierLoot(5, ItemType.Weapon, 0.3),
+                new TierLoot(6, ItemType.Weapon, 0.2),
+                new TierLoot(7, ItemType.Weapon, 0.05),
+                new TierLoot(5, ItemType.Armor, 0.3),
+                new TierLoot(6, ItemType.Armor, 0.2),
+                new TierLoot(7, ItemType.Armor, 0.05),
+                new TierLoot(1, ItemType.Ability, 0.9),
+                new TierLoot(2, ItemType.Ability, 0.15),
+                new TierLoot(3, ItemType.Ability, 0.02),
+                new ItemLoot("Health Potion", 0.4),
+                new ItemLoot("Magic Potion", 0.4)
             )
             .Init("Phylactery Bearer",
                 new State(
@@ -243,20 +241,9 @@ namespace wServer.logic
                         ),
                     new Decay(130000)
                     ),
-                new MostDamagers(5,
-                    new ItemLoot("Tincture of Defense", 0.02),
-                    new ItemLoot("Orange Drake Egg", 0.06),
-                    new ItemLoot("White Drake Egg", 0.02),
-                    new ItemLoot("Magic Potion", 0.03)
-                    ),
-                new MostDamagers(3,
-                    new OnlyOne(
-                        new ItemLoot("The Phylactery", blackbag),
-                        new ItemLoot("Soul of the Bearer", blackbag),
-                        new ItemLoot("Soulless Robe", blackbag),
-                        new ItemLoot("Ring of the Covetous Heart", blackbag)
-                        )
-                    )
+                new ItemLoot("Tincture of Defense", 0.02),
+                new ItemLoot("Orange Drake Egg", 0.06),
+                new ItemLoot("Magic Potion", 0.03)
             )
             .Init("Haunted Spirit",
                 new State(

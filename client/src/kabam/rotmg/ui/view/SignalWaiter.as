@@ -1,5 +1,5 @@
-package kabam.rotmg.ui.view {
-import com.adobe.utils.LOEBUILD_8288279388075875ca436e5b84477e07;
+﻿package kabam.rotmg.ui.view {
+import com.adobe.utils.DictionaryUtil;
 
 import flash.utils.Dictionary;
 
@@ -7,48 +7,48 @@ import org.osflash.signals.Signal;
 
 public class SignalWaiter {
 
-      public var complete:Signal;
+    public var complete:Signal;
+    private var texts:Dictionary;
 
-      private var texts:Dictionary;
+    public function SignalWaiter() {
+        this.complete = new Signal();
+        this.texts = new Dictionary();
+        super();
+    }
 
-      public function SignalWaiter() {
-         this.complete = new Signal();
-         this.texts = new Dictionary();
-         super();
-      }
+    public function push(_arg_1:Signal):SignalWaiter {
+        this.texts[_arg_1] = true;
+        this.listenTo(_arg_1);
+        return (this);
+    }
 
-      public function push(param1:Signal) : SignalWaiter {
-         this.texts[param1] = true;
-         this.listenTo(param1);
-         return this;
-      }
+    public function pushArgs(... rest):SignalWaiter {
+        var _local_2:Signal;
+        for each (_local_2 in rest) {
+            this.push(_local_2);
+        }
+        return (this);
+    }
 
-      public function pushArgs(... rest) : SignalWaiter {
-         var _local2:Signal = null;
-         for each(_local2 in rest) {
-            this.push(_local2);
-         }
-         return this;
-      }
-
-      private function listenTo(param1:Signal) : void {
-         var onTextChanged:Function = null;
-         var value:Signal = param1;
-         onTextChanged = function():void {
+    private function listenTo(value:Signal):void {
+        var onTextChanged:Function;
+        onTextChanged = function ():void {
             delete texts[value];
             checkEmpty();
-         };
-         value.addOnce(onTextChanged);
-      }
+        };
+        value.addOnce(onTextChanged);
+    }
 
-      private function checkEmpty() : void {
-         if(this.isEmpty()) {
+    private function checkEmpty():void {
+        if (this.isEmpty()) {
             this.complete.dispatch();
-         }
-      }
+        }
+    }
 
-      public function isEmpty() : Boolean {
-         return LOEBUILD_8288279388075875ca436e5b84477e07.getKeys(this.texts).length == 0;
-      }
-   }
+    public function isEmpty():Boolean {
+        return ((DictionaryUtil.getKeys(this.texts).length == 0));
+    }
+
+
 }
+}//package kabam.rotmg.ui.view

@@ -159,13 +159,14 @@ namespace wServer.realm
 
         public void RemoveFromGuild(Player sender, Player player)
         {
-            //if (player.Name == sender.Name)
-            foreach (Player p in this)
-                p.SendInfo("User " + sender.Name + " has left from your guild.");
-
-            /*else
+            if (player.Name == sender.Name)
                 foreach (Player p in this)
-                    p.SendInfo(sender.Name + " removed " + player.Name + " from " + Name + ".");*/
+                    p.SendInfo(sender.Name + " has left " + Name);
+
+            else
+                foreach (Player p in this)
+                    p.SendInfo(sender.Name + " removed " + player.Name + " from " + Name);
+
             player.Guild = GetDefaultGuild();
             this.Remove(player);
             player.UpdateCount++;

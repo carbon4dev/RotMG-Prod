@@ -1,4 +1,4 @@
-package kabam.rotmg.language {
+﻿package kabam.rotmg.language {
 import kabam.rotmg.application.api.ApplicationSetup;
 import kabam.rotmg.language.control.RegisterChangeLanguageViaConsoleCommand;
 import kabam.rotmg.language.control.RegisterChangeLanguageViaConsoleSignal;
@@ -20,35 +20,31 @@ import robotlegs.bender.framework.api.IConfig;
 
 public class LanguageConfig implements IConfig {
 
-      [Inject]
-      public var injector:Injector;
+    [Inject]
+    public var injector:Injector;
+    [Inject]
+    public var commandMap:ISignalCommandMap;
+    [Inject]
+    public var startup:StartupSequence;
+    [Inject]
+    public var applicationSetup:ApplicationSetup;
 
-      [Inject]
-      public var commandMap:ISignalCommandMap;
 
-      [Inject]
-      public var startup:StartupSequence;
+    public function configure():void {
+        this.injector.map(LanguageModel).toValue(new CookieLanguageModel());
+        this.injector.map(StringMap).toSingleton(StringMapConcrete);
+        this.injector.map(GetLanguageService);
+        this.startup.addTask(GetLanguageService, -999);
+        this.commandMap.map(ReloadCurrentScreenSignal).toCommand(ReloadCurrentScreenCommand);
+        this.commandMap.map(SetLanguageSignal).toCommand(SetLanguageCommand);
+        this.commandMap.map(RegisterChangeLanguageViaConsoleSignal).toCommand(RegisterChangeLanguageViaConsoleCommand);
+        this.registerChangeViaConsole();
+    }
 
-      [Inject]
-      public var applicationSetup:ApplicationSetup;
+    private function registerChangeViaConsole():void {
+        this.injector.getInstance(RegisterChangeLanguageViaConsoleSignal).dispatch();
+    }
 
-      public function LanguageConfig() {
-         super();
-      }
 
-      public function configure() : void {
-         this.injector.map(LanguageModel).toValue(new CookieLanguageModel());
-         this.injector.map(StringMap).toSingleton(StringMapConcrete);
-         this.injector.map(GetLanguageService);
-         this.startup.addTask(GetLanguageService,-999);
-         this.commandMap.map(ReloadCurrentScreenSignal).toCommand(ReloadCurrentScreenCommand);
-         this.commandMap.map(SetLanguageSignal).toCommand(SetLanguageCommand);
-         this.commandMap.map(RegisterChangeLanguageViaConsoleSignal).toCommand(RegisterChangeLanguageViaConsoleCommand);
-         this.registerChangeViaConsole();
-      }
-
-      private function registerChangeViaConsole() : void {
-         this.injector.getInstance(RegisterChangeLanguageViaConsoleSignal).dispatch();
-      }
-   }
 }
+}//package kabam.rotmg.language

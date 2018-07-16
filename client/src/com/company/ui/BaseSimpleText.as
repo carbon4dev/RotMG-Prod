@@ -1,4 +1,4 @@
-package com.company.ui {
+﻿package com.company.ui {
 import flash.events.Event;
 import flash.text.Font;
 import flash.text.TextField;
@@ -8,114 +8,113 @@ import flash.text.TextLineMetrics;
 
 public class BaseSimpleText extends TextField {
 
-      public static const MyriadPro:Class = BaseSimpleText_MyriadPro;
+    public static const MyriadPro:Class = BaseSimpleText_MyriadPro;
 
-      public var inputWidth_:int;
+    public var inputWidth_:int;
+    public var inputHeight_:int;
+    public var actualWidth_:int;
+    public var actualHeight_:int;
 
-      public var inputHeight_:int;
-
-      public var actualWidth_:int;
-
-      public var actualHeight_:int;
-
-      public function BaseSimpleText(param1:int, param2:uint, param3:Boolean = false, param4:int = 0, param5:int = 0) {
-         super();
-         this.inputWidth_ = param4;
-         if(this.inputWidth_ != 0) {
-            width = param4;
-         }
-         this.inputHeight_ = param5;
-         if(this.inputHeight_ != 0) {
-            height = param5;
-         }
-         Font.registerFont(MyriadPro);
-         var _local6:Font = new MyriadPro();
-         var _local7:TextFormat = this.defaultTextFormat;
-         _local7.font = _local6.fontName;
-         _local7.bold = false;
-         _local7.size = param1;
-         _local7.color = param2;
-         defaultTextFormat = _local7;
-         if(param3) {
+    public function BaseSimpleText(_arg_1:int, _arg_2:uint, _arg_3:Boolean = false, _arg_4:int = 0, _arg_5:int = 0) {
+        this.inputWidth_ = _arg_4;
+        if (this.inputWidth_ != 0) {
+            width = _arg_4;
+        }
+        this.inputHeight_ = _arg_5;
+        if (this.inputHeight_ != 0) {
+            height = _arg_5;
+        }
+        Font.registerFont(MyriadPro);
+        var _local_6:Font = new MyriadPro();
+        var _local_7:TextFormat = this.defaultTextFormat;
+        _local_7.font = _local_6.fontName;
+        _local_7.bold = false;
+        _local_7.size = _arg_1;
+        _local_7.color = _arg_2;
+        defaultTextFormat = _local_7;
+        if (_arg_3) {
             selectable = true;
             mouseEnabled = true;
             type = TextFieldType.INPUT;
             border = true;
-            borderColor = param2;
-            addEventListener(Event.CHANGE,this.onChange);
-         } else {
+            borderColor = _arg_2;
+            addEventListener(Event.CHANGE, this.onChange);
+        }
+        else {
             selectable = false;
             mouseEnabled = false;
-         }
-      }
+        }
+    }
 
-      public function setFont(param1:String) : void {
-         var _local2:TextFormat = defaultTextFormat;
-         _local2.font = param1;
-         defaultTextFormat = _local2;
-      }
+    public function setFont(_arg_1:String):void {
+        var _local_2:TextFormat = defaultTextFormat;
+        _local_2.font = _arg_1;
+        defaultTextFormat = _local_2;
+    }
 
-      public function setSize(param1:int) : void {
-         var _local2:TextFormat = defaultTextFormat;
-         _local2.size = param1;
-         this.applyFormat(_local2);
-      }
+    public function setSize(_arg_1:int):void {
+        var _local_2:TextFormat = defaultTextFormat;
+        _local_2.size = _arg_1;
+        this.applyFormat(_local_2);
+    }
 
-      public function setColor(param1:uint) : void {
-         var _local2:TextFormat = defaultTextFormat;
-         _local2.color = param1;
-         this.applyFormat(_local2);
-      }
+    public function setColor(_arg_1:uint):void {
+        var _local_2:TextFormat = defaultTextFormat;
+        _local_2.color = _arg_1;
+        this.applyFormat(_local_2);
+    }
 
-      public function setBold(param1:Boolean) : void {
-         var _local2:TextFormat = defaultTextFormat;
-         _local2.bold = param1;
-         this.applyFormat(_local2);
-      }
+    public function setBold(_arg_1:Boolean):void {
+        var _local_2:TextFormat = defaultTextFormat;
+        _local_2.bold = _arg_1;
+        this.applyFormat(_local_2);
+    }
 
-      public function setAlignment(param1:String) : void {
-         var _local2:TextFormat = defaultTextFormat;
-         _local2.align = param1;
-         this.applyFormat(_local2);
-      }
+    public function setAlignment(_arg_1:String):void {
+        var _local_2:TextFormat = defaultTextFormat;
+        _local_2.align = _arg_1;
+        this.applyFormat(_local_2);
+    }
 
-      public function setText(param1:String) : void {
-         this.text = param1;
-      }
+    public function setText(_arg_1:String):void {
+        this.text = _arg_1;
+    }
 
-      private function applyFormat(param1:TextFormat) : void {
-         setTextFormat(param1);
-         defaultTextFormat = param1;
-      }
+    private function applyFormat(_arg_1:TextFormat):void {
+        setTextFormat(_arg_1);
+        defaultTextFormat = _arg_1;
+    }
 
-      private function onChange(param1:Event) : void {
-         this.updateMetrics();
-      }
+    private function onChange(_arg_1:Event):void {
+        this.updateMetrics();
+    }
 
-      public function updateMetrics() : void {
-         var _local2:TextLineMetrics = null;
-         var _local3:int = 0;
-         var _local4:int = 0;
-         this.actualWidth_ = 0;
-         this.actualHeight_ = 0;
-         var _local1:int = 0;
-         while(_local1 < numLines) {
-            _local2 = getLineMetrics(_local1);
-            _local3 = _local2.width + 4;
-            _local4 = _local2.height + 4;
-            if(_local3 > this.actualWidth_) {
-               this.actualWidth_ = _local3;
+    public function updateMetrics():void {
+        var _local_2:TextLineMetrics;
+        var _local_3:int;
+        var _local_4:int;
+        this.actualWidth_ = 0;
+        this.actualHeight_ = 0;
+        var _local_1:int;
+        while (_local_1 < numLines) {
+            _local_2 = getLineMetrics(_local_1);
+            _local_3 = (_local_2.width + 4);
+            _local_4 = (_local_2.height + 4);
+            if (_local_3 > this.actualWidth_) {
+                this.actualWidth_ = _local_3;
             }
-            this.actualHeight_ = this.actualHeight_ + _local4;
-            _local1++;
-         }
-         width = this.inputWidth_ == 0?Number(this.actualWidth_):Number(this.inputWidth_);
-         height = this.inputHeight_ == 0?Number(this.actualHeight_):Number(this.inputHeight_);
-      }
+            this.actualHeight_ = (this.actualHeight_ + _local_4);
+            _local_1++;
+        }
+        width = (((this.inputWidth_) == 0) ? this.actualWidth_ : this.inputWidth_);
+        height = (((this.inputHeight_) == 0) ? this.actualHeight_ : this.inputHeight_);
+    }
 
-      public function useTextDimensions() : void {
-         width = this.inputWidth_ == 0?Number(textWidth + 4):Number(this.inputWidth_);
-         height = this.inputHeight_ == 0?Number(textHeight + 4):Number(this.inputHeight_);
-      }
-   }
+    public function useTextDimensions():void {
+        width = (((this.inputWidth_) == 0) ? (textWidth + 4) : this.inputWidth_);
+        height = (((this.inputHeight_) == 0) ? (textHeight + 4) : this.inputHeight_);
+    }
+
+
 }
+}//package com.company.ui

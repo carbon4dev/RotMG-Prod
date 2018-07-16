@@ -267,33 +267,25 @@ namespace wServer.logic
                         )
                     )
                 ),
-                new MostDamagers(5,
-                    new ItemLoot("Potion of Speed", 1),
-                    new EggLoot(EggRarity.Common, eggbag + goodloot),
-                    new EggLoot(EggRarity.Uncommon, eggbag + greatloot),
-                    new EggLoot(EggRarity.Rare, eggbag + awesomeloot),
-                    new EggLoot(EggRarity.Legendary, eggbag),
-                    new TierLoot(5, ItemType.Ring, goodloot)
-                    ),
                 new MostDamagers(3,
-                    new ItemLoot("Snake Skin Armor", normalloot),
-                    new ItemLoot("Snake Skin Shield", normalloot),
-                    new ItemLoot("Snake Eye Ring", normalloot),
+                    new ItemLoot("Potion of Speed", 1)
+                ),
+                new Threshold(0.1,
+                    new ItemLoot("Wand of the Bulwark", 0.005),
+                    new ItemLoot("Snake Skin Armor", 0.1),
+                    new ItemLoot("Snake Skin Shield", 0.1),
+                    new ItemLoot("Snake Eye Ring", 0.1),
+                    new ItemLoot("Wine Cellar Incantation", 0.05),
+                    new TierLoot(9, ItemType.Weapon, 0.2),
+                    new TierLoot(10, ItemType.Weapon, 0.1),
+                    new TierLoot(8, ItemType.Armor, 0.3),
+                    new TierLoot(9, ItemType.Armor, 0.2),
+                    new TierLoot(10, ItemType.Armor, 0.1)
+                ),
+                new Threshold(0.2,
                     new OnlyOne(
-                        new ItemLoot("Greater Potion of Speed", 0.07),
-                        new ItemLoot("Ancient Wand of the Bulwark", blackbag),
-                        new ItemLoot("Wand of the Bulwark", whitebag),
-                        new ItemLoot("Sword of the Mad God", awesomeloot),
-                        new ItemLoot("Onyx Shield of the Mad God", awesomeloot),
-                        new ItemLoot("Almandine Armor of Anger", awesomeloot),
-                        new ItemLoot("Almandine Ring of Wrath", awesomeloot)
-                        ),
-                    new ItemLoot("Wine Cellar Incantation", winecellar),
-                    new TierLoot(9, ItemType.Weapon, normalloot),
-                    new TierLoot(10, ItemType.Weapon, goodloot),
-                    new TierLoot(8, ItemType.Armor, mediumloot),
-                    new TierLoot(9, ItemType.Armor, mediumloot),
-                    new TierLoot(10, ItemType.Armor, normalloot)
+                        LootTemplates.DefaultEggLoot(EggRarity.Legendary)
+                    )
                 )
             )
             .Init("Stheno Swarm",

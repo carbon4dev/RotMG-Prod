@@ -1,4 +1,4 @@
-package kabam.rotmg.packages.view {
+﻿package kabam.rotmg.packages.view {
 import com.company.assembleegameclient.util.TextureRedrawer;
 import com.company.util.AssetLibrary;
 import com.company.util.BitmapUtil;
@@ -13,31 +13,30 @@ import kabam.rotmg.text.view.TextFieldDisplayConcrete;
 
 public class BasePackageButton extends Sprite {
 
-      public static const IMAGE_NAME:String = "redLootBag";
+    public static const IMAGE_NAME:String = "redLootBag";
+    public static const IMAGE_ID:int = 0;
 
-      public static const IMAGE_ID:int = 0;
 
-      public function BasePackageButton() {
-         super();
-      }
+    protected static function makeIcon():DisplayObject {
+        var _local_2:DisplayObject;
+        var _local_1:BitmapData = AssetLibrary.getImageFromSet(IMAGE_NAME, IMAGE_ID);
+        _local_1 = TextureRedrawer.redraw(_local_1, 40, true, 0);
+        _local_1 = BitmapUtil.cropToBitmapData(_local_1, 10, 10, (_local_1.width - 20), (_local_1.height - 20));
+        _local_2 = new Bitmap(_local_1);
+        _local_2.x = 3;
+        _local_2.y = 3;
+        return (_local_2);
+    }
 
-      protected static function makeIcon() : DisplayObject {
-         var _local2:DisplayObject = null;
-         var _local1:BitmapData = AssetLibrary.getImageFromSet(IMAGE_NAME,IMAGE_ID);
-         _local1 = TextureRedrawer.redraw(_local1,40,true,0);
-         _local1 = BitmapUtil.cropToBitmapData(_local1,10,10,_local1.width - 20,_local1.height - 20);
-         _local2 = new Bitmap(_local1);
-         _local2.x = 3;
-         _local2.y = 3;
-         return _local2;
-      }
 
-      protected function positionText(param1:DisplayObject, param2:TextFieldDisplayConcrete) : void {
-         var _local4:Number = NaN;
-         var _local3:Rectangle = param1.getBounds(this);
-         _local4 = _local3.top + _local3.height / 2;
-         param2.x = _local3.right;
-         param2.y = _local4 - param2.height / 2;
-      }
-   }
+    protected function positionText(_arg_1:DisplayObject, _arg_2:TextFieldDisplayConcrete):void {
+        var _local_4:Number;
+        var _local_3:Rectangle = _arg_1.getBounds(this);
+        _local_4 = (_local_3.top + (_local_3.height / 2));
+        _arg_2.x = _local_3.right;
+        _arg_2.y = (_local_4 - (_arg_2.height / 2));
+    }
+
+
 }
+}//package kabam.rotmg.packages.view

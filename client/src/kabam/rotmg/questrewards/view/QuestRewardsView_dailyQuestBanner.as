@@ -1,3 +1,4 @@
+﻿//Created by Action Script Viewer - http://www.buraks.com/asv
 package kabam.rotmg.questrewards.view {
 import mx.core.BitmapAsset;
 
@@ -5,8 +6,5 @@ import mx.core.BitmapAsset;
 public class QuestRewardsView_dailyQuestBanner extends BitmapAsset {
 
 
-      public function QuestRewardsView_dailyQuestBanner() {
-         super();
-      }
-   }
 }
+}//package kabam.rotmg.questrewards.view

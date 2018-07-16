@@ -1,4 +1,4 @@
-package kabam.rotmg.appengine.impl {
+﻿package kabam.rotmg.appengine.impl {
 import flash.net.URLLoaderDataFormat;
 
 import kabam.rotmg.appengine.api.AppEngineClient;
@@ -9,54 +9,51 @@ import org.osflash.signals.OnceSignal;
 
 public class SimpleAppEngineClient implements AppEngineClient {
 
-      [Inject]
-      public var loader:RetryLoader;
+    [Inject]
+    public var loader:RetryLoader;
+    [Inject]
+    public var setup:ApplicationSetup;
+    private var isEncrypted:Boolean;
+    private var maxRetries:int;
+    private var dataFormat:String;
 
-      [Inject]
-      public var setup:ApplicationSetup;
+    public function SimpleAppEngineClient() {
+        this.isEncrypted = true;
+        this.maxRetries = 0;
+        this.dataFormat = URLLoaderDataFormat.TEXT;
+    }
 
-      private var isEncrypted:Boolean;
+    public function get complete():OnceSignal {
+        return (this.loader.complete);
+    }
 
-      private var maxRetries:int;
+    public function setDataFormat(_arg_1:String):void {
+        this.loader.setDataFormat(_arg_1);
+    }
 
-      private var dataFormat:String;
+    public function setSendEncrypted(_arg_1:Boolean):void {
+        this.isEncrypted = _arg_1;
+    }
 
-      public function SimpleAppEngineClient() {
-         super();
-         this.isEncrypted = true;
-         this.maxRetries = 0;
-         this.dataFormat = URLLoaderDataFormat.TEXT;
-      }
+    public function setMaxRetries(_arg_1:int):void {
+        this.loader.setMaxRetries(_arg_1);
+    }
 
-      public function get complete() : OnceSignal {
-         return this.loader.complete;
-      }
+    public function sendRequest(_arg_1:String, _arg_2:Object):void {
+        this.loader.sendRequest(this.makeURL(_arg_1), _arg_2);
+    }
 
-      public function setDataFormat(param1:String) : void {
-         this.loader.setDataFormat(param1);
-      }
+    private function makeURL(_arg_1:String):String {
+        if (_arg_1.charAt(0) != "/") {
+            _arg_1 = ("/" + _arg_1);
+        }
+        return ((this.setup.getAppEngineUrl() + _arg_1));
+    }
 
-      public function setSendEncrypted(param1:Boolean) : void {
-         this.isEncrypted = param1;
-      }
+    public function requestInProgress():Boolean {
+        return (this.loader.isInProgress());
+    }
 
-      public function setMaxRetries(param1:int) : void {
-         this.loader.setMaxRetries(param1);
-      }
 
-      public function sendRequest(param1:String, param2:Object) : void {
-         this.loader.sendRequest(this.makeURL(param1),param2);
-      }
-
-      private function makeURL(param1:String) : String {
-         if(param1.charAt(0) != "/") {
-            param1 = "/" + param1;
-         }
-         return this.setup.getAppEngineUrl() + param1;
-      }
-
-      public function requestInProgress() : Boolean {
-         return this.loader.isInProgress();
-      }
-   }
 }
+}//package kabam.rotmg.appengine.impl

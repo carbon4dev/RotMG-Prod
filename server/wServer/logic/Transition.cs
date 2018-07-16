@@ -29,25 +29,6 @@ namespace wServer.logic
             }
         }
 
-        public void OnStateEntry(Entity host, RealmTime time)
-        {
-            object state;
-            if (!host.StateStorage.TryGetValue(this, out state))
-                state = null;
-
-            OnStateEntry(host, time, ref state);
-
-            if (state == null)
-                host.StateStorage.Remove(this);
-            else
-                host.StateStorage[this] = state;
-        }
-
-        protected virtual void OnStateEntry(Entity host, RealmTime time, ref object state)
-        {
-
-        }
-
         public bool Tick(Entity host, RealmTime time)
         {
             object state;

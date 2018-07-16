@@ -185,21 +185,6 @@ namespace wServer.logic.loot
                 case 7:
                     bag = 0xfff;
                     break;
-                case 8:
-                    bag = 0x1861;
-                    break;
-                case 9:
-                    bag = 0x169a;
-                    break;
-                case 10:
-                    bag = 0x506f;
-                    break;
-                case 11:
-                    bag = 0x44d4;
-                    break;
-                case 15:
-                    bag = 0x5136;
-                    break;
             }
 
             Container container = new Container(enemy.Manager, bag, 1000 * 30, true);
@@ -210,13 +195,6 @@ namespace wServer.logic.loot
                 enemy.X + (float)((rand.NextDouble() * 2 - 1) * 0.5),
                 enemy.Y + (float)((rand.NextDouble() * 2 - 1) * 0.5));
             container.Size = 80;
-            if (bag == 0x509 || bag == 0x050B || bag == 0x050C || bag == 0x44d4 || bag == 0x169a)
-            {
-                container.Size = 95;
-            } else if(bag == 0x5136)
-            {
-                container.Size = 110;
-            }
             enemy.Owner.EnterWorld(container);
         }
     }

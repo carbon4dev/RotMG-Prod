@@ -44,7 +44,7 @@ namespace server.app
         {
             List<globalNews_struct> ret = new List<globalNews_struct>();
             var cmd = db.CreateQuery();
-            cmd.CommandText = "SELECT * FROM globalnews WHERE endTime >= now();";
+            cmd.CommandText = "SELECT * FROM globalNews WHERE endTime >= now();";
             using (var rdr = cmd.ExecuteReader())
             {
                 while (rdr.Read())

@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.util {
+﻿package com.company.assembleegameclient.util {
 import com.company.util.AssetLibrary;
 
 import flash.display.BitmapData;
@@ -7,123 +7,115 @@ import kabam.rotmg.text.model.TextKey;
 
 public class GuildUtil {
 
-      public static const INITIATE:int = 0;
+    public static const INITIATE:int = 0;
+    public static const MEMBER:int = 10;
+    public static const OFFICER:int = 20;
+    public static const LEADER:int = 30;
+    public static const FOUNDER:int = 40;
+    public static const MAX_MEMBERS:int = 50;
 
-      public static const MEMBER:int = 10;
 
-      public static const OFFICER:int = 20;
-
-      public static const LEADER:int = 30;
-
-      public static const FOUNDER:int = 40;
-
-      public static const MAX_MEMBERS:int = 50;
-
-      public function GuildUtil() {
-         super();
-      }
-
-      public static function rankToString(param1:int) : String {
-         switch(param1) {
+    public static function rankToString(_arg_1:int):String {
+        switch (_arg_1) {
             case INITIATE:
-               return wrapInBraces(TextKey.GUILD_RANK_INITIATE);
+                return (wrapInBraces(TextKey.GUILD_RANK_INITIATE));
             case MEMBER:
-               return wrapInBraces(TextKey.GUILD_RANK_MEMBER);
+                return (wrapInBraces(TextKey.GUILD_RANK_MEMBER));
             case OFFICER:
-               return wrapInBraces(TextKey.GUILD_RANK_OFFICER);
+                return (wrapInBraces(TextKey.GUILD_RANK_OFFICER));
             case LEADER:
-               return wrapInBraces(TextKey.GUILD_RANK_LEADER);
+                return (wrapInBraces(TextKey.GUILD_RANK_LEADER));
             case FOUNDER:
-               return wrapInBraces(TextKey.GUILD_RANK_FOUNDER);
-            default:
-               return wrapInBraces(TextKey.GUILD_RANK_UNKNOWN);
-         }
-      }
+                return (wrapInBraces(TextKey.GUILD_RANK_FOUNDER));
+        }
+        return (wrapInBraces(TextKey.GUILD_RANK_UNKNOWN));
+    }
 
-      private static function wrapInBraces(param1:String) : String {
-         return "{" + param1 + "}";
-      }
+    private static function wrapInBraces(_arg_1:String):String {
+        return ((("{" + _arg_1) + "}"));
+    }
 
-      public static function rankToIcon(param1:int, param2:int) : BitmapData {
-         var _local3:BitmapData = null;
-         switch(param1) {
+    public static function rankToIcon(_arg_1:int, _arg_2:int):BitmapData {
+        var _local_3:BitmapData;
+        switch (_arg_1) {
             case INITIATE:
-               _local3 = AssetLibrary.getImageFromSet("lofiInterfaceBig",20);
-               break;
+                _local_3 = AssetLibrary.getImageFromSet("lofiInterfaceBig", 20);
+                break;
             case MEMBER:
-               _local3 = AssetLibrary.getImageFromSet("lofiInterfaceBig",19);
-               break;
+                _local_3 = AssetLibrary.getImageFromSet("lofiInterfaceBig", 19);
+                break;
             case OFFICER:
-               _local3 = AssetLibrary.getImageFromSet("lofiInterfaceBig",18);
-               break;
+                _local_3 = AssetLibrary.getImageFromSet("lofiInterfaceBig", 18);
+                break;
             case LEADER:
-               _local3 = AssetLibrary.getImageFromSet("lofiInterfaceBig",17);
-               break;
+                _local_3 = AssetLibrary.getImageFromSet("lofiInterfaceBig", 17);
+                break;
             case FOUNDER:
-               _local3 = AssetLibrary.getImageFromSet("lofiInterfaceBig",16);
-         }
-         return TextureRedrawer.redraw(_local3,param2,true,0,true);
-      }
+                _local_3 = AssetLibrary.getImageFromSet("lofiInterfaceBig", 16);
+                break;
+        }
+        return (TextureRedrawer.redraw(_local_3, _arg_2, true, 0, true));
+    }
 
-      public static function guildFameIcon(param1:int) : BitmapData {
-         var _local2:BitmapData = AssetLibrary.getImageFromSet("lofiObj3",226);
-         return TextureRedrawer.redraw(_local2,param1,true,0,true);
-      }
+    public static function guildFameIcon(_arg_1:int):BitmapData {
+        var _local_2:BitmapData = AssetLibrary.getImageFromSet("lofiObj3", 226);
+        return (TextureRedrawer.redraw(_local_2, _arg_1, true, 0, true));
+    }
 
-      public static function allowedChange(param1:int, param2:int, param3:int) : Boolean {
-         if(param2 == param3) {
-            return false;
-         }
-         if(param1 == FOUNDER && param2 < FOUNDER && param3 < FOUNDER) {
-            return true;
-         }
-         if(param1 == LEADER && param2 < LEADER && param3 <= LEADER) {
-            return true;
-         }
-         if(param1 == OFFICER && param2 < OFFICER && param3 < OFFICER) {
-            return true;
-         }
-         return false;
-      }
+    public static function allowedChange(_arg_1:int, _arg_2:int, _arg_3:int):Boolean {
+        if (_arg_2 == _arg_3) {
+            return (false);
+        }
+        if ((((((_arg_1 == FOUNDER)) && ((_arg_2 < FOUNDER)))) && ((_arg_3 < FOUNDER)))) {
+            return (true);
+        }
+        if ((((((_arg_1 == LEADER)) && ((_arg_2 < LEADER)))) && ((_arg_3 <= LEADER)))) {
+            return (true);
+        }
+        if ((((((_arg_1 == OFFICER)) && ((_arg_2 < OFFICER)))) && ((_arg_3 < OFFICER)))) {
+            return (true);
+        }
+        return (false);
+    }
 
-      public static function promotedRank(param1:int) : int {
-         switch(param1) {
+    public static function promotedRank(_arg_1:int):int {
+        switch (_arg_1) {
             case INITIATE:
-               return MEMBER;
+                return (MEMBER);
             case MEMBER:
-               return OFFICER;
+                return (OFFICER);
             case OFFICER:
-               return LEADER;
-            default:
-               return FOUNDER;
-         }
-      }
+                return (LEADER);
+        }
+        return (FOUNDER);
+    }
 
-      public static function canPromote(param1:int, param2:int) : Boolean {
-         var _local3:int = promotedRank(param2);
-         return allowedChange(param1,param2,_local3);
-      }
+    public static function canPromote(_arg_1:int, _arg_2:int):Boolean {
+        var _local_3:int = promotedRank(_arg_2);
+        return (allowedChange(_arg_1, _arg_2, _local_3));
+    }
 
-      public static function demotedRank(param1:int) : int {
-         switch(param1) {
+    public static function demotedRank(_arg_1:int):int {
+        switch (_arg_1) {
             case OFFICER:
-               return MEMBER;
+                return (MEMBER);
             case LEADER:
-               return OFFICER;
+                return (OFFICER);
             case FOUNDER:
-               return LEADER;
-            default:
-               return INITIATE;
-         }
-      }
+                return (LEADER);
+        }
+        return (INITIATE);
+    }
 
-      public static function canDemote(param1:int, param2:int) : Boolean {
-         var _local3:int = demotedRank(param2);
-         return allowedChange(param1,param2,_local3);
-      }
+    public static function canDemote(_arg_1:int, _arg_2:int):Boolean {
+        var _local_3:int = demotedRank(_arg_2);
+        return (allowedChange(_arg_1, _arg_2, _local_3));
+    }
 
-      public static function canRemove(param1:int, param2:int) : Boolean {
-         return param1 >= OFFICER && param2 < param1;
-      }
-   }
+    public static function canRemove(_arg_1:int, _arg_2:int):Boolean {
+        return ((((_arg_1 >= OFFICER)) && ((_arg_2 < _arg_1))));
+    }
+
+
 }
+}//package com.company.assembleegameclient.util

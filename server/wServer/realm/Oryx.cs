@@ -28,14 +28,10 @@ namespace wServer.realm
             Tuple.Create("Skull Shrine", (ISetPiece) new SkullShrine()),
             Tuple.Create("Pentaract", (ISetPiece) new Pentaract()),
             Tuple.Create("Grand Sphinx", (ISetPiece) new Sphinx()),
-            Tuple.Create("Puppet Master v2", (ISetPiece) new EncorePup()),
+            //"Lord of the Lost Lands",
+            //"Hermit God",
+            //"Ghost Ship",
             Tuple.Create("Cube God", (ISetPiece) new CubeGod()),
-            Tuple.Create("Lord of the Lost Lands", (ISetPiece) new LordOfTheLostLands()),
-            Tuple.Create("Hermit God", (ISetPiece) new Hermit()),
-            Tuple.Create("Ghost Ship", (ISetPiece) new GhostShip()),
-            Tuple.Create("Dragon Head", (ISetPiece) new RockDragon()),
-            Tuple.Create("shtrs Defense System", (ISetPiece) new Avatar()),
-            Tuple.Create("Maurth the Succubus Queen", (ISetPiece) new Succubus()),
         };
 
         private readonly Random rand = new Random();
@@ -60,146 +56,138 @@ namespace wServer.realm
             {
                 {
                     WmapTerrain.ShoreSand, Tuple.Create(
-                        1000, new[]
+                        100, new[]
                         {
-                            Tuple.Create("Pirate", 0.03),
-                            Tuple.Create("Piratess", 0.01),
-                            Tuple.Create("Snake", 0.02),
-                            Tuple.Create("Scorpion Queen", 0.04)
+                            Tuple.Create("Pirate", 0.3),
+                            Tuple.Create("Piratess", 0.1),
+                            Tuple.Create("Snake", 0.2),
+                            Tuple.Create("Scorpion Queen", 0.4)
                         })
                 },
                 {
                     WmapTerrain.ShorePlains, Tuple.Create(
-                        1000, new[]
+                        150, new[]
                         {
-                            Tuple.Create("Bandit Leader", 0.04),
-                            Tuple.Create("Red Gelatinous Cube", 0.02),
-                            Tuple.Create("Purple Gelatinous Cube", 0.02),
-                            Tuple.Create("Green Gelatinous Cube", 0.02)
+                            Tuple.Create("Bandit Leader", 0.4),
+                            Tuple.Create("Red Gelatinous Cube", 0.2),
+                            Tuple.Create("Purple Gelatinous Cube", 0.2),
+                            Tuple.Create("Green Gelatinous Cube", 0.2)
                         })
                 },
                 {
                     WmapTerrain.LowPlains, Tuple.Create(
-                        1000, new[]
+                        200, new[]
                         {
-                            Tuple.Create("Hobbit Mage", 0.05),
-                            Tuple.Create("Undead Hobbit Mage", 0.04),
-                            Tuple.Create("Sumo Master", 0.01)
+                            Tuple.Create("Hobbit Mage", 0.5),
+                            Tuple.Create("Undead Hobbit Mage", 0.4),
+                            Tuple.Create("Sumo Master", 0.1)
                         })
                 },
                 {
                     WmapTerrain.LowForest, Tuple.Create(
-                        1000, new[]
+                        200, new[]
                         {
-                            Tuple.Create("Elf Wizard", 0.02),
-                            Tuple.Create("Goblin Mage", 0.02),
-                            Tuple.Create("Easily Enraged Bunny", 0.03),
-                            Tuple.Create("Forest Nymph", 0.03)
+                            Tuple.Create("Elf Wizard", 0.2),
+                            Tuple.Create("Goblin Mage", 0.2),
+                            Tuple.Create("Easily Enraged Bunny", 0.3),
+                            Tuple.Create("Forest Nymph", 0.3)
                         })
                 },
                 {
                     WmapTerrain.LowSand, Tuple.Create(
-                        1000, new[]
+                        200, new[]
                         {
-                            Tuple.Create("Sandsman King", 0.04),
-                            Tuple.Create("Giant Crab", 0.02),
-                            Tuple.Create("Sand Devil", 0.04)
+                            Tuple.Create("Sandsman King", 0.4),
+                            Tuple.Create("Giant Crab", 0.2),
+                            Tuple.Create("Sand Devil", 0.4)
                         })
                 },
                 {
                     WmapTerrain.MidPlains, Tuple.Create(
-                        1000, new[]
+                        150, new[]
                         {
-                            Tuple.Create("Fire Sprite", 0.01),
-                            Tuple.Create("Ice Sprite", 0.01),
-                            Tuple.Create("Magic Sprite", 0.01),
-                            Tuple.Create("Pink Blob", 0.007),
-                            Tuple.Create("Gray Blob", 0.007),
-                            Tuple.Create("Earth Golem", 0.004),
-                            Tuple.Create("Paper Golem", 0.004),
-                            Tuple.Create("Big Green Slime", 0.008),
-                            Tuple.Create("Swarm", 0.005),
-                            Tuple.Create("Wasp Queen", 0.02),
-                            Tuple.Create("Shambling Sludge", 0.003),
-                            Tuple.Create("Orc King", 0.006)
+                            Tuple.Create("Fire Sprite", 0.1),
+                            Tuple.Create("Ice Sprite", 0.1),
+                            Tuple.Create("Magic Sprite", 0.1),
+                            Tuple.Create("Pink Blob", 0.07),
+                            Tuple.Create("Gray Blob", 0.07),
+                            Tuple.Create("Earth Golem", 0.04),
+                            Tuple.Create("Paper Golem", 0.04),
+                            Tuple.Create("Big Green Slime", 0.08),
+                            Tuple.Create("Swarm", 0.05),
+                            Tuple.Create("Wasp Queen", 0.2),
+                            Tuple.Create("Shambling Sludge", 0.03),
+                            Tuple.Create("Orc King", 0.06)
                         })
                 },
                 {
                     WmapTerrain.MidForest, Tuple.Create(
-                        1000, new[]
+                        150, new[]
                         {
-                            Tuple.Create("Dwarf King", 0.03),
-                            Tuple.Create("Metal Golem", 0.005),
-                            Tuple.Create("Clockwork Golem", 0.005),
-                            Tuple.Create("Werelion", 0.01),
-                            Tuple.Create("Horned Drake", 0.03),
-                            Tuple.Create("Red Spider", 0.01),
-                            Tuple.Create("Black Bat", 0.01)
+                            Tuple.Create("Dwarf King", 0.3),
+                            Tuple.Create("Metal Golem", 0.05),
+                            Tuple.Create("Clockwork Golem", 0.05),
+                            Tuple.Create("Werelion", 0.1),
+                            Tuple.Create("Horned Drake", 0.3),
+                            Tuple.Create("Red Spider", 0.1),
+                            Tuple.Create("Black Bat", 0.1)
                         })
                 },
                 {
                     WmapTerrain.MidSand, Tuple.Create(
-                        1000, new[]
+                        300, new[]
                         {
-                            Tuple.Create("Desert Werewolf", 0.025),
-                            Tuple.Create("Fire Golem", 0.01),
-                            Tuple.Create("Darkness Golem", 0.01),
-                            Tuple.Create("Sand Phantom", 0.02),
-                            Tuple.Create("Nomadic Shaman", 0.025),
-                            Tuple.Create("Great Lizard", 0.01)
+                            Tuple.Create("Desert Werewolf", 0.25),
+                            Tuple.Create("Fire Golem", 0.1),
+                            Tuple.Create("Darkness Golem", 0.1),
+                            Tuple.Create("Sand Phantom", 0.2),
+                            Tuple.Create("Nomadic Shaman", 0.25),
+                            Tuple.Create("Great Lizard", 0.1)
                         })
                 },
                 {
                     WmapTerrain.HighPlains, Tuple.Create(
-                        1000, new[]
+                        300, new[]
                         {
-                            Tuple.Create("Shield Orc Key", 0.02),
-                            Tuple.Create("Candy Gnome", 0.005),
-                            //Tuple.Create("Urgle", 0.2),
-                            Tuple.Create("Undead Dwarf God", 0.06)
+                            Tuple.Create("Shield Orc Key", 0.2),
+                            Tuple.Create("Urgle", 0.2),
+                            Tuple.Create("Undead Dwarf God", 0.6)
                         })
                 },
                 {
                     WmapTerrain.HighForest, Tuple.Create(
-                        1000, new[]
+                        300, new[]
                         {
-                            Tuple.Create("Ogre King", 0.04),
-                            Tuple.Create("Dragon Egg", 0.01),
-                            Tuple.Create("Lizard God", 0.05)
+                            Tuple.Create("Ogre King", 0.4),
+                            Tuple.Create("Dragon Egg", 0.1),
+                            Tuple.Create("Lizard God", 0.5)
                         })
                 },
                 {
                     WmapTerrain.HighSand, Tuple.Create(
-                        1000, new[]
+                        250, new[]
                         {
-                            Tuple.Create("Minotaur", 0.04),
-                            Tuple.Create("Flayer God", 0.04),
-                            Tuple.Create("Flamer King", 0.02)
+                            Tuple.Create("Minotaur", 0.4),
+                            Tuple.Create("Flayer God", 0.4),
+                            Tuple.Create("Flamer King", 0.2)
                         })
                 },
                 {
                     WmapTerrain.Mountains, Tuple.Create(
-                   95, new []
+                    100, new []
                     {
-                        Tuple.Create("White Demon", 0.09), //9%
-                        Tuple.Create("Sprite God", 0.08), //18%
-                        Tuple.Create("Medusa", 0.09), //27%                        
-                        Tuple.Create("Ent God", 0.1), //37%
-                        //Tuple.Create("Beholder", 0.09), //46%
-                        Tuple.Create("Flying Brain", 0.09), //55%
-                        Tuple.Create("Slime God", 0.08), //63%
-                        Tuple.Create("Ghost God", 0.07), //70%
-                        Tuple.Create("Rock Bot", 0.05), //75%
-                        Tuple.Create("Djinn", 0.06), // 83%
-                        Tuple.Create("Leviathan", 0.07), //90%
-                        Tuple.Create("Arena Headless Horseman", 0.01), //91%
-                        //Tuple.Create("Thunder God", 0.025),
-                        Tuple.Create("Lucky Ent God", 0.001), //91.1%
-                        Tuple.Create("Lucky Djinn", 0.001), //91.1%
-                        Tuple.Create("Mysterious Crystal", 0.0025), //91.125%
-                        //Tuple.Create("Large Sor Crystal", 0.02),
-                        //Tuple.Create("Wasp Group Anchor", 0.03),
-
+                        Tuple.Create("White Demon", 0.1),
+                        Tuple.Create("Sprite God", 0.09),
+                        Tuple.Create("Medusa", 0.1),
+                        Tuple.Create("Ent God", 0.1),
+                        Tuple.Create("Beholder", 0.1),
+                        Tuple.Create("Flying Brain", 0.1),
+                        Tuple.Create("Slime God", 0.09),
+                        Tuple.Create("Ghost God", 0.09),
+                        Tuple.Create("Rock Bot", 0.05),
+                        Tuple.Create("Djinn", 0.09),
+                        Tuple.Create("Leviathan", 0.09),
+                        Tuple.Create("Arena Headless Horseman", 0.01)
                     })
                 },
             };
@@ -233,20 +221,11 @@ namespace wServer.realm
         public bool CheckFinalQuests()
         {
             if (CountEnemies(
-                //removed quests
-
                 "Lich", "Actual Lich",
-                //"Ent Ancient", "Actual Ent Ancient",
-                //"Ghost King",
-
+                "Ent Ancient", "Actual Ent Ancient",
                 "Phoenix Reborn",
-                //"Oasis Giant",
-                "Cyclops God", "Red Demon", "Puppet Master v2",
-                "Maurth the Succubus Queen", "Skull Shrine", "Cube God",
-                "Grand Sphinx", "Hermit God", "Lord of the Lost Lands",
-                "shtrs Defense System", "Ghost Ship", "Pentaract",
-                "Lucky Ent God", "Lucky Djinn", "Dragon Head"
-                ) != 0) return false;
+                "Oasis Giant", "Ghost King", "Cyclops God", "Red Demon",
+                "Skull Shrine", "Cube God", "Grand Sphinx", "Hermit God") != 0) return false;
             RealmClosed = true;
             return true;
         }
@@ -284,7 +263,7 @@ namespace wServer.realm
                     EffectType = EffectType.Earthquake
                 });
             }
-            world.Timers.Add(new WorldTimer(20000, (w, t) => w.Manager.RemoveWorld(w)));
+            world.Timers.Add(new WorldTimer(10000, (w, t) => w.Manager.RemoveWorld(w)));
         }
 
         public int CountEnemies(params string[] enemies)
@@ -332,7 +311,7 @@ namespace wServer.realm
                     if (objType == 0) continue;
 
                     enemyCounts[idx] += Spawn(world.Manager.GameData.ObjectDescs[objType], terrain, w, h);
-                    if (enemyCounts[idx] >= enemyCount*120) break;
+                    if (enemyCounts[idx] >= enemyCount) break;
                 }
             }
             log.Info("Oryx is done.");
@@ -347,8 +326,8 @@ namespace wServer.realm
                 SendMsg(i, "I HAVE CLOSED THIS REALM!", "#Oryx the Mad God");
                 SendMsg(i, "YOU WILL NOT LIVE TO SEE THE LIGHT OF DAY!", "#Oryx the Mad God");
             }
-            world.Timers.Add(new WorldTimer(60000, (ww, tt) => { CloseRealm(); }));
-            world.Manager.GetWorld(World.NEXUS_ID).Timers.Add(new WorldTimer(80000, (w, t) => Task.Factory.StartNew(() => GameWorld.AutoName(1, true)).ContinueWith(_ => w.Manager.AddWorld(_.Result), TaskScheduler.Default)));
+            world.Timers.Add(new WorldTimer(120000, (ww, tt) => { CloseRealm(); }));
+            world.Manager.GetWorld(World.NEXUS_ID).Timers.Add(new WorldTimer(130000, (w, t) => Task.Factory.StartNew(() => GameWorld.AutoName(1, true)).ContinueWith(_ => w.Manager.AddWorld(_.Result), TaskScheduler.Default)));
             world.Manager.CloseWorld(world);
         }
 
@@ -375,7 +354,7 @@ namespace wServer.realm
                     BroadcastMsg(msg);
                 }
 
-                if (rand.NextDouble() < 0.75) // realm events
+                if (rand.NextDouble() < 0.25)
                 {
                     var evt = events[rand.Next(0, events.Count)];
                     if (
@@ -405,7 +384,7 @@ namespace wServer.realm
 
         public void OnPlayerEntered(Player player)
         {
-            player.SendInfo("Welcome to Realm of the Mad God (LoE Realm server)!");
+            player.SendInfo("Welcome to Realm of the Mad God");
             player.SendEnemy("Oryx the Mad God", "You are food for my minions!");
             player.SendInfo("Use [WASDQE] to move; click to shoot!");
             player.SendInfo("Type \"/help\" for more help");
@@ -535,19 +514,19 @@ namespace wServer.realm
             }
 
             if (count == 0) return;
-            if (count >= 1 && taunt.Item2.final != null)
+            if (count == 1 && taunt.Item2.final != null)
             {
                 var arr = taunt.Item2.final;
                 var msg = arr[rand.Next(0, arr.Length)];
                 BroadcastMsg(msg);
             }
-            /*else
+            else
             {
                 var arr = taunt.Item2.numberOfEnemies;
                 var msg = arr[rand.Next(0, arr.Length)];
                 msg = msg.Replace("{COUNT}", count.ToString());
                 BroadcastMsg(msg);
-            }*/
+            }
         }
 
         private void RecalculateEnemyCount()
@@ -625,7 +604,7 @@ namespace wServer.realm
             }
             return ret;
         }
-        public RealmManager Manager { get; private set; }
+
         private void SpawnEvent(string name, ISetPiece setpiece)
         {
             var pt = new IntPoint();
@@ -642,17 +621,6 @@ namespace wServer.realm
             pt.Y -= (setpiece.Size - 1) / 2;
             setpiece.RenderSetPiece(world, pt);
             log.InfoFormat("Oryx spawned {0} at ({1}, {2}).", name, pt.X, pt.Y);
-            /*var saytext = String.Format("Oryx the Mad God spawned {0} in realm!", name);
-            foreach (Client i in Manager.Clients.Values)
-            {
-                i.SendPacket(new TextPacket
-                {
-                    BubbleTime = 0,
-                    Stars = -1,
-                    Name = "@ANNOUNCEMENT",
-                    Text = " " + saytext
-                });
-            }*/
         }
 
         private struct TauntData
@@ -681,7 +649,7 @@ namespace wServer.realm
                     "My final Lich will protect me forever!"
                 }
             }),
-            /*Tuple.Create("Ent Ancient", new TauntData
+            Tuple.Create("Ent Ancient", new TauntData
             {
                 numberOfEnemies = new[]
                 {
@@ -692,7 +660,7 @@ namespace wServer.realm
                 {
                     "My final Ent Ancient will destroy you all!"
                 }
-            }),*/
+            }),
             Tuple.Create("Oasis Giant", new TauntData
             {
                 numberOfEnemies = new[]
@@ -718,7 +686,7 @@ namespace wServer.realm
                     "My last Phoenix Lord will blacken your bones!"
                 }
             }),
-            /*Tuple.Create("Ghost King", new TauntData
+            Tuple.Create("Ghost King", new TauntData
             {
                 numberOfEnemies = new[]
                 {
@@ -730,7 +698,7 @@ namespace wServer.realm
                     "A mighty Ghost King remains to guard me!",
                     "My final Ghost King is untouchable!"
                 }
-            }),*/
+            }),
             Tuple.Create("Cyclops God", new TauntData
             {
                 numberOfEnemies = new[]
@@ -871,20 +839,6 @@ namespace wServer.realm
                     "What trickery is this?! My Lord of the Lost Lands was invincible!"
                 }
             }),
-             Tuple.Create("Maurth the Succubus Queen", new TauntData
-            {
-                spawn = new[]
-                {
-                    "The elements are now in union!",
-                    "My succubus shall burn you into ashes!",
-                    "My succubus thinks you will look good in a glacier."
-                },
-                 killed = new[]
-                {
-                    "Soon you will become my new servant, {PLAYER}.",
-                    "Your lives were nothing to the Succubus Queen...how could it fall?"
-                }
-            }),
             Tuple.Create("Hermit God", new TauntData
             {
                 spawn = new[]
@@ -927,63 +881,6 @@ namespace wServer.realm
                     "How could a creature like {PLAYER} defeat my dreaded Ghost Ship?!",
                     "{PLAYER}, has crossed me for the last time! My Ghost Ship shall be avenged.",
                     "The spirits of the sea will seek revenge on your worthless soul, {PLAYER}!"
-                }
-            }),
-             Tuple.Create("Dragon Head", new TauntData
-            {
-                spawn = new[]
-                {
-                    "The Rock Dragon has been summoned.",
-                    "Look into the Eye and you might die!",
-                    "The Rock Dragon will definitely obliterate all of the miserable fighters in my Realm."
-                },
-                 //numberOfEnemies = new string[] {
-                 //    "You dull-spirited apes! You shall pose no challenge for {COUNT} Grand Sphinxes!",
-                 //    "Regret your choices, blasphemers! My {COUNT} Grand Sphinxes will teach you respect!",
-                 //    "My Grand Sphinxes will bewitch you with their beauty!"
-                 //},
-                 //final = new string[] {
-                 //    "You festering rat-catchers! A Grand Sphinx will make you doubt your purpose!",
-                 //    "Gaze upon the beauty of the Grand Sphinx and feel your last hopes drain away."
-                 //},
-                 killed = new[]
-                {
-                    "{PLAYER}, WHY WOULD YOU KILL THE WONDEFUL DRAGON?!",
-                    "My Rock Dragon has failed me."
-                }
-            }),
-             Tuple.Create("Puppet Master v2", new TauntData
-            {
-                spawn = new[]
-                {
-                    "The Puppet Master Encore will definitely obliterate all of the miserable fighters in my Realm."
-                },
-                 killed = new[]
-                {
-                    "My Puppet Master Encore has failed me!"
-                }
-            }),
-             Tuple.Create("shtrs Defense System", new TauntData
-            {
-                spawn = new[]
-                {
-                    "The Avatar has been summoned.",
-                    "Ay b0ss, it's a giant skull b0ss pls",
-                    "The Shatters has been discovered?!"
-                },
-                 //numberOfEnemies = new string[] {
-                 //    "You dull-spirited apes! You shall pose no challenge for {COUNT} Grand Sphinxes!",
-                 //    "Regret your choices, blasphemers! My {COUNT} Grand Sphinxes will teach you respect!",
-                 //    "My Grand Sphinxes will bewitch you with their beauty!"
-                 //},
-                 //final = new string[] {
-                 //    "You festering rat-catchers! A Grand Sphinx will make you doubt your purpose!",
-                 //    "Gaze upon the beauty of the Grand Sphinx and feel your last hopes drain away."
-                 //},
-                 killed = new[]
-                {
-                    "but what if Avatar was not kill?",
-                    "How could simpletons kill The Avatar of the Forgotten King?!"
                 }
             })
         };

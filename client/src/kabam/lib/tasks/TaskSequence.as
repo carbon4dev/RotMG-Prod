@@ -1,65 +1,66 @@
-package kabam.lib.tasks {
-   public class TaskSequence extends BaseTask {
+﻿package kabam.lib.tasks {
+public class TaskSequence extends BaseTask {
 
-      private var tasks:Vector.<Task>;
+    private var tasks:Vector.<Task>;
+    private var index:int;
+    private var continueOnFail:Boolean;
 
-      private var index:int;
+    public function TaskSequence() {
+        this.tasks = new Vector.<Task>();
+    }
 
-      private var continueOnFail:Boolean;
+    public function getContinueOnFail():Boolean {
+        return (this.continueOnFail);
+    }
 
-      public function TaskSequence() {
-         super();
-         this.tasks = new Vector.<Task>();
-      }
+    public function setContinueOnFail(_arg_1:Boolean):void {
+        this.continueOnFail = _arg_1;
+    }
 
-      public function getContinueOnFail() : Boolean {
-         return this.continueOnFail;
-      }
+    public function add(_arg_1:Task):void {
+        this.tasks.push(_arg_1);
+    }
 
-      public function setContinueOnFail(param1:Boolean) : void {
-         this.continueOnFail = param1;
-      }
+    override protected function startTask():void {
+        this.index = 0;
+        this.doNextTaskOrComplete();
+    }
 
-      public function add(param1:Task) : void {
-         this.tasks.push(param1);
-      }
+    override protected function onReset():void {
+        var _local_1:Task;
+        for each (_local_1 in this.tasks) {
+            _local_1.reset();
+        }
+    }
 
-      override protected function startTask() : void {
-         this.index = 0;
-         this.doNextTaskOrComplete();
-      }
-
-      override protected function onReset() : void {
-         var _local1:Task = null;
-         for each(_local1 in this.tasks) {
-            _local1.reset();
-         }
-      }
-
-      private function doNextTaskOrComplete() : void {
-         if(this.isAnotherTask()) {
+    private function doNextTaskOrComplete():void {
+        if (this.isAnotherTask()) {
             this.doNextTask();
-         } else {
+        }
+        else {
             completeTask(true);
-         }
-      }
+        }
+    }
 
-      private function isAnotherTask() : Boolean {
-         return this.index < this.tasks.length;
-      }
+    private function isAnotherTask():Boolean {
+        return ((this.index < this.tasks.length));
+    }
 
-      private function doNextTask() : void {
-         var _local1:Task = this.tasks[this.index++];
-         _local1.lastly.addOnce(this.onTaskFinished);
-         _local1.start();
-      }
+    private function doNextTask():void {
+        var _local_1:Task = this.tasks[this.index++];
+        _local_1.lastly.addOnce(this.onTaskFinished);
+        _local_1.start();
+    }
 
-      private function onTaskFinished(param1:Task, param2:Boolean, param3:String) : void {
-         if(Boolean(param2) || Boolean(this.continueOnFail)) {
+    private function onTaskFinished(_arg_1:Task, _arg_2:Boolean, _arg_3:String):void {
+        if (((_arg_2) || (this.continueOnFail))) {
             this.doNextTaskOrComplete();
-         } else {
-            completeTask(false,param3);
-         }
-      }
-   }
+        }
+        else {
+            completeTask(false, _arg_3);
+        }
+    }
+
+
 }
+}//package kabam.lib.tasks

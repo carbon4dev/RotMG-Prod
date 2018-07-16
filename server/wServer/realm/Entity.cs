@@ -160,8 +160,6 @@ namespace wServer.realm
                 {
                     foreach (var i in s.Behaviors)
                         i.OnStateEntry(this, time);
-                    foreach (var i in s.Transitions)
-                        i.OnStateEntry(this, time);
                     s = s.Parent;
                 }
                 stateEntryCommonRoot = null;
@@ -391,7 +389,7 @@ namespace wServer.realm
                 case "Pet":
                     throw new Exception("Pets should not instantiated using Entity.Resolve");
                 default:
-                    //Log.Warn("Not supported type: " + type);
+                    Log.Warn("Not supported type: " + type);
                     return new Entity(manager, id);
             }
         }
